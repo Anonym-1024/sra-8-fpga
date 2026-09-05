@@ -1,0 +1,16 @@
+./GeneralRegister.v
+./Memory.v
+./MAR.v
+./Cpu.v
+./ALU.v
+./InstructionRegister.v
+./PTBR.v
+./INTPC.v
+./ControlUnit.v
+./PC.v
+./PSR.v
+./UC.v
+./PTER.v
+./GeneralRegisters.v
+./INTR.v
+./FlagsRegister.v

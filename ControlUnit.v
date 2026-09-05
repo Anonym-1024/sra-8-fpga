@@ -3,7 +3,8 @@
 module ControlUnit (
     input wire clk,
     input wire [7:0] bus_in,
-    input wire [3:0] flags_in
+    input wire [3:0] flags_in,
+    input wire int_in
 );
 
     wire [3:0] step;

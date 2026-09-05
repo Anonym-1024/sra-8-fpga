@@ -18,6 +18,7 @@ module PTBR (
     assign bus_out = read_en_0 ? byte_0 :
                         read_en_1 ? byte_1 : 8'b0;
 
+    assign addr_out = addr_read_en ? {byte_1, byte_0} : 0;
 
     always @(posedge clk) begin
         if (write_en_0 == 1)
