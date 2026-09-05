@@ -24,14 +24,14 @@ set_io -nowarn FLASH_IO2  12
 set_io -nowarn FLASH_IO3  13
 
 # PMOD 1A
-set_io -nowarn interface[0]        4
-set_io -nowarn interface[1]        2
-set_io -nowarn interface[2]       47
-set_io -nowarn interface[3]       45
-set_io -nowarn interface[4]        3
-set_io -nowarn interface[5]       48
-set_io -nowarn interface[6]       46
-set_io -nowarn interface[7]      44
+set_io -nowarn io[0]        4
+set_io -nowarn io[1]        2
+set_io -nowarn io[2]       47
+set_io -nowarn io[3]       45
+set_io -nowarn io[4]        3
+set_io -nowarn io[5]       48
+set_io -nowarn io[6]       46
+set_io -nowarn io[7]      44
 
 
 

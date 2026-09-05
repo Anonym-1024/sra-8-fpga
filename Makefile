@@ -4,7 +4,7 @@
 # Configuration
 # -----------------------------------------------------------------------------
 # Top-level module name and output file prefix
-PROJ = ALU
+PROJ = CPU
 
 # Target FPGA details (Default: iCE40HX1K-TQ144, e.g., iCEstick)
 DEVICE    = up5k

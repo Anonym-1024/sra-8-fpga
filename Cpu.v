@@ -1,14 +1,12 @@
 
 
-module Cpu (
-    inout wire [7:0] interface
+module CPU (
+    inout wire [7:0] io
 );
 
 
 
-    ControlUnit cu (
-
-    );
+    
 
     GeneralRegisters registers (
 
@@ -19,6 +17,15 @@ module Cpu (
     );
 
     Memory memory (
+
+    );
+
+
+    PTBR ptbr (
+
+    );
+
+    PTER pter (
 
     );
 
