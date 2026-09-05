@@ -67,18 +67,18 @@ module ALU (
 
     assign add_result = reg_1 + reg_2;
     assign sub_result = reg_1 + (~reg_2 + 1);
-    assign addc_result = reg_1 + reg_2 + flags_in[2];
-    assign subc_result = reg_1 + (~reg_2 + 1) + flags_in[2];
+    assign addc_result = reg_1 + reg_2 + flags_in[1];
+    assign subc_result = reg_1 + (~reg_2 + 1) + flags_in[1];
     assign and_result = reg_1 & reg_2;
     assign or_result   = reg_1 | reg_2;
     assign eor_result  = reg_1 ^ reg_2;
     assign lsl_result  = reg_1 << 1;
     assign lsr_result  = reg_1 >> 1;
     assign asr_result  = {reg_1[7], reg_1[7:1]};
-    assign csl_result  = {reg_1[6:0], flags_in[2]};
-    assign csr_result  = {flags_in[2], reg_1[7:1]};
+    assign csl_result  = {reg_1[6:0], flags_in[1]};
+    assign csr_result  = {flags_in[1], reg_1[7:1]};
 
-    assign alu_result = (opcode == OP_ADD)  ? add_result  :
+    assign result = (opcode == OP_ADD)  ? add_result  :
                         (opcode == OP_ADDC) ? addc_result :
                         (opcode == OP_SUB)  ? sub_result  :
                         (opcode == OP_SUBC) ? subc_result :
@@ -117,7 +117,7 @@ module ALU (
                    (opcode == OP_LSR)  ? c_lsr :
                    (opcode == OP_ASR)  ? c_asr :
                    (opcode == OP_CSL)  ? c_csl :
-                   (opcode == OP_CSR)  ? c_csr : flags_in[2];
+                   (opcode == OP_CSR)  ? c_csr : 0;
 
     assign v_add = (reg_1[7] == reg_2[7]) && (add_result[7] != reg_1[7]);
     assign v_sub = (reg_1[7] != reg_2[7]) && (sub_result[7] != reg_1[7]);

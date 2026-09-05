@@ -1,5 +1,5 @@
 
-
+/*
 module FlagsRegister (
     input wire write_en,
     input wire clk,
@@ -8,6 +8,8 @@ module FlagsRegister (
 );
     
     reg [3:0] content;
+
+    
 
 
     assign flags_out = content;
@@ -19,3 +21,5 @@ module FlagsRegister (
     end
 
 endmodule
+
+*/

@@ -10,12 +10,14 @@ module Memory (
 );
 
 
-    reg [7:0] memory [0:(1<<16)];
+    reg [7:0] memory [0:(1<<16)-1];
 
+    reg [7:0] selected;
 
-    assign bus_out = (read_en == 1) ? memory[addr] : 0;
+    assign bus_out = (read_en == 1) ? selected : 0;
 
     always @(posedge clk) begin
+        selected <= memory[addr];
         if (write_en == 1) 
             memory[addr] <= bus_in;
     end
