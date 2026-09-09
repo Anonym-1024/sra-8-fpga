@@ -6,7 +6,6 @@ module MAR (
     input wire clk,
     input wire [7:0] bus_in,
     output wire [15:0] addr_out,
-    input wire addr_read_en,
     output wire [7:0] byte_0_out,
     output wire [7:0] byte_1_out
 );
@@ -14,7 +13,9 @@ module MAR (
     reg [7:0] byte_0;
     reg [7:0] byte_1;
 
-   assign addr_out = addr_read_en ? {byte_1, byte_0} : 0;
+    assign addr_out = {byte_1, byte_0};
+
+    
 
     assign byte_0_out = byte_0;
     assign byte_1_out = byte_1;

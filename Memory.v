@@ -10,16 +10,18 @@ module Memory (
 );
 
 
-    reg [7:0] memory [0:(1<<16)-1];
+    SPRAM spram (
+        .clk(clk),
+        .we(write_en),
+        .addr(addr[13:0]),
+        .data_in(bus_in),
+        .data_out(selected)
+    );
 
     reg [7:0] selected;
 
     assign bus_out = (read_en == 1) ? selected : 0;
 
-    always @(posedge clk) begin
-        selected <= memory[addr];
-        if (write_en == 1) 
-            memory[addr] <= bus_in;
-    end
+    
     
 endmodule

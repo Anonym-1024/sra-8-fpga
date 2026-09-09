@@ -1,20 +1,355 @@
 {
   "creator": "Yosys 0.68+post (git sha1 c12172fbae8af5e20f6fb52e3d4e92d56ed587b6, Release, AppleClang clang++ 16.0.0.16000026)",
   "modules": {
+    "$__ABC9_DELAY": {
+      "attributes": {
+        "abc9_box_id": "00000000000000000000000000000011",
+        "blackbox": "00000000000000000000000000000001",
+        "abc9_box": "00000000000000000000000000000001",
+        "cells_not_processed": "00000000000000000000000000000001",
+        "src": "/usr/local/bin/../share/yosys/abc9_model.v:2.1-7.10"
+      },
+      "parameter_default_values": {
+        "DELAY": "00000000000000000000000000000000"
+      },
+      "ports": {
+        "I": {
+          "direction": "input",
+          "bits": [ 2 ]
+        },
+        "O": {
+          "direction": "output",
+          "bits": [ 3 ]
+        }
+      },
+      "cells": {
+        "$specify$1213": {
+          "hide_name": 1,
+          "type": "$specify2",
+          "parameters": {
+            "DST_WIDTH": "00000000000000000000000000000001",
+            "FULL": "0",
+            "SRC_DST_PEN": "0",
+            "SRC_DST_POL": "0",
+            "SRC_WIDTH": "00000000000000000000000000000001",
+            "T_FALL_MAX": "00000000000000000000000000000000",
+            "T_FALL_MIN": "00000000000000000000000000000000",
+            "T_FALL_TYP": "00000000000000000000000000000000",
+            "T_RISE_MAX": "00000000000000000000000000000000",
+            "T_RISE_MIN": "00000000000000000000000000000000",
+            "T_RISE_TYP": "00000000000000000000000000000000"
+          },
+          "attributes": {
+            "src": "/usr/local/bin/../share/yosys/abc9_model.v:5.5-5.22"
+          },
+          "port_directions": {
+            "DST": "input",
+            "EN": "input",
+            "SRC": "input"
+          },
+          "connections": {
+            "DST": [ 3 ],
+            "EN": [ "1" ],
+            "SRC": [ 2 ]
+          }
+        }
+      },
+      "netnames": {
+        "I": {
+          "hide_name": 0,
+          "bits": [ 2 ],
+          "attributes": {
+            "src": "/usr/local/bin/../share/yosys/abc9_model.v:2.29-2.30"
+          }
+        },
+        "O": {
+          "hide_name": 0,
+          "bits": [ 3 ],
+          "attributes": {
+            "src": "/usr/local/bin/../share/yosys/abc9_model.v:2.39-2.40"
+          }
+        }
+      }
+    },
+    "$__ABC9_SCC_BREAKER": {
+      "attributes": {
+        "dynports": "00000000000000000000000000000001",
+        "blackbox": "00000000000000000000000000000001",
+        "cells_not_processed": "00000000000000000000000000000001",
+        "src": "/usr/local/bin/../share/yosys/abc9_model.v:9.1-11.10"
+      },
+      "parameter_default_values": {
+        "WIDTH": "00000000000000000000000000000000"
+      },
+      "ports": {
+        "I": {
+          "direction": "input",
+          "offset": -1,
+          "upto": 1,
+          "bits": [ 2, 3 ]
+        },
+        "O": {
+          "direction": "output",
+          "offset": -1,
+          "upto": 1,
+          "bits": [ 4, 5 ]
+        }
+      },
+      "cells": {
+      },
+      "netnames": {
+        "I": {
+          "hide_name": 0,
+          "bits": [ 2, 3 ],
+          "offset": -1,
+          "upto": 1,
+          "attributes": {
+            "src": "/usr/local/bin/../share/yosys/abc9_model.v:9.47-9.48"
+          }
+        },
+        "O": {
+          "hide_name": 0,
+          "bits": [ 4, 5 ],
+          "offset": -1,
+          "upto": 1,
+          "attributes": {
+            "src": "/usr/local/bin/../share/yosys/abc9_model.v:9.69-9.70"
+          }
+        }
+      }
+    },
+    "$__DFF_N__$abc9_flop": {
+      "attributes": {
+        "abc9_box_id": "00000000000000000000000000000010",
+        "blackbox": "00000000000000000000000000000001",
+        "abc9_flop": "00000000000000000000000000000001",
+        "abc9_box": "00000000000000000000000000000001",
+        "cells_not_processed": "00000000000000000000000000000001",
+        "src": "/usr/local/bin/../share/yosys/abc9_model.v:14.1-20.10"
+      },
+      "ports": {
+        "C": {
+          "direction": "input",
+          "bits": [ 2 ]
+        },
+        "D": {
+          "direction": "input",
+          "bits": [ 3 ]
+        },
+        "Q": {
+          "direction": "input",
+          "bits": [ 4 ]
+        },
+        "n1": {
+          "direction": "output",
+          "bits": [ 5 ]
+        }
+      },
+      "cells": {
+      },
+      "netnames": {
+        "C": {
+          "hide_name": 0,
+          "bits": [ 2 ],
+          "attributes": {
+            "src": "/usr/local/bin/../share/yosys/abc9_model.v:14.36-14.37"
+          }
+        },
+        "D": {
+          "hide_name": 0,
+          "bits": [ 3 ],
+          "attributes": {
+            "src": "/usr/local/bin/../share/yosys/abc9_model.v:14.39-14.40"
+          }
+        },
+        "Q": {
+          "hide_name": 0,
+          "bits": [ 4 ],
+          "attributes": {
+            "src": "/usr/local/bin/../share/yosys/abc9_model.v:14.42-14.43"
+          }
+        },
+        "n1": {
+          "hide_name": 0,
+          "bits": [ 5 ],
+          "attributes": {
+            "src": "/usr/local/bin/../share/yosys/abc9_model.v:14.52-14.54"
+          }
+        }
+      }
+    },
+    "$__DFF_P__$abc9_flop": {
+      "attributes": {
+        "abc9_box_id": "00000000000000000000000000000001",
+        "blackbox": "00000000000000000000000000000001",
+        "abc9_flop": "00000000000000000000000000000001",
+        "abc9_box": "00000000000000000000000000000001",
+        "cells_not_processed": "00000000000000000000000000000001",
+        "src": "/usr/local/bin/../share/yosys/abc9_model.v:23.1-29.10"
+      },
+      "ports": {
+        "C": {
+          "direction": "input",
+          "bits": [ 2 ]
+        },
+        "D": {
+          "direction": "input",
+          "bits": [ 3 ]
+        },
+        "Q": {
+          "direction": "input",
+          "bits": [ 4 ]
+        },
+        "n1": {
+          "direction": "output",
+          "bits": [ 5 ]
+        }
+      },
+      "cells": {
+      },
+      "netnames": {
+        "C": {
+          "hide_name": 0,
+          "bits": [ 2 ],
+          "attributes": {
+            "src": "/usr/local/bin/../share/yosys/abc9_model.v:23.36-23.37"
+          }
+        },
+        "D": {
+          "hide_name": 0,
+          "bits": [ 3 ],
+          "attributes": {
+            "src": "/usr/local/bin/../share/yosys/abc9_model.v:23.39-23.40"
+          }
+        },
+        "Q": {
+          "hide_name": 0,
+          "bits": [ 4 ],
+          "attributes": {
+            "src": "/usr/local/bin/../share/yosys/abc9_model.v:23.42-23.43"
+          }
+        },
+        "n1": {
+          "hide_name": 0,
+          "bits": [ 5 ],
+          "attributes": {
+            "src": "/usr/local/bin/../share/yosys/abc9_model.v:23.52-23.54"
+          }
+        }
+      }
+    },
+    "$__ICE40_CARRY_WRAPPER": {
+      "attributes": {
+        "abc9_box_id": "00000000000000000000000000000100",
+        "blackbox": "00000000000000000000000000000001",
+        "abc9_box": "00000000000000000000000000000001",
+        "cells_not_processed": "00000000000000000000000000000001",
+        "src": "/usr/local/bin/../share/yosys/ice40/abc9_model.v:2.1-86.10"
+      },
+      "parameter_default_values": {
+        "I3_IS_CI": "00000000000000000000000000000000",
+        "LUT": "00000000000000000000000000000000"
+      },
+      "ports": {
+        "CO": {
+          "direction": "output",
+          "bits": [ 2 ]
+        },
+        "O": {
+          "direction": "output",
+          "bits": [ 3 ]
+        },
+        "A": {
+          "direction": "input",
+          "bits": [ 4 ]
+        },
+        "B": {
+          "direction": "input",
+          "bits": [ 5 ]
+        },
+        "CI": {
+          "direction": "input",
+          "bits": [ 6 ]
+        },
+        "I0": {
+          "direction": "input",
+          "bits": [ 7 ]
+        },
+        "I3": {
+          "direction": "input",
+          "bits": [ 8 ]
+        }
+      },
+      "cells": {
+      },
+      "netnames": {
+        "A": {
+          "hide_name": 0,
+          "bits": [ 4 ],
+          "attributes": {
+            "src": "/usr/local/bin/../share/yosys/ice40/abc9_model.v:6.8-6.9"
+          }
+        },
+        "B": {
+          "hide_name": 0,
+          "bits": [ 5 ],
+          "attributes": {
+            "src": "/usr/local/bin/../share/yosys/ice40/abc9_model.v:6.11-6.12"
+          }
+        },
+        "CI": {
+          "hide_name": 0,
+          "bits": [ 6 ],
+          "attributes": {
+            "abc9_carry": "00000000000000000000000000000001",
+            "src": "/usr/local/bin/../share/yosys/ice40/abc9_model.v:8.8-8.10"
+          }
+        },
+        "CO": {
+          "hide_name": 0,
+          "bits": [ 2 ],
+          "attributes": {
+            "abc9_carry": "00000000000000000000000000000001",
+            "src": "/usr/local/bin/../share/yosys/ice40/abc9_model.v:4.9-4.11"
+          }
+        },
+        "I0": {
+          "hide_name": 0,
+          "bits": [ 7 ],
+          "attributes": {
+            "src": "/usr/local/bin/../share/yosys/ice40/abc9_model.v:9.8-9.10"
+          }
+        },
+        "I3": {
+          "hide_name": 0,
+          "bits": [ 8 ],
+          "attributes": {
+            "src": "/usr/local/bin/../share/yosys/ice40/abc9_model.v:9.12-9.14"
+          }
+        },
+        "O": {
+          "hide_name": 0,
+          "bits": [ 3 ],
+          "attributes": {
+            "src": "/usr/local/bin/../share/yosys/ice40/abc9_model.v:5.9-5.10"
+          }
+        }
+      }
+    },
     "CPU": {
       "attributes": {
         "hdlname": "CPU",
         "top": "00000000000000000000000000000001",
-        "src": "Cpu.v:3.1-237.10"
+        "src": "CPU.v:3.1-246.10"
       },
       "ports": {
         "io": {
-          "direction": "input",
-          "bits": [ 2, 3, 4, 5, 6, 7, 8, 9 ]
+          "direction": "output",
+          "bits": [ "1", "1", "1", "1", "1", "1", "1", "1" ]
         },
         "clk": {
           "direction": "input",
-          "bits": [ 10 ]
+          "bits": [ 2 ]
         }
       },
       "cells": {
@@ -26,7 +361,7 @@
           },
           "attributes": {
             "cell_module_not_derived": "00000000000000000000000000000001",
-            "cell_src": "Cpu.v:55.9-65.6",
+            "cell_src": "CPU.v:56.9-66.6",
             "module": "ALU",
             "module_hdlname": "ALU",
             "module_src": "ALU.v:3.1-149.10"
@@ -44,10 +379,10 @@
           },
           "attributes": {
             "cell_module_not_derived": "00000000000000000000000000000001",
-            "cell_src": "Cpu.v:229.17-234.6",
+            "cell_src": "CPU.v:238.17-243.6",
             "module": "ControlUnit",
             "module_hdlname": "ControlUnit",
-            "module_src": "ControlUnit.v:3.1-55.10"
+            "module_src": "ControlUnit.v:3.1-94.10"
           },
           "port_directions": {
           },
@@ -62,7 +397,7 @@
           },
           "attributes": {
             "cell_module_not_derived": "00000000000000000000000000000001",
-            "cell_src": "ControlUnit.v:35.25-53.6",
+            "cell_src": "ControlUnit.v:74.25-92.6",
             "hdlname": "cu ir",
             "module": "InstructionRegister",
             "module_hdlname": "InstructionRegister",
@@ -81,7 +416,7 @@
           },
           "attributes": {
             "cell_module_not_derived": "00000000000000000000000000000001",
-            "cell_src": "ControlUnit.v:29.8-33.6",
+            "cell_src": "ControlUnit.v:68.8-72.6",
             "hdlname": "cu uc",
             "module": "UC",
             "module_hdlname": "UC",
@@ -100,7 +435,7 @@
           },
           "attributes": {
             "cell_module_not_derived": "00000000000000000000000000000001",
-            "cell_src": "Cpu.v:175.11-184.6",
+            "cell_src": "CPU.v:182.11-191.6",
             "module": "INTPC",
             "module_hdlname": "INTPC",
             "module_src": "INTPC.v:4.1-39.10"
@@ -118,7 +453,7 @@
           },
           "attributes": {
             "cell_module_not_derived": "00000000000000000000000000000001",
-            "cell_src": "Cpu.v:214.10-224.6",
+            "cell_src": "CPU.v:221.10-231.6",
             "module": "INTR",
             "module_hdlname": "INTR",
             "module_src": "INTR.v:4.1-50.10"
@@ -136,10 +471,10 @@
           },
           "attributes": {
             "cell_module_not_derived": "00000000000000000000000000000001",
-            "cell_src": "Cpu.v:138.9-145.6",
+            "cell_src": "CPU.v:144.9-152.6",
             "module": "MAR",
             "module_hdlname": "MAR",
-            "module_src": "MAR.v:3.1-29.10"
+            "module_src": "MAR.v:3.1-30.10"
           },
           "port_directions": {
           },
@@ -154,10 +489,30 @@
           },
           "attributes": {
             "cell_module_not_derived": "00000000000000000000000000000001",
-            "cell_src": "Cpu.v:78.12-85.6",
+            "cell_src": "CPU.v:79.12-86.6",
             "module": "Memory",
             "module_hdlname": "Memory",
-            "module_src": "Memory.v:3.1-25.10"
+            "module_src": "Memory.v:3.1-27.10"
+          },
+          "port_directions": {
+          },
+          "connections": {
+          }
+        },
+        "memory.spram": {
+          "hide_name": 0,
+          "type": "$scopeinfo",
+          "parameters": {
+            "TYPE": "module"
+          },
+          "attributes": {
+            "cell_module_not_derived": "00000000000000000000000000000001",
+            "cell_src": "Memory.v:13.11-19.6",
+            "hdlname": "memory spram",
+            "module": "SPRAM",
+            "module_dynports": "00000000000000000000000000000001",
+            "module_hdlname": "SPRAM",
+            "module_src": "SPRAM.v:2.1-26.10"
           },
           "port_directions": {
           },
@@ -172,7 +527,7 @@
           },
           "attributes": {
             "cell_module_not_derived": "00000000000000000000000000000001",
-            "cell_src": "Cpu.v:156.8-165.6",
+            "cell_src": "CPU.v:163.8-172.6",
             "module": "PC",
             "module_hdlname": "PC",
             "module_src": "PC.v:2.1-28.10"
@@ -190,7 +545,7 @@
           },
           "attributes": {
             "cell_module_not_derived": "00000000000000000000000000000001",
-            "cell_src": "Cpu.v:192.9-201.6",
+            "cell_src": "CPU.v:199.9-208.6",
             "module": "PSR",
             "module_hdlname": "PSR",
             "module_src": "PSR.v:3.1-27.10"
@@ -208,10 +563,10 @@
           },
           "attributes": {
             "cell_module_not_derived": "00000000000000000000000000000001",
-            "cell_src": "Cpu.v:100.10-110.6",
+            "cell_src": "CPU.v:103.10-112.6",
             "module": "PTBR",
             "module_hdlname": "PTBR",
-            "module_src": "PTBR.v:3.1-30.10"
+            "module_src": "PTBR.v:3.1-29.10"
           },
           "port_directions": {
           },
@@ -226,10 +581,10 @@
           },
           "attributes": {
             "cell_module_not_derived": "00000000000000000000000000000001",
-            "cell_src": "Cpu.v:122.10-129.6",
+            "cell_src": "CPU.v:125.10-131.6",
             "module": "PTER",
             "module_hdlname": "PTER",
-            "module_src": "PTER.v:3.1-26.10"
+            "module_src": "PTER.v:3.1-25.10"
           },
           "port_directions": {
           },
@@ -244,7 +599,7 @@
           },
           "attributes": {
             "cell_module_not_derived": "00000000000000000000000000000001",
-            "cell_src": "Cpu.v:36.22-44.6",
+            "cell_src": "CPU.v:37.22-45.6",
             "module": "GeneralRegisters",
             "module_hdlname": "GeneralRegisters",
             "module_src": "GeneralRegisters.v:2.1-56.10"
@@ -587,12 +942,52 @@
             "src": "ALU.v:44.16-44.26"
           }
         },
+        "alu.bus_in": {
+          "hide_name": 0,
+          "bits": [ "1", "1", "1", "1", "1", "1", "1", "1" ],
+          "attributes": {
+            "hdlname": "alu bus_in",
+            "src": "ALU.v:9.22-9.28"
+          }
+        },
+        "alu.bus_out": {
+          "hide_name": 0,
+          "bits": [ "0", "0", "0", "0", "0", "0", "0", "0" ],
+          "attributes": {
+            "hdlname": "alu bus_out",
+            "src": "ALU.v:10.23-10.30"
+          }
+        },
+        "alu.c": {
+          "hide_name": 0,
+          "bits": [ "0" ],
+          "attributes": {
+            "hdlname": "alu c",
+            "src": "ALU.v:52.10-52.11"
+          }
+        },
+        "alu.c_asr": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "alu c_asr",
+            "src": "ALU.v:59.10-59.15"
+          }
+        },
         "alu.c_csl": {
           "hide_name": 0,
           "bits": [ "x" ],
           "attributes": {
             "hdlname": "alu c_csl",
             "src": "ALU.v:61.10-61.15"
+          }
+        },
+        "alu.c_csr": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "alu c_csr",
+            "src": "ALU.v:60.10-60.15"
           }
         },
         "alu.c_lsl": {
@@ -603,9 +998,17 @@
             "src": "ALU.v:57.10-57.15"
           }
         },
+        "alu.c_lsr": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "alu c_lsr",
+            "src": "ALU.v:58.10-58.15"
+          }
+        },
         "alu.clk": {
           "hide_name": 0,
-          "bits": [ 10 ],
+          "bits": [ 2 ],
           "attributes": {
             "hdlname": "alu clk",
             "src": "ALU.v:7.16-7.19",
@@ -636,6 +1039,14 @@
             "src": "ALU.v:11.22-11.30"
           }
         },
+        "alu.flags_out": {
+          "hide_name": 0,
+          "bits": [ "0", "0", "0", "x" ],
+          "attributes": {
+            "hdlname": "alu flags_out",
+            "src": "ALU.v:12.23-12.32"
+          }
+        },
         "alu.lsl_result": {
           "hide_name": 0,
           "bits": [ "0", "x", "x", "x", "x", "x", "x", "x" ],
@@ -652,6 +1063,30 @@
             "src": "ALU.v:43.16-43.26"
           }
         },
+        "alu.n": {
+          "hide_name": 0,
+          "bits": [ "0" ],
+          "attributes": {
+            "hdlname": "alu n",
+            "src": "ALU.v:51.10-51.11"
+          }
+        },
+        "alu.opcode": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "alu opcode",
+            "src": "ALU.v:8.22-8.28"
+          }
+        },
+        "alu.read_en": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "alu read_en",
+            "src": "ALU.v:4.16-4.23"
+          }
+        },
         "alu.reg_1": {
           "hide_name": 0,
           "bits": [ "x", "x", "x", "x", "x", "x", "x", "x" ],
@@ -660,16 +1095,121 @@
             "src": "ALU.v:30.15-30.20"
           }
         },
+        "alu.reg_2": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x", "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "alu reg_2",
+            "src": "ALU.v:31.15-31.20"
+          }
+        },
+        "alu.result": {
+          "hide_name": 0,
+          "bits": [ "0", "0", "0", "0", "0", "0", "0", "0" ],
+          "attributes": {
+            "hdlname": "alu result",
+            "src": "ALU.v:33.16-33.22"
+          }
+        },
+        "alu.v": {
+          "hide_name": 0,
+          "bits": [ "0" ],
+          "attributes": {
+            "hdlname": "alu v",
+            "src": "ALU.v:62.10-62.11"
+          }
+        },
+        "alu.write_en_1": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "alu write_en_1",
+            "src": "ALU.v:5.16-5.26"
+          }
+        },
+        "alu.write_en_2": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "alu write_en_2",
+            "src": "ALU.v:6.16-6.26"
+          }
+        },
+        "alu.z": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "alu z",
+            "src": "ALU.v:50.10-50.11"
+          }
+        },
+        "alu_bus": {
+          "hide_name": 0,
+          "bits": [ "0", "0", "0", "0", "0", "0", "0", "0" ],
+          "attributes": {
+            "src": "CPU.v:14.16-14.23"
+          }
+        },
+        "alu_flags_out": {
+          "hide_name": 0,
+          "bits": [ "0", "0", "0", "x" ],
+          "attributes": {
+            "src": "CPU.v:54.16-54.29"
+          }
+        },
+        "alu_opcode": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x" ],
+          "attributes": {
+            "src": "CPU.v:53.16-53.26"
+          }
+        },
+        "alu_read": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "src": "CPU.v:60.18-60.26"
+          }
+        },
+        "alu_write_op1": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "src": "CPU.v:51.10-51.23"
+          }
+        },
+        "alu_write_op2": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "src": "CPU.v:52.10-52.23"
+          }
+        },
+        "bus": {
+          "hide_name": 0,
+          "bits": [ "1", "1", "1", "1", "1", "1", "1", "1" ],
+          "attributes": {
+            "src": "CPU.v:11.16-11.19"
+          }
+        },
         "clk": {
           "hide_name": 0,
-          "bits": [ 10 ],
+          "bits": [ 2 ],
           "attributes": {
-            "src": "Cpu.v:5.16-5.19"
+            "src": "CPU.v:5.16-5.19"
+          }
+        },
+        "cu.bus_in": {
+          "hide_name": 0,
+          "bits": [ "1", "1", "1", "1", "1", "1", "1", "1" ],
+          "attributes": {
+            "hdlname": "cu bus_in",
+            "src": "ControlUnit.v:5.22-5.28"
           }
         },
         "cu.clk": {
           "hide_name": 0,
-          "bits": [ 10 ],
+          "bits": [ 2 ],
           "attributes": {
             "hdlname": "cu clk",
             "src": "ControlUnit.v:4.16-4.19",
@@ -684,9 +1224,25 @@
             "src": "ControlUnit.v:6.22-6.30"
           }
         },
+        "cu.int_in": {
+          "hide_name": 0,
+          "bits": [ "1" ],
+          "attributes": {
+            "hdlname": "cu int_in",
+            "src": "ControlUnit.v:7.16-7.22"
+          }
+        },
+        "cu.ir.bus_in": {
+          "hide_name": 0,
+          "bits": [ "1", "1", "1", "1", "1", "1", "1", "1" ],
+          "attributes": {
+            "hdlname": "cu ir bus_in",
+            "src": "InstructionRegister.v:10.22-10.28"
+          }
+        },
         "cu.ir.clk": {
           "hide_name": 0,
-          "bits": [ 10 ],
+          "bits": [ 2 ],
           "attributes": {
             "hdlname": "cu ir clk",
             "src": "InstructionRegister.v:9.16-9.19",
@@ -695,7 +1251,7 @@
         },
         "cu.uc.clk": {
           "hide_name": 0,
-          "bits": [ 10 ],
+          "bits": [ 2 ],
           "attributes": {
             "hdlname": "cu uc clk",
             "src": "UC.v:4.16-4.19",
@@ -704,81 +1260,525 @@
         },
         "flags": {
           "hide_name": 0,
+          "bits": [ "x", "x" ],
+          "attributes": {
+          }
+        },
+        "gr_read": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "src": "CPU.v:32.10-32.17"
+          }
+        },
+        "gr_read_sel": {
+          "hide_name": 0,
           "bits": [ "x", "x", "x", "x" ],
           "attributes": {
-            "src": "Cpu.v:26.16-26.21"
+            "src": "CPU.v:34.16-34.27"
+          }
+        },
+        "gr_write": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "src": "CPU.v:33.10-33.18"
+          }
+        },
+        "gr_write_sel": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x" ],
+          "attributes": {
+            "src": "CPU.v:35.16-35.28"
+          }
+        },
+        "inc": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "src": "CPU.v:171.14-171.17"
+          }
+        },
+        "int": {
+          "hide_name": 0,
+          "bits": [ "1" ],
+          "attributes": {
+            "src": "CPU.v:218.10-218.13"
+          }
+        },
+        "intpc.bus_in": {
+          "hide_name": 0,
+          "bits": [ "1", "1", "1", "1", "1", "1", "1", "1" ],
+          "attributes": {
+            "hdlname": "intpc bus_in",
+            "src": "INTPC.v:14.22-14.28"
+          }
+        },
+        "intpc.bus_out": {
+          "hide_name": 0,
+          "bits": [ "0", "0", "0", "0", "0", "0", "0", "0" ],
+          "attributes": {
+            "hdlname": "intpc bus_out",
+            "src": "INTPC.v:15.23-15.30"
+          }
+        },
+        "intpc.byte_0": {
+          "hide_name": 0,
+          "bits": [ "0", "0", "0", "0", "0", "0", "0", "0" ],
+          "attributes": {
+            "hdlname": "intpc byte_0",
+            "src": "INTPC.v:18.15-18.21"
+          }
+        },
+        "intpc.byte_1": {
+          "hide_name": 0,
+          "bits": [ "0", "0", "0", "0", "0", "0", "0", "0" ],
+          "attributes": {
+            "hdlname": "intpc byte_1",
+            "src": "INTPC.v:19.15-19.21"
           }
         },
         "intpc.clk": {
           "hide_name": 0,
-          "bits": [ 10 ],
+          "bits": [ 2 ],
           "attributes": {
             "hdlname": "intpc clk",
             "src": "INTPC.v:13.16-13.19",
             "unused_bits": "0 "
           }
         },
+        "intpc.inc": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "intpc inc",
+            "src": "INTPC.v:12.16-12.19"
+          }
+        },
+        "intpc_bus": {
+          "hide_name": 0,
+          "bits": [ "0", "0", "0", "0", "0", "0", "0", "0" ],
+          "attributes": {
+            "src": "CPU.v:19.16-19.25"
+          }
+        },
+        "intr.bus_out": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x", "x", "0", "0", "0" ],
+          "attributes": {
+            "hdlname": "intr bus_out",
+            "src": "INTR.v:12.23-12.30"
+          }
+        },
         "intr.clk": {
           "hide_name": 0,
-          "bits": [ 10 ],
+          "bits": [ 2 ],
           "attributes": {
             "hdlname": "intr clk",
             "src": "INTR.v:13.16-13.19",
             "unused_bits": "0 "
           }
         },
+        "intr.content": {
+          "hide_name": 0,
+          "bits": [ "1", "1", "1", "1", "1" ],
+          "attributes": {
+            "hdlname": "intr content",
+            "src": "INTR.v:16.15-16.22"
+          }
+        },
+        "intr.int_out": {
+          "hide_name": 0,
+          "bits": [ "1" ],
+          "attributes": {
+            "hdlname": "intr int_out",
+            "src": "INTR.v:11.17-11.24"
+          }
+        },
+        "intr.read_en": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "intr read_en",
+            "src": "INTR.v:5.16-5.23"
+          }
+        },
+        "intr_bus": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x", "x" ],
+          "attributes": {
+          }
+        },
+        "intr_read": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "src": "CPU.v:212.10-212.19"
+          }
+        },
         "io": {
           "hide_name": 0,
-          "bits": [ 2, 3, 4, 5, 6, 7, 8, 9 ],
+          "bits": [ "1", "1", "1", "1", "1", "1", "1", "1" ],
           "attributes": {
-            "src": "Cpu.v:4.22-4.24"
+            "src": "CPU.v:4.22-4.24"
+          }
+        },
+        "mar.addr_out": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x", "x", "x", "x", "x", "x", "x", "x", "x", "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "mar addr_out",
+            "src": "MAR.v:8.24-8.32"
+          }
+        },
+        "mar.bus_in": {
+          "hide_name": 0,
+          "bits": [ "1", "1", "1", "1", "1", "1", "1", "1" ],
+          "attributes": {
+            "hdlname": "mar bus_in",
+            "src": "MAR.v:7.22-7.28"
+          }
+        },
+        "mar.byte_0": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x", "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "mar byte_0",
+            "src": "MAR.v:13.15-13.21"
+          }
+        },
+        "mar.byte_0_out": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x", "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "mar byte_0_out",
+            "src": "MAR.v:9.23-9.33"
+          }
+        },
+        "mar.byte_1": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x", "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "mar byte_1",
+            "src": "MAR.v:14.15-14.21"
+          }
+        },
+        "mar.byte_1_out": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x", "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "mar byte_1_out",
+            "src": "MAR.v:10.23-10.33"
           }
         },
         "mar.clk": {
           "hide_name": 0,
-          "bits": [ 10 ],
+          "bits": [ 2 ],
           "attributes": {
             "hdlname": "mar clk",
             "src": "MAR.v:6.16-6.19",
             "unused_bits": "0 "
           }
         },
+        "mar.write_en_0": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "mar write_en_0",
+            "src": "MAR.v:4.16-4.26"
+          }
+        },
+        "mar.write_en_1": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "mar write_en_1",
+            "src": "MAR.v:5.16-5.26"
+          }
+        },
+        "mar_addr_out": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x", "x", "x", "x", "x", "x", "x", "x", "x", "x", "x" ],
+          "attributes": {
+          }
+        },
+        "mar_addr_out_byte0": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x", "x", "x", "x", "x" ],
+          "attributes": {
+            "src": "CPU.v:138.16-138.34"
+          }
+        },
+        "mar_addr_out_byte1": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x", "x", "x" ],
+          "attributes": {
+          }
+        },
+        "mar_addr_read": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "src": "CPU.v:137.10-137.23"
+          }
+        },
+        "mar_output": {
+          "hide_name": 0,
+          "bits": [ "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0" ],
+          "attributes": {
+          }
+        },
+        "mar_write_byte0": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "src": "CPU.v:135.10-135.25"
+          }
+        },
+        "mar_write_byte1": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "src": "CPU.v:136.10-136.25"
+          }
+        },
         "mem_addr": {
           "hide_name": 0,
-          "bits": [ "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0" ],
+          "bits": [ "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "x", "x" ],
           "attributes": {
-            "src": "Cpu.v:74.17-74.25"
+            "src": "CPU.v:75.17-75.25"
+          }
+        },
+        "mem_read": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "src": "CPU.v:73.10-73.18"
+          }
+        },
+        "mem_write": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "src": "CPU.v:74.10-74.19"
           }
         },
         "memory.addr": {
           "hide_name": 0,
-          "bits": [ "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0" ],
+          "bits": [ "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "x", "x" ],
           "attributes": {
             "hdlname": "memory addr",
             "src": "Memory.v:7.23-7.27"
           }
         },
+        "memory.bus_in": {
+          "hide_name": 0,
+          "bits": [ "1", "1", "1", "1", "1", "1", "1", "1" ],
+          "attributes": {
+            "hdlname": "memory bus_in",
+            "src": "Memory.v:8.22-8.28"
+          }
+        },
+        "memory.bus_out": {
+          "hide_name": 0,
+          "bits": [ "0", "0", "0", "0", "0", "0", "0", "0" ],
+          "attributes": {
+            "hdlname": "memory bus_out",
+            "src": "Memory.v:9.23-9.30"
+          }
+        },
         "memory.clk": {
           "hide_name": 0,
-          "bits": [ 10 ],
+          "bits": [ 2 ],
           "attributes": {
             "hdlname": "memory clk",
             "src": "Memory.v:6.16-6.19",
             "unused_bits": "0 "
           }
         },
+        "memory.read_en": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "memory read_en",
+            "src": "Memory.v:4.16-4.23"
+          }
+        },
+        "memory.spram.addr": {
+          "hide_name": 0,
+          "bits": [ "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0" ],
+          "attributes": {
+            "hdlname": "memory spram addr",
+            "src": "SPRAM.v:9.29-9.33"
+          }
+        },
+        "memory.spram.clk": {
+          "hide_name": 0,
+          "bits": [ 2 ],
+          "attributes": {
+            "hdlname": "memory spram clk",
+            "src": "SPRAM.v:7.17-7.20",
+            "unused_bits": "0 "
+          }
+        },
+        "memory.spram.data_in": {
+          "hide_name": 0,
+          "bits": [ "1", "1", "1", "1", "1", "1", "1", "1", "0", "0", "0", "0", "0", "0", "0", "0" ],
+          "attributes": {
+            "hdlname": "memory spram data_in",
+            "src": "SPRAM.v:10.29-10.36"
+          }
+        },
+        "memory.spram.we": {
+          "hide_name": 0,
+          "bits": [ "x", "0", "0", "0" ],
+          "attributes": {
+            "hdlname": "memory spram we",
+            "src": "SPRAM.v:8.23-8.25"
+          }
+        },
+        "memory.write_en": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "memory write_en",
+            "src": "Memory.v:5.16-5.24"
+          }
+        },
+        "memory_bus": {
+          "hide_name": 0,
+          "bits": [ "0", "0", "0", "0", "0", "0", "0", "0" ],
+          "attributes": {
+            "src": "CPU.v:15.16-15.26"
+          }
+        },
+        "pc.bus_in": {
+          "hide_name": 0,
+          "bits": [ "1", "1", "1", "1", "1", "1", "1", "1" ],
+          "attributes": {
+            "hdlname": "pc bus_in",
+            "src": "PC.v:9.22-9.28"
+          }
+        },
+        "pc.bus_out": {
+          "hide_name": 0,
+          "bits": [ "0", "0", "0", "0", "0", "0", "0", "0" ],
+          "attributes": {
+            "hdlname": "pc bus_out",
+            "src": "PC.v:10.23-10.30"
+          }
+        },
+        "pc.byte_0": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x", "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "pc byte_0",
+            "src": "PC.v:13.15-13.21"
+          }
+        },
+        "pc.byte_1": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x", "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "pc byte_1",
+            "src": "PC.v:14.15-14.21"
+          }
+        },
         "pc.clk": {
           "hide_name": 0,
-          "bits": [ 10 ],
+          "bits": [ 2 ],
           "attributes": {
             "hdlname": "pc clk",
             "src": "PC.v:8.16-8.19",
             "unused_bits": "0 "
           }
         },
+        "pc.inc": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "pc inc",
+            "src": "PC.v:7.16-7.19"
+          }
+        },
+        "pc.read_en_0": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "pc read_en_0",
+            "src": "PC.v:5.16-5.25"
+          }
+        },
+        "pc.read_en_1": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "pc read_en_1",
+            "src": "PC.v:6.16-6.25"
+          }
+        },
+        "pc.write_en_0": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "pc write_en_0",
+            "src": "PC.v:3.16-3.26"
+          }
+        },
+        "pc.write_en_1": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "pc write_en_1",
+            "src": "PC.v:4.16-4.26"
+          }
+        },
+        "pc_bus": {
+          "hide_name": 0,
+          "bits": [ "0", "0", "0", "0", "0", "0", "0", "0" ],
+          "attributes": {
+            "src": "CPU.v:18.16-18.22"
+          }
+        },
+        "pc_read_byte0": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "src": "CPU.v:157.10-157.23"
+          }
+        },
+        "pc_read_byte1": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "src": "CPU.v:158.10-158.23"
+          }
+        },
+        "pc_write_byte0": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "src": "CPU.v:159.10-159.24"
+          }
+        },
+        "pc_write_byte1": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "src": "CPU.v:160.10-160.24"
+          }
+        },
+        "psr.bus_in": {
+          "hide_name": 0,
+          "bits": [ "1", "1", "1", "1", "1", "1", "1", "1" ],
+          "attributes": {
+            "hdlname": "psr bus_in",
+            "src": "PSR.v:8.22-8.28"
+          }
+        },
         "psr.clk": {
           "hide_name": 0,
-          "bits": [ 10 ],
+          "bits": [ 2 ],
           "attributes": {
             "hdlname": "psr clk",
             "src": "PSR.v:7.16-7.19",
@@ -793,6 +1793,14 @@
             "src": "PSR.v:14.15-14.22"
           }
         },
+        "psr.flags_in": {
+          "hide_name": 0,
+          "bits": [ "0", "0", "0", "x" ],
+          "attributes": {
+            "hdlname": "psr flags_in",
+            "src": "PSR.v:10.22-10.30"
+          }
+        },
         "psr.flags_out": {
           "hide_name": 0,
           "bits": [ "x", "x", "x", "x" ],
@@ -801,29 +1809,259 @@
             "src": "PSR.v:11.23-11.32"
           }
         },
+        "psr.flags_write_en": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "psr flags_write_en",
+            "src": "PSR.v:6.16-6.30"
+          }
+        },
+        "psr.write_en": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "psr write_en",
+            "src": "PSR.v:5.16-5.24"
+          }
+        },
+        "psr_bus": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x", "x", "x", "x", "x" ],
+          "attributes": {
+            "src": "CPU.v:17.16-17.23"
+          }
+        },
         "psr_flags_out": {
           "hide_name": 0,
-          "bits": [ "x", "x", "x", "x" ],
+          "bits": [ "x", "x" ],
           "attributes": {
-            "src": "Cpu.v:190.16-190.29"
+          }
+        },
+        "psr_flags_write": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "src": "CPU.v:196.10-196.25"
+          }
+        },
+        "psr_write": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "src": "CPU.v:195.10-195.19"
+          }
+        },
+        "ptbr.addr_out": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x", "x", "x", "x", "x", "x", "x", "x", "x", "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "ptbr addr_out",
+            "src": "PTBR.v:11.24-11.32"
+          }
+        },
+        "ptbr.bus_in": {
+          "hide_name": 0,
+          "bits": [ "1", "1", "1", "1", "1", "1", "1", "1" ],
+          "attributes": {
+            "hdlname": "ptbr bus_in",
+            "src": "PTBR.v:9.22-9.28"
+          }
+        },
+        "ptbr.bus_out": {
+          "hide_name": 0,
+          "bits": [ "0", "0", "0", "0", "0", "0", "0", "0" ],
+          "attributes": {
+            "hdlname": "ptbr bus_out",
+            "src": "PTBR.v:10.23-10.30"
+          }
+        },
+        "ptbr.byte_0": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x", "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "ptbr byte_0",
+            "src": "PTBR.v:14.15-14.21"
+          }
+        },
+        "ptbr.byte_1": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x", "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "ptbr byte_1",
+            "src": "PTBR.v:15.15-15.21"
           }
         },
         "ptbr.clk": {
           "hide_name": 0,
-          "bits": [ 10 ],
+          "bits": [ 2 ],
           "attributes": {
             "hdlname": "ptbr clk",
             "src": "PTBR.v:8.16-8.19",
             "unused_bits": "0 "
           }
         },
+        "ptbr.read_en_0": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "ptbr read_en_0",
+            "src": "PTBR.v:6.16-6.25"
+          }
+        },
+        "ptbr.read_en_1": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "ptbr read_en_1",
+            "src": "PTBR.v:7.16-7.25"
+          }
+        },
+        "ptbr.write_en_0": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "ptbr write_en_0",
+            "src": "PTBR.v:4.16-4.26"
+          }
+        },
+        "ptbr.write_en_1": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "ptbr write_en_1",
+            "src": "PTBR.v:5.16-5.26"
+          }
+        },
+        "ptbr_addr_out": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x", "x", "x", "x", "x", "x", "x", "x", "x", "x", "x", "x", "x" ],
+          "attributes": {
+            "src": "CPU.v:98.17-98.30"
+          }
+        },
+        "ptbr_bus": {
+          "hide_name": 0,
+          "bits": [ "0", "0", "0", "0", "0", "0", "0", "0" ],
+          "attributes": {
+            "src": "CPU.v:16.16-16.24"
+          }
+        },
+        "ptbr_output": {
+          "hide_name": 0,
+          "bits": [ "0" ],
+          "attributes": {
+          }
+        },
+        "ptbr_read_byte0": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "src": "CPU.v:93.10-93.25"
+          }
+        },
+        "ptbr_read_byte1": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "src": "CPU.v:94.10-94.25"
+          }
+        },
+        "ptbr_write_byte0": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "src": "CPU.v:95.10-95.26"
+          }
+        },
+        "ptbr_write_byte1": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "src": "CPU.v:96.10-96.26"
+          }
+        },
+        "pte_byte_sel": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "src": "CPU.v:99.10-99.22"
+          }
+        },
+        "pter.addr_out": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x", "x", "x", "x", "x", "x", "x", "x", "x", "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "pter addr_out",
+            "src": "PTER.v:9.24-9.32"
+          }
+        },
+        "pter.bus_in": {
+          "hide_name": 0,
+          "bits": [ "1", "1", "1", "1", "1", "1", "1", "1" ],
+          "attributes": {
+            "hdlname": "pter bus_in",
+            "src": "PTER.v:7.22-7.28"
+          }
+        },
+        "pter.byte_0": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x", "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "pter byte_0",
+            "src": "PTER.v:12.15-12.21"
+          }
+        },
+        "pter.byte_1": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x", "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "pter byte_1",
+            "src": "PTER.v:13.15-13.21"
+          }
+        },
         "pter.clk": {
           "hide_name": 0,
-          "bits": [ 10 ],
+          "bits": [ 2 ],
           "attributes": {
             "hdlname": "pter clk",
             "src": "PTER.v:6.16-6.19",
             "unused_bits": "0 "
+          }
+        },
+        "pter.write_en_0": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "pter write_en_0",
+            "src": "PTER.v:4.16-4.26"
+          }
+        },
+        "pter_addr_out": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x", "x", "x", "x", "x", "x", "x", "x", "x", "x", "x", "x", "x" ],
+          "attributes": {
+            "src": "CPU.v:121.17-121.30"
+          }
+        },
+        "pter_addr_read": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "src": "CPU.v:120.10-120.24"
+          }
+        },
+        "pter_output": {
+          "hide_name": 0,
+          "bits": [ "0" ],
+          "attributes": {
+          }
+        },
+        "pter_write_byte0": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "src": "CPU.v:118.10-118.26"
           }
         },
         "registers.alu.asr_result": {
@@ -898,157 +2136,1236 @@
             "src": "ALU.v:30.15-30.20"
           }
         },
+        "registers.bus_in": {
+          "hide_name": 0,
+          "bits": [ "1", "1", "1", "1", "1", "1", "1", "1" ],
+          "attributes": {
+            "hdlname": "registers bus_in",
+            "src": "GeneralRegisters.v:8.22-8.28"
+          }
+        },
+        "registers.bus_out": {
+          "hide_name": 0,
+          "bits": [ "0", "0", "0", "0", "0", "0", "0", "0" ],
+          "attributes": {
+            "hdlname": "registers bus_out",
+            "src": "GeneralRegisters.v:9.23-9.30"
+          }
+        },
         "registers.clk": {
           "hide_name": 0,
-          "bits": [ 10 ],
+          "bits": [ 2 ],
           "attributes": {
             "hdlname": "registers clk",
             "src": "GeneralRegisters.v:7.16-7.19",
             "unused_bits": "0 "
           }
         },
+        "registers.genblk1[0].registers.bus_in": {
+          "hide_name": 0,
+          "bits": [ "1", "1", "1", "1", "1", "1", "1", "1" ],
+          "attributes": {
+            "hdlname": "registers genblk1[0].registers bus_in",
+            "src": "GeneralRegister.v:11.22-11.28"
+          }
+        },
+        "registers.genblk1[0].registers.bus_out": {
+          "hide_name": 0,
+          "bits": [ "0", "0", "0", "0", "0", "0", "0", "0" ],
+          "attributes": {
+            "hdlname": "registers genblk1[0].registers bus_out",
+            "src": "GeneralRegister.v:12.23-12.30"
+          }
+        },
         "registers.genblk1[0].registers.clk": {
           "hide_name": 0,
-          "bits": [ 10 ],
+          "bits": [ 2 ],
           "attributes": {
             "hdlname": "registers genblk1[0].registers clk",
             "src": "GeneralRegister.v:10.16-10.19",
             "unused_bits": "0 "
           }
         },
+        "registers.genblk1[0].registers.content": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x", "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[0].registers content",
+            "src": "GeneralRegister.v:15.15-15.22"
+          }
+        },
+        "registers.genblk1[0].registers.read_en": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[0].registers read_en",
+            "src": "GeneralRegister.v:6.16-6.23"
+          }
+        },
+        "registers.genblk1[0].registers.read_sel": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[0].registers read_sel",
+            "src": "GeneralRegister.v:8.22-8.30"
+          }
+        },
+        "registers.genblk1[0].registers.write_en": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[0].registers write_en",
+            "src": "GeneralRegister.v:7.16-7.24"
+          }
+        },
+        "registers.genblk1[0].registers.write_sel": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[0].registers write_sel",
+            "src": "GeneralRegister.v:9.22-9.31"
+          }
+        },
+        "registers.genblk1[10].registers.bus_in": {
+          "hide_name": 0,
+          "bits": [ "1", "1", "1", "1", "1", "1", "1", "1" ],
+          "attributes": {
+            "hdlname": "registers genblk1[10].registers bus_in",
+            "src": "GeneralRegister.v:11.22-11.28"
+          }
+        },
+        "registers.genblk1[10].registers.bus_out": {
+          "hide_name": 0,
+          "bits": [ "0", "0", "0", "0", "0", "0", "0", "0" ],
+          "attributes": {
+            "hdlname": "registers genblk1[10].registers bus_out",
+            "src": "GeneralRegister.v:12.23-12.30"
+          }
+        },
         "registers.genblk1[10].registers.clk": {
           "hide_name": 0,
-          "bits": [ 10 ],
+          "bits": [ 2 ],
           "attributes": {
             "hdlname": "registers genblk1[10].registers clk",
             "src": "GeneralRegister.v:10.16-10.19",
             "unused_bits": "0 "
           }
         },
+        "registers.genblk1[10].registers.content": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x", "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[10].registers content",
+            "src": "GeneralRegister.v:15.15-15.22"
+          }
+        },
+        "registers.genblk1[10].registers.read_en": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[10].registers read_en",
+            "src": "GeneralRegister.v:6.16-6.23"
+          }
+        },
+        "registers.genblk1[10].registers.read_sel": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[10].registers read_sel",
+            "src": "GeneralRegister.v:8.22-8.30"
+          }
+        },
+        "registers.genblk1[10].registers.write_en": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[10].registers write_en",
+            "src": "GeneralRegister.v:7.16-7.24"
+          }
+        },
+        "registers.genblk1[10].registers.write_sel": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[10].registers write_sel",
+            "src": "GeneralRegister.v:9.22-9.31"
+          }
+        },
+        "registers.genblk1[11].registers.bus_in": {
+          "hide_name": 0,
+          "bits": [ "1", "1", "1", "1", "1", "1", "1", "1" ],
+          "attributes": {
+            "hdlname": "registers genblk1[11].registers bus_in",
+            "src": "GeneralRegister.v:11.22-11.28"
+          }
+        },
+        "registers.genblk1[11].registers.bus_out": {
+          "hide_name": 0,
+          "bits": [ "0", "0", "0", "0", "0", "0", "0", "0" ],
+          "attributes": {
+            "hdlname": "registers genblk1[11].registers bus_out",
+            "src": "GeneralRegister.v:12.23-12.30"
+          }
+        },
         "registers.genblk1[11].registers.clk": {
           "hide_name": 0,
-          "bits": [ 10 ],
+          "bits": [ 2 ],
           "attributes": {
             "hdlname": "registers genblk1[11].registers clk",
             "src": "GeneralRegister.v:10.16-10.19",
             "unused_bits": "0 "
           }
         },
+        "registers.genblk1[11].registers.content": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x", "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[11].registers content",
+            "src": "GeneralRegister.v:15.15-15.22"
+          }
+        },
+        "registers.genblk1[11].registers.read_en": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[11].registers read_en",
+            "src": "GeneralRegister.v:6.16-6.23"
+          }
+        },
+        "registers.genblk1[11].registers.read_sel": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[11].registers read_sel",
+            "src": "GeneralRegister.v:8.22-8.30"
+          }
+        },
+        "registers.genblk1[11].registers.write_en": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[11].registers write_en",
+            "src": "GeneralRegister.v:7.16-7.24"
+          }
+        },
+        "registers.genblk1[11].registers.write_sel": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[11].registers write_sel",
+            "src": "GeneralRegister.v:9.22-9.31"
+          }
+        },
+        "registers.genblk1[12].registers.bus_in": {
+          "hide_name": 0,
+          "bits": [ "1", "1", "1", "1", "1", "1", "1", "1" ],
+          "attributes": {
+            "hdlname": "registers genblk1[12].registers bus_in",
+            "src": "GeneralRegister.v:11.22-11.28"
+          }
+        },
+        "registers.genblk1[12].registers.bus_out": {
+          "hide_name": 0,
+          "bits": [ "0", "0", "0", "0", "0", "0", "0", "0" ],
+          "attributes": {
+            "hdlname": "registers genblk1[12].registers bus_out",
+            "src": "GeneralRegister.v:12.23-12.30"
+          }
+        },
         "registers.genblk1[12].registers.clk": {
           "hide_name": 0,
-          "bits": [ 10 ],
+          "bits": [ 2 ],
           "attributes": {
             "hdlname": "registers genblk1[12].registers clk",
             "src": "GeneralRegister.v:10.16-10.19",
             "unused_bits": "0 "
           }
         },
+        "registers.genblk1[12].registers.content": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x", "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[12].registers content",
+            "src": "GeneralRegister.v:15.15-15.22"
+          }
+        },
+        "registers.genblk1[12].registers.read_en": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[12].registers read_en",
+            "src": "GeneralRegister.v:6.16-6.23"
+          }
+        },
+        "registers.genblk1[12].registers.read_sel": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[12].registers read_sel",
+            "src": "GeneralRegister.v:8.22-8.30"
+          }
+        },
+        "registers.genblk1[12].registers.write_en": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[12].registers write_en",
+            "src": "GeneralRegister.v:7.16-7.24"
+          }
+        },
+        "registers.genblk1[12].registers.write_sel": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[12].registers write_sel",
+            "src": "GeneralRegister.v:9.22-9.31"
+          }
+        },
+        "registers.genblk1[13].registers.bus_in": {
+          "hide_name": 0,
+          "bits": [ "1", "1", "1", "1", "1", "1", "1", "1" ],
+          "attributes": {
+            "hdlname": "registers genblk1[13].registers bus_in",
+            "src": "GeneralRegister.v:11.22-11.28"
+          }
+        },
+        "registers.genblk1[13].registers.bus_out": {
+          "hide_name": 0,
+          "bits": [ "0", "0", "0", "0", "0", "0", "0", "0" ],
+          "attributes": {
+            "hdlname": "registers genblk1[13].registers bus_out",
+            "src": "GeneralRegister.v:12.23-12.30"
+          }
+        },
         "registers.genblk1[13].registers.clk": {
           "hide_name": 0,
-          "bits": [ 10 ],
+          "bits": [ 2 ],
           "attributes": {
             "hdlname": "registers genblk1[13].registers clk",
             "src": "GeneralRegister.v:10.16-10.19",
             "unused_bits": "0 "
           }
         },
+        "registers.genblk1[13].registers.content": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x", "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[13].registers content",
+            "src": "GeneralRegister.v:15.15-15.22"
+          }
+        },
+        "registers.genblk1[13].registers.read_en": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[13].registers read_en",
+            "src": "GeneralRegister.v:6.16-6.23"
+          }
+        },
+        "registers.genblk1[13].registers.read_sel": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[13].registers read_sel",
+            "src": "GeneralRegister.v:8.22-8.30"
+          }
+        },
+        "registers.genblk1[13].registers.write_en": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[13].registers write_en",
+            "src": "GeneralRegister.v:7.16-7.24"
+          }
+        },
+        "registers.genblk1[13].registers.write_sel": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[13].registers write_sel",
+            "src": "GeneralRegister.v:9.22-9.31"
+          }
+        },
+        "registers.genblk1[14].registers.bus_in": {
+          "hide_name": 0,
+          "bits": [ "1", "1", "1", "1", "1", "1", "1", "1" ],
+          "attributes": {
+            "hdlname": "registers genblk1[14].registers bus_in",
+            "src": "GeneralRegister.v:11.22-11.28"
+          }
+        },
+        "registers.genblk1[14].registers.bus_out": {
+          "hide_name": 0,
+          "bits": [ "0", "0", "0", "0", "0", "0", "0", "0" ],
+          "attributes": {
+            "hdlname": "registers genblk1[14].registers bus_out",
+            "src": "GeneralRegister.v:12.23-12.30"
+          }
+        },
         "registers.genblk1[14].registers.clk": {
           "hide_name": 0,
-          "bits": [ 10 ],
+          "bits": [ 2 ],
           "attributes": {
             "hdlname": "registers genblk1[14].registers clk",
             "src": "GeneralRegister.v:10.16-10.19",
             "unused_bits": "0 "
           }
         },
+        "registers.genblk1[14].registers.content": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x", "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[14].registers content",
+            "src": "GeneralRegister.v:15.15-15.22"
+          }
+        },
+        "registers.genblk1[14].registers.read_en": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[14].registers read_en",
+            "src": "GeneralRegister.v:6.16-6.23"
+          }
+        },
+        "registers.genblk1[14].registers.read_sel": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[14].registers read_sel",
+            "src": "GeneralRegister.v:8.22-8.30"
+          }
+        },
+        "registers.genblk1[14].registers.write_en": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[14].registers write_en",
+            "src": "GeneralRegister.v:7.16-7.24"
+          }
+        },
+        "registers.genblk1[14].registers.write_sel": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[14].registers write_sel",
+            "src": "GeneralRegister.v:9.22-9.31"
+          }
+        },
+        "registers.genblk1[15].registers.bus_in": {
+          "hide_name": 0,
+          "bits": [ "1", "1", "1", "1", "1", "1", "1", "1" ],
+          "attributes": {
+            "hdlname": "registers genblk1[15].registers bus_in",
+            "src": "GeneralRegister.v:11.22-11.28"
+          }
+        },
+        "registers.genblk1[15].registers.bus_out": {
+          "hide_name": 0,
+          "bits": [ "0", "0", "0", "0", "0", "0", "0", "0" ],
+          "attributes": {
+            "hdlname": "registers genblk1[15].registers bus_out",
+            "src": "GeneralRegister.v:12.23-12.30"
+          }
+        },
         "registers.genblk1[15].registers.clk": {
           "hide_name": 0,
-          "bits": [ 10 ],
+          "bits": [ 2 ],
           "attributes": {
             "hdlname": "registers genblk1[15].registers clk",
             "src": "GeneralRegister.v:10.16-10.19",
             "unused_bits": "0 "
           }
         },
+        "registers.genblk1[15].registers.content": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x", "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[15].registers content",
+            "src": "GeneralRegister.v:15.15-15.22"
+          }
+        },
+        "registers.genblk1[15].registers.read_en": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[15].registers read_en",
+            "src": "GeneralRegister.v:6.16-6.23"
+          }
+        },
+        "registers.genblk1[15].registers.read_sel": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[15].registers read_sel",
+            "src": "GeneralRegister.v:8.22-8.30"
+          }
+        },
+        "registers.genblk1[15].registers.write_en": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[15].registers write_en",
+            "src": "GeneralRegister.v:7.16-7.24"
+          }
+        },
+        "registers.genblk1[15].registers.write_sel": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[15].registers write_sel",
+            "src": "GeneralRegister.v:9.22-9.31"
+          }
+        },
+        "registers.genblk1[1].registers.bus_in": {
+          "hide_name": 0,
+          "bits": [ "1", "1", "1", "1", "1", "1", "1", "1" ],
+          "attributes": {
+            "hdlname": "registers genblk1[1].registers bus_in",
+            "src": "GeneralRegister.v:11.22-11.28"
+          }
+        },
+        "registers.genblk1[1].registers.bus_out": {
+          "hide_name": 0,
+          "bits": [ "0", "0", "0", "0", "0", "0", "0", "0" ],
+          "attributes": {
+            "hdlname": "registers genblk1[1].registers bus_out",
+            "src": "GeneralRegister.v:12.23-12.30"
+          }
+        },
         "registers.genblk1[1].registers.clk": {
           "hide_name": 0,
-          "bits": [ 10 ],
+          "bits": [ 2 ],
           "attributes": {
             "hdlname": "registers genblk1[1].registers clk",
             "src": "GeneralRegister.v:10.16-10.19",
             "unused_bits": "0 "
           }
         },
+        "registers.genblk1[1].registers.content": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x", "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[1].registers content",
+            "src": "GeneralRegister.v:15.15-15.22"
+          }
+        },
+        "registers.genblk1[1].registers.read_en": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[1].registers read_en",
+            "src": "GeneralRegister.v:6.16-6.23"
+          }
+        },
+        "registers.genblk1[1].registers.read_sel": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[1].registers read_sel",
+            "src": "GeneralRegister.v:8.22-8.30"
+          }
+        },
+        "registers.genblk1[1].registers.write_en": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[1].registers write_en",
+            "src": "GeneralRegister.v:7.16-7.24"
+          }
+        },
+        "registers.genblk1[1].registers.write_sel": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[1].registers write_sel",
+            "src": "GeneralRegister.v:9.22-9.31"
+          }
+        },
+        "registers.genblk1[2].registers.bus_in": {
+          "hide_name": 0,
+          "bits": [ "1", "1", "1", "1", "1", "1", "1", "1" ],
+          "attributes": {
+            "hdlname": "registers genblk1[2].registers bus_in",
+            "src": "GeneralRegister.v:11.22-11.28"
+          }
+        },
+        "registers.genblk1[2].registers.bus_out": {
+          "hide_name": 0,
+          "bits": [ "0", "0", "0", "0", "0", "0", "0", "0" ],
+          "attributes": {
+            "hdlname": "registers genblk1[2].registers bus_out",
+            "src": "GeneralRegister.v:12.23-12.30"
+          }
+        },
         "registers.genblk1[2].registers.clk": {
           "hide_name": 0,
-          "bits": [ 10 ],
+          "bits": [ 2 ],
           "attributes": {
             "hdlname": "registers genblk1[2].registers clk",
             "src": "GeneralRegister.v:10.16-10.19",
             "unused_bits": "0 "
           }
         },
+        "registers.genblk1[2].registers.content": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x", "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[2].registers content",
+            "src": "GeneralRegister.v:15.15-15.22"
+          }
+        },
+        "registers.genblk1[2].registers.read_en": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[2].registers read_en",
+            "src": "GeneralRegister.v:6.16-6.23"
+          }
+        },
+        "registers.genblk1[2].registers.read_sel": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[2].registers read_sel",
+            "src": "GeneralRegister.v:8.22-8.30"
+          }
+        },
+        "registers.genblk1[2].registers.write_en": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[2].registers write_en",
+            "src": "GeneralRegister.v:7.16-7.24"
+          }
+        },
+        "registers.genblk1[2].registers.write_sel": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[2].registers write_sel",
+            "src": "GeneralRegister.v:9.22-9.31"
+          }
+        },
+        "registers.genblk1[3].registers.bus_in": {
+          "hide_name": 0,
+          "bits": [ "1", "1", "1", "1", "1", "1", "1", "1" ],
+          "attributes": {
+            "hdlname": "registers genblk1[3].registers bus_in",
+            "src": "GeneralRegister.v:11.22-11.28"
+          }
+        },
+        "registers.genblk1[3].registers.bus_out": {
+          "hide_name": 0,
+          "bits": [ "0", "0", "0", "0", "0", "0", "0", "0" ],
+          "attributes": {
+            "hdlname": "registers genblk1[3].registers bus_out",
+            "src": "GeneralRegister.v:12.23-12.30"
+          }
+        },
         "registers.genblk1[3].registers.clk": {
           "hide_name": 0,
-          "bits": [ 10 ],
+          "bits": [ 2 ],
           "attributes": {
             "hdlname": "registers genblk1[3].registers clk",
             "src": "GeneralRegister.v:10.16-10.19",
             "unused_bits": "0 "
           }
         },
+        "registers.genblk1[3].registers.content": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x", "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[3].registers content",
+            "src": "GeneralRegister.v:15.15-15.22"
+          }
+        },
+        "registers.genblk1[3].registers.read_en": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[3].registers read_en",
+            "src": "GeneralRegister.v:6.16-6.23"
+          }
+        },
+        "registers.genblk1[3].registers.read_sel": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[3].registers read_sel",
+            "src": "GeneralRegister.v:8.22-8.30"
+          }
+        },
+        "registers.genblk1[3].registers.write_en": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[3].registers write_en",
+            "src": "GeneralRegister.v:7.16-7.24"
+          }
+        },
+        "registers.genblk1[3].registers.write_sel": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[3].registers write_sel",
+            "src": "GeneralRegister.v:9.22-9.31"
+          }
+        },
+        "registers.genblk1[4].registers.bus_in": {
+          "hide_name": 0,
+          "bits": [ "1", "1", "1", "1", "1", "1", "1", "1" ],
+          "attributes": {
+            "hdlname": "registers genblk1[4].registers bus_in",
+            "src": "GeneralRegister.v:11.22-11.28"
+          }
+        },
+        "registers.genblk1[4].registers.bus_out": {
+          "hide_name": 0,
+          "bits": [ "0", "0", "0", "0", "0", "0", "0", "0" ],
+          "attributes": {
+            "hdlname": "registers genblk1[4].registers bus_out",
+            "src": "GeneralRegister.v:12.23-12.30"
+          }
+        },
         "registers.genblk1[4].registers.clk": {
           "hide_name": 0,
-          "bits": [ 10 ],
+          "bits": [ 2 ],
           "attributes": {
             "hdlname": "registers genblk1[4].registers clk",
             "src": "GeneralRegister.v:10.16-10.19",
             "unused_bits": "0 "
           }
         },
+        "registers.genblk1[4].registers.content": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x", "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[4].registers content",
+            "src": "GeneralRegister.v:15.15-15.22"
+          }
+        },
+        "registers.genblk1[4].registers.read_en": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[4].registers read_en",
+            "src": "GeneralRegister.v:6.16-6.23"
+          }
+        },
+        "registers.genblk1[4].registers.read_sel": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[4].registers read_sel",
+            "src": "GeneralRegister.v:8.22-8.30"
+          }
+        },
+        "registers.genblk1[4].registers.write_en": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[4].registers write_en",
+            "src": "GeneralRegister.v:7.16-7.24"
+          }
+        },
+        "registers.genblk1[4].registers.write_sel": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[4].registers write_sel",
+            "src": "GeneralRegister.v:9.22-9.31"
+          }
+        },
+        "registers.genblk1[5].registers.bus_in": {
+          "hide_name": 0,
+          "bits": [ "1", "1", "1", "1", "1", "1", "1", "1" ],
+          "attributes": {
+            "hdlname": "registers genblk1[5].registers bus_in",
+            "src": "GeneralRegister.v:11.22-11.28"
+          }
+        },
+        "registers.genblk1[5].registers.bus_out": {
+          "hide_name": 0,
+          "bits": [ "0", "0", "0", "0", "0", "0", "0", "0" ],
+          "attributes": {
+            "hdlname": "registers genblk1[5].registers bus_out",
+            "src": "GeneralRegister.v:12.23-12.30"
+          }
+        },
         "registers.genblk1[5].registers.clk": {
           "hide_name": 0,
-          "bits": [ 10 ],
+          "bits": [ 2 ],
           "attributes": {
             "hdlname": "registers genblk1[5].registers clk",
             "src": "GeneralRegister.v:10.16-10.19",
             "unused_bits": "0 "
           }
         },
+        "registers.genblk1[5].registers.content": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x", "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[5].registers content",
+            "src": "GeneralRegister.v:15.15-15.22"
+          }
+        },
+        "registers.genblk1[5].registers.read_en": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[5].registers read_en",
+            "src": "GeneralRegister.v:6.16-6.23"
+          }
+        },
+        "registers.genblk1[5].registers.read_sel": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[5].registers read_sel",
+            "src": "GeneralRegister.v:8.22-8.30"
+          }
+        },
+        "registers.genblk1[5].registers.write_en": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[5].registers write_en",
+            "src": "GeneralRegister.v:7.16-7.24"
+          }
+        },
+        "registers.genblk1[5].registers.write_sel": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[5].registers write_sel",
+            "src": "GeneralRegister.v:9.22-9.31"
+          }
+        },
+        "registers.genblk1[6].registers.bus_in": {
+          "hide_name": 0,
+          "bits": [ "1", "1", "1", "1", "1", "1", "1", "1" ],
+          "attributes": {
+            "hdlname": "registers genblk1[6].registers bus_in",
+            "src": "GeneralRegister.v:11.22-11.28"
+          }
+        },
+        "registers.genblk1[6].registers.bus_out": {
+          "hide_name": 0,
+          "bits": [ "0", "0", "0", "0", "0", "0", "0", "0" ],
+          "attributes": {
+            "hdlname": "registers genblk1[6].registers bus_out",
+            "src": "GeneralRegister.v:12.23-12.30"
+          }
+        },
         "registers.genblk1[6].registers.clk": {
           "hide_name": 0,
-          "bits": [ 10 ],
+          "bits": [ 2 ],
           "attributes": {
             "hdlname": "registers genblk1[6].registers clk",
             "src": "GeneralRegister.v:10.16-10.19",
             "unused_bits": "0 "
           }
         },
+        "registers.genblk1[6].registers.content": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x", "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[6].registers content",
+            "src": "GeneralRegister.v:15.15-15.22"
+          }
+        },
+        "registers.genblk1[6].registers.read_en": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[6].registers read_en",
+            "src": "GeneralRegister.v:6.16-6.23"
+          }
+        },
+        "registers.genblk1[6].registers.read_sel": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[6].registers read_sel",
+            "src": "GeneralRegister.v:8.22-8.30"
+          }
+        },
+        "registers.genblk1[6].registers.write_en": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[6].registers write_en",
+            "src": "GeneralRegister.v:7.16-7.24"
+          }
+        },
+        "registers.genblk1[6].registers.write_sel": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[6].registers write_sel",
+            "src": "GeneralRegister.v:9.22-9.31"
+          }
+        },
+        "registers.genblk1[7].registers.bus_in": {
+          "hide_name": 0,
+          "bits": [ "1", "1", "1", "1", "1", "1", "1", "1" ],
+          "attributes": {
+            "hdlname": "registers genblk1[7].registers bus_in",
+            "src": "GeneralRegister.v:11.22-11.28"
+          }
+        },
+        "registers.genblk1[7].registers.bus_out": {
+          "hide_name": 0,
+          "bits": [ "0", "0", "0", "0", "0", "0", "0", "0" ],
+          "attributes": {
+            "hdlname": "registers genblk1[7].registers bus_out",
+            "src": "GeneralRegister.v:12.23-12.30"
+          }
+        },
         "registers.genblk1[7].registers.clk": {
           "hide_name": 0,
-          "bits": [ 10 ],
+          "bits": [ 2 ],
           "attributes": {
             "hdlname": "registers genblk1[7].registers clk",
             "src": "GeneralRegister.v:10.16-10.19",
             "unused_bits": "0 "
           }
         },
+        "registers.genblk1[7].registers.content": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x", "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[7].registers content",
+            "src": "GeneralRegister.v:15.15-15.22"
+          }
+        },
+        "registers.genblk1[7].registers.read_en": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[7].registers read_en",
+            "src": "GeneralRegister.v:6.16-6.23"
+          }
+        },
+        "registers.genblk1[7].registers.read_sel": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[7].registers read_sel",
+            "src": "GeneralRegister.v:8.22-8.30"
+          }
+        },
+        "registers.genblk1[7].registers.write_en": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[7].registers write_en",
+            "src": "GeneralRegister.v:7.16-7.24"
+          }
+        },
+        "registers.genblk1[7].registers.write_sel": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[7].registers write_sel",
+            "src": "GeneralRegister.v:9.22-9.31"
+          }
+        },
+        "registers.genblk1[8].registers.bus_in": {
+          "hide_name": 0,
+          "bits": [ "1", "1", "1", "1", "1", "1", "1", "1" ],
+          "attributes": {
+            "hdlname": "registers genblk1[8].registers bus_in",
+            "src": "GeneralRegister.v:11.22-11.28"
+          }
+        },
+        "registers.genblk1[8].registers.bus_out": {
+          "hide_name": 0,
+          "bits": [ "0", "0", "0", "0", "0", "0", "0", "0" ],
+          "attributes": {
+            "hdlname": "registers genblk1[8].registers bus_out",
+            "src": "GeneralRegister.v:12.23-12.30"
+          }
+        },
         "registers.genblk1[8].registers.clk": {
           "hide_name": 0,
-          "bits": [ 10 ],
+          "bits": [ 2 ],
           "attributes": {
             "hdlname": "registers genblk1[8].registers clk",
             "src": "GeneralRegister.v:10.16-10.19",
             "unused_bits": "0 "
           }
         },
+        "registers.genblk1[8].registers.content": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x", "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[8].registers content",
+            "src": "GeneralRegister.v:15.15-15.22"
+          }
+        },
+        "registers.genblk1[8].registers.read_en": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[8].registers read_en",
+            "src": "GeneralRegister.v:6.16-6.23"
+          }
+        },
+        "registers.genblk1[8].registers.read_sel": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[8].registers read_sel",
+            "src": "GeneralRegister.v:8.22-8.30"
+          }
+        },
+        "registers.genblk1[8].registers.write_en": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[8].registers write_en",
+            "src": "GeneralRegister.v:7.16-7.24"
+          }
+        },
+        "registers.genblk1[8].registers.write_sel": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[8].registers write_sel",
+            "src": "GeneralRegister.v:9.22-9.31"
+          }
+        },
+        "registers.genblk1[9].registers.bus_in": {
+          "hide_name": 0,
+          "bits": [ "1", "1", "1", "1", "1", "1", "1", "1" ],
+          "attributes": {
+            "hdlname": "registers genblk1[9].registers bus_in",
+            "src": "GeneralRegister.v:11.22-11.28"
+          }
+        },
+        "registers.genblk1[9].registers.bus_out": {
+          "hide_name": 0,
+          "bits": [ "0", "0", "0", "0", "0", "0", "0", "0" ],
+          "attributes": {
+            "hdlname": "registers genblk1[9].registers bus_out",
+            "src": "GeneralRegister.v:12.23-12.30"
+          }
+        },
         "registers.genblk1[9].registers.clk": {
           "hide_name": 0,
-          "bits": [ 10 ],
+          "bits": [ 2 ],
           "attributes": {
             "hdlname": "registers genblk1[9].registers clk",
             "src": "GeneralRegister.v:10.16-10.19",
             "unused_bits": "0 "
+          }
+        },
+        "registers.genblk1[9].registers.content": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x", "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[9].registers content",
+            "src": "GeneralRegister.v:15.15-15.22"
+          }
+        },
+        "registers.genblk1[9].registers.read_en": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[9].registers read_en",
+            "src": "GeneralRegister.v:6.16-6.23"
+          }
+        },
+        "registers.genblk1[9].registers.read_sel": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[9].registers read_sel",
+            "src": "GeneralRegister.v:8.22-8.30"
+          }
+        },
+        "registers.genblk1[9].registers.write_en": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[9].registers write_en",
+            "src": "GeneralRegister.v:7.16-7.24"
+          }
+        },
+        "registers.genblk1[9].registers.write_sel": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "registers genblk1[9].registers write_sel",
+            "src": "GeneralRegister.v:9.22-9.31"
+          }
+        },
+        "registers.read_en": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "registers read_en",
+            "src": "GeneralRegisters.v:3.16-3.23"
+          }
+        },
+        "registers.read_sel": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "registers read_sel",
+            "src": "GeneralRegisters.v:5.22-5.30"
+          }
+        },
+        "registers.reg_bus_out[0]": {
+          "hide_name": 0,
+          "bits": [ "0", "0", "0", "0", "0", "0", "0", "0" ],
+          "attributes": {
+            "hdlname": "registers reg_bus_out[0]",
+            "src": "GeneralRegisters.v:12.16-12.27"
+          }
+        },
+        "registers.reg_bus_out[10]": {
+          "hide_name": 0,
+          "bits": [ "0", "0", "0", "0", "0", "0", "0", "0" ],
+          "attributes": {
+            "hdlname": "registers reg_bus_out[10]",
+            "src": "GeneralRegisters.v:12.16-12.27"
+          }
+        },
+        "registers.reg_bus_out[11]": {
+          "hide_name": 0,
+          "bits": [ "0", "0", "0", "0", "0", "0", "0", "0" ],
+          "attributes": {
+            "hdlname": "registers reg_bus_out[11]",
+            "src": "GeneralRegisters.v:12.16-12.27"
+          }
+        },
+        "registers.reg_bus_out[12]": {
+          "hide_name": 0,
+          "bits": [ "0", "0", "0", "0", "0", "0", "0", "0" ],
+          "attributes": {
+            "hdlname": "registers reg_bus_out[12]",
+            "src": "GeneralRegisters.v:12.16-12.27"
+          }
+        },
+        "registers.reg_bus_out[13]": {
+          "hide_name": 0,
+          "bits": [ "0", "0", "0", "0", "0", "0", "0", "0" ],
+          "attributes": {
+            "hdlname": "registers reg_bus_out[13]",
+            "src": "GeneralRegisters.v:12.16-12.27"
+          }
+        },
+        "registers.reg_bus_out[14]": {
+          "hide_name": 0,
+          "bits": [ "0", "0", "0", "0", "0", "0", "0", "0" ],
+          "attributes": {
+            "hdlname": "registers reg_bus_out[14]",
+            "src": "GeneralRegisters.v:12.16-12.27"
+          }
+        },
+        "registers.reg_bus_out[15]": {
+          "hide_name": 0,
+          "bits": [ "0", "0", "0", "0", "0", "0", "0", "0" ],
+          "attributes": {
+            "hdlname": "registers reg_bus_out[15]",
+            "src": "GeneralRegisters.v:12.16-12.27"
+          }
+        },
+        "registers.reg_bus_out[1]": {
+          "hide_name": 0,
+          "bits": [ "0", "0", "0", "0", "0", "0", "0", "0" ],
+          "attributes": {
+            "hdlname": "registers reg_bus_out[1]",
+            "src": "GeneralRegisters.v:12.16-12.27"
+          }
+        },
+        "registers.reg_bus_out[2]": {
+          "hide_name": 0,
+          "bits": [ "0", "0", "0", "0", "0", "0", "0", "0" ],
+          "attributes": {
+            "hdlname": "registers reg_bus_out[2]",
+            "src": "GeneralRegisters.v:12.16-12.27"
+          }
+        },
+        "registers.reg_bus_out[3]": {
+          "hide_name": 0,
+          "bits": [ "0", "0", "0", "0", "0", "0", "0", "0" ],
+          "attributes": {
+            "hdlname": "registers reg_bus_out[3]",
+            "src": "GeneralRegisters.v:12.16-12.27"
+          }
+        },
+        "registers.reg_bus_out[4]": {
+          "hide_name": 0,
+          "bits": [ "0", "0", "0", "0", "0", "0", "0", "0" ],
+          "attributes": {
+            "hdlname": "registers reg_bus_out[4]",
+            "src": "GeneralRegisters.v:12.16-12.27"
+          }
+        },
+        "registers.reg_bus_out[5]": {
+          "hide_name": 0,
+          "bits": [ "0", "0", "0", "0", "0", "0", "0", "0" ],
+          "attributes": {
+            "hdlname": "registers reg_bus_out[5]",
+            "src": "GeneralRegisters.v:12.16-12.27"
+          }
+        },
+        "registers.reg_bus_out[6]": {
+          "hide_name": 0,
+          "bits": [ "0", "0", "0", "0", "0", "0", "0", "0" ],
+          "attributes": {
+            "hdlname": "registers reg_bus_out[6]",
+            "src": "GeneralRegisters.v:12.16-12.27"
+          }
+        },
+        "registers.reg_bus_out[7]": {
+          "hide_name": 0,
+          "bits": [ "0", "0", "0", "0", "0", "0", "0", "0" ],
+          "attributes": {
+            "hdlname": "registers reg_bus_out[7]",
+            "src": "GeneralRegisters.v:12.16-12.27"
+          }
+        },
+        "registers.reg_bus_out[8]": {
+          "hide_name": 0,
+          "bits": [ "0", "0", "0", "0", "0", "0", "0", "0" ],
+          "attributes": {
+            "hdlname": "registers reg_bus_out[8]",
+            "src": "GeneralRegisters.v:12.16-12.27"
+          }
+        },
+        "registers.reg_bus_out[9]": {
+          "hide_name": 0,
+          "bits": [ "0", "0", "0", "0", "0", "0", "0", "0" ],
+          "attributes": {
+            "hdlname": "registers reg_bus_out[9]",
+            "src": "GeneralRegisters.v:12.16-12.27"
+          }
+        },
+        "registers.write_en": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "hdlname": "registers write_en",
+            "src": "GeneralRegisters.v:4.16-4.24"
+          }
+        },
+        "registers.write_sel": {
+          "hide_name": 0,
+          "bits": [ "x", "x", "x", "x" ],
+          "attributes": {
+            "hdlname": "registers write_sel",
+            "src": "GeneralRegisters.v:6.22-6.31"
+          }
+        },
+        "registers_bus": {
+          "hide_name": 0,
+          "bits": [ "0", "0", "0", "0", "0", "0", "0", "0" ],
+          "attributes": {
+            "src": "CPU.v:13.16-13.29"
           }
         }
       }
@@ -3377,6 +5694,7 @@
     },
     "SB_DFFER": {
       "attributes": {
+        "abc9_box_id": "00000000000000000000000000000101",
         "blackbox": "00000000000000000000000000000001",
         "abc9_box": "00000000000000000000000000000001",
         "cells_not_processed": "00000000000000000000000000000001",
@@ -3447,6 +5765,7 @@
     },
     "SB_DFFES": {
       "attributes": {
+        "abc9_box_id": "00000000000000000000000000000110",
         "blackbox": "00000000000000000000000000000001",
         "abc9_box": "00000000000000000000000000000001",
         "cells_not_processed": "00000000000000000000000000000001",
@@ -3763,6 +6082,7 @@
     },
     "SB_DFFNER": {
       "attributes": {
+        "abc9_box_id": "00000000000000000000000000000111",
         "blackbox": "00000000000000000000000000000001",
         "abc9_box": "00000000000000000000000000000001",
         "cells_not_processed": "00000000000000000000000000000001",
@@ -3833,6 +6153,7 @@
     },
     "SB_DFFNES": {
       "attributes": {
+        "abc9_box_id": "00000000000000000000000000001000",
         "blackbox": "00000000000000000000000000000001",
         "abc9_box": "00000000000000000000000000000001",
         "cells_not_processed": "00000000000000000000000000000001",
@@ -4101,6 +6422,7 @@
     },
     "SB_DFFNS": {
       "attributes": {
+        "abc9_box_id": "00000000000000000000000000001001",
         "blackbox": "00000000000000000000000000000001",
         "abc9_box": "00000000000000000000000000000001",
         "cells_not_processed": "00000000000000000000000000000001",
@@ -4275,6 +6597,7 @@
     },
     "SB_DFFR": {
       "attributes": {
+        "abc9_box_id": "00000000000000000000000000001010",
         "blackbox": "00000000000000000000000000000001",
         "abc9_box": "00000000000000000000000000000001",
         "cells_not_processed": "00000000000000000000000000000001",
@@ -4333,6 +6656,7 @@
     },
     "SB_DFFS": {
       "attributes": {
+        "abc9_box_id": "00000000000000000000000000001011",
         "blackbox": "00000000000000000000000000000001",
         "abc9_box": "00000000000000000000000000000001",
         "cells_not_processed": "00000000000000000000000000000001",
@@ -10436,7 +12760,6 @@
     "SB_SPRAM256KA": {
       "attributes": {
         "blackbox": "00000000000000000000000000000001",
-        "cells_not_processed": "00000000000000000000000000000001",
         "src": "/usr/local/bin/../share/yosys/ice40/cells_sim.v:2600.1-2661.10"
       },
       "ports": {

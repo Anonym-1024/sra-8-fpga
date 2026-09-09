@@ -37,7 +37,7 @@ $(BUILD_DIR):
 
 # Step 1: Synthesis (Yosys) -> JSON Netlist
 $(BUILD_DIR)/$(PROJ).json: $(SRCS) | $(BUILD_DIR)
-	$(YOSYS) -p "synth_ice40 -top $(PROJ) -json $@ -noflatten; stat" $(SRCS)
+	$(YOSYS) -p "synth_ice40 -top $(PROJ) -json $@ -spram; stat" $(SRCS)
 
 # Step 2: Place and Route (nextpnr) -> ASCII Bitstream (.asc)
 $(BUILD_DIR)/$(PROJ).asc: $(BUILD_DIR)/$(PROJ).json $(PCF)

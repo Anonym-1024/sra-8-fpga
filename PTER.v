@@ -6,14 +6,13 @@ module PTER (
     input wire clk,
     input wire [7:0] bus_in,
     output wire pf_out,
-    input wire addr_read_en,
     output wire [15:0] addr_out
 );
     
     reg [7:0] byte_0;
     reg [7:0] byte_1;
 
-    assign addr_out = addr_read_en ? {byte_1, byte_0} : 0;
+    assign addr_out = {byte_1, byte_0};
 
 
     always @(posedge clk) begin

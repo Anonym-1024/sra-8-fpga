@@ -5,6 +5,7 @@ module CPU (
     input wire clk
 );
 
+    assign io = bus;
     
 
     wire [7:0] bus;
@@ -73,7 +74,7 @@ module CPU (
     wire mem_write;
     wire [15:0] mem_addr;
 
-    assign mem_addr = 0;
+    assign mem_addr = mar_output | ptbr_output | pter_output;
 
     Memory memory (
         .clk(clk),
@@ -95,7 +96,9 @@ module CPU (
     wire ptbr_write_byte1;
     wire ptbr_addr_read;
     wire [15:0] ptbr_addr_out;
+    wire pte_byte_sel;
 
+    wire [15:0] ptbr_output = pter_addr_read ? ((ptbr_addr_out << 9) || (mar_addr_out_byte << 1) || pte_byte_sel) : 0;
 
     PTBR ptbr (
         .clk(clk),
@@ -105,7 +108,6 @@ module CPU (
         .read_en_1(ptbr_read_byte1),
         .write_en_0(ptbr_write_byte0),
         .write_en_1(ptbr_write_byte1),
-        .addr_read_en(ptbr_addr_read),
         .addr_out(ptbr_addr_out)
     );
 
@@ -118,13 +120,13 @@ module CPU (
     wire pter_addr_read;
     wire [15:0] pter_addr_out;
 
+    wire [15:0] pter_output = pter_addr_read ? ((pter_addr_out << 8) || mar_addr_out_byte0) : 0;
 
     PTER pter (
         .clk(clk),
         .bus_in(bus),
         .write_en_0(pter_write_byte0),
         .write_en_1(pter_write_byte1),
-        .addr_read_en(pter_addr_read),
         .addr_out(pter_addr_out)
     );
 
@@ -133,15 +135,20 @@ module CPU (
     wire mar_write_byte0;
     wire mar_write_byte1;
     wire mar_addr_read;
+    wire [7:0] mar_addr_out_byte0;
+    wire [7:0] mar_addr_out_byte1;
     wire [15:0] mar_addr_out;
+
+    wire [15:0] mar_output = mar_addr_read ? mar_addr_out : 0;
 
     MAR mar (
         .clk(clk),
         .bus_in(bus),
         .write_en_0(mar_write_byte0),
         .write_en_1(mar_write_byte1),
-        .addr_read_en(mar_addr_read),
-        .addr_out(mar_addr_out)
+        .addr_out(mar_addr_out),
+        .byte_0_out(mar_addr_out_byte0),
+        .byte_1_out(mar_addr_out_byte1)
     );
 
 
@@ -222,6 +229,8 @@ module CPU (
         .pf_in(pf),
         .int_out(int)
     );
+
+    
 
 
 
