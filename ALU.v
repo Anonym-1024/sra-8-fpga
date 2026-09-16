@@ -1,16 +1,24 @@
 
 
+// TODO: CHECK IF ALL OPERATIONS WORK
+
+// Arithmetic and logic unit
+
 module ALU (
-    input wire read_en,
-    input wire write_en,
-    input wire write_en_2,
     input wire clk,
     input wire [1:0] clk_phase,
-    input wire [3:0] opcode,
+
     input wire [7:0] bus_in,
     output wire [7:0] bus_out,
     input wire [3:0] flags_in,
     output wire [3:0] flags_out
+
+    input wire read_en,
+    input wire write_en,
+    input wire write_en_2,
+    input wire [3:0] opcode,
+    
+    
 );
 
     localparam OP_ADD = 0;
@@ -48,23 +56,7 @@ module ALU (
     
 
 
-    wire z;
-    wire n;
-    wire c;
-    wire c_add;
-    wire c_sub;
-    wire c_addc;
-    wire c_subc;
-    wire c_lsl;
-    wire c_lsr;
-    wire c_asr;
-    wire c_csr;
-    wire c_csl;
-    wire v;
-    wire v_add;
-    wire v_sub;
-    wire v_addc;
-    wire v_subc;
+    
 
     assign add_result = reg_1 + reg_2;
     assign sub_result = reg_1 + (~reg_2 + 1);
@@ -95,11 +87,29 @@ module ALU (
 
 
 
+
+    wire z;
+    wire n;
+    wire c;
+    wire c_add;
+    wire c_sub;
+    wire c_addc;
+    wire c_subc;
+    wire c_lsl;
+    wire c_lsr;
+    wire c_asr;
+    wire c_csr;
+    wire c_csl;
+    wire v;
+    wire v_add;
+    wire v_sub;
+    wire v_addc;
+    wire v_subc;
+
     
     assign z     = (result == 8'h00);
     assign n     = result[7];
 
-   
     assign c_add = add_result[8];
     assign c_sub = ~sub_result[8];
     assign c_addc = addc_result[8];
@@ -132,11 +142,13 @@ module ALU (
 
 
 
+
+
+    
+    
     assign bus_out = (read_en == 1) ? result : 0;
 
-
     assign flags_out = {z, n, c, v};
-
 
     always @(posedge clk) begin
         if (clk_phase == 2) begin

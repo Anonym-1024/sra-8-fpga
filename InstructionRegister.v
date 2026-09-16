@@ -1,14 +1,12 @@
 
-
+// Instruction register
 
 module InstructionRegister (
-    input wire write_en_0,
-    input wire write_en_1,
-    input wire write_en_2,
-    input wire write_en_3,
     input wire clk,
     input wire [1:0] clk_phase,
+
     input wire [7:0] bus_in,
+
     output wire [3:0] cond_out,
     output wire [6:0] opcode_out,
     output wire [3:0] arg1_out,
@@ -16,6 +14,14 @@ module InstructionRegister (
     output wire [3:0] arg3_out,
     output wire [7:0] imm0_out,
     output wire [7:0] imm1_out
+
+    input wire write_en_0,
+    input wire write_en_1,
+    input wire write_en_2,
+    input wire write_en_3,
+    
+    
+    
 );
 
 

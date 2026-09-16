@@ -159,13 +159,14 @@ module ControlUnit (
 
     assign ucode = (step < fetch_len) ? fetch_ucode : instr_ucode[(step - fetch_len) | (opcode << 3)];
 
-    assign uc_reset = ucode == 0;
+    
 
     wire [3:0] mux1 = ucode[15:12];
     wire [4:0] mux2 = ucode[11:7];
     wire [2:0] mux3 = ucode[6:4];
     wire [1:0] mux4 = (alu_read == 0) ? ucode[3:2] : 0;
     wire [1:0] mux5 = (alu_read == 0) ? ucode[1:0] : 0;
+    
     
 
     assign gr_read = mux1 == 1;
@@ -199,6 +200,7 @@ module ControlUnit (
     assign svc = mux3 == 3;
     assign psr_flags_write = mux3 == 4;
     assign byte_sel = mux3 == 5;
+    assign uc_reset = mux3 == 6;
 
     assign gr_read_sel_arg1 = mux4 == 1;
     assign gr_read_sel_arg2 = mux4 == 2;

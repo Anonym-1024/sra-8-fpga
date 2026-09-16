@@ -1,18 +1,26 @@
 
+// General registers bank
+
 module GeneralRegisters (
+    input wire clk,
+    input wire [1:0] clk_phase,
+
+    input wire [7:0] bus_in,
+    output wire [7:0] bus_out,
+
     input wire read_en,
     input wire write_en,
     input wire [3:0] read_sel,
-    input wire [3:0] write_sel,
-    input wire clk,
-    input wire [1:0] clk_phase,
-    input wire [7:0] bus_in,
-    output wire [7:0] bus_out
+    input wire [3:0] write_sel
+    
+    
 );
+
+
+
 
     wire [7:0] reg_bus_out [0:15];
  
-   
 
     genvar i;
 

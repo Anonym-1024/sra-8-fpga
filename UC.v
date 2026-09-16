@@ -1,10 +1,15 @@
 
 
+// U-Instruction counter
+
 module UC (
     input wire clk,
     input wire [1:0] clk_phase,
-    input wire reset,
-    output wire [4:0] step
+
+    output wire [4:0] step,
+
+    input wire reset
+    
 );
 
     reg [4:0] content = 0;

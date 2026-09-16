@@ -1,4 +1,6 @@
 
+// Clock
+
 module Clock (
     input wire clk,
     output reg [1:0] phase = 0

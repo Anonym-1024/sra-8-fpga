@@ -1,13 +1,17 @@
 
+// Program counter
+
 module PC (
+    input wire clk,
+    input wire [1:0] clk_phase,
+
+    input wire [7:0] bus_in,
+    output wire [7:0] bus_out,
+
     input wire byte_sel,
     input wire write_en,
     input wire read_en,
-    input wire inc,
-    input wire clk,
-    input wire [1:0] clk_phase,
-    input wire [7:0] bus_in,
-    output wire [7:0] bus_out
+    input wire inc
 );
     
     reg [7:0] byte_0;
