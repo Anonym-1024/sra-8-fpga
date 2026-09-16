@@ -5,13 +5,14 @@ module GeneralRegisters (
     input wire [3:0] read_sel,
     input wire [3:0] write_sel,
     input wire clk,
+    input wire [1:0] clk_phase,
     input wire [7:0] bus_in,
     output wire [7:0] bus_out
 );
 
     wire [7:0] reg_bus_out [0:15];
  
-    ALU alu ();
+   
 
     genvar i;
 
@@ -26,6 +27,7 @@ module GeneralRegisters (
                 .read_sel(read_sel),
                 .write_sel(write_sel),
                 .clk(clk),
+                .clk_phase(clk_phase),
                 .bus_in(bus_in),
                 .bus_out(reg_bus_out[i])
             );

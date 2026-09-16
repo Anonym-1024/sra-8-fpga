@@ -8,6 +8,7 @@ module GeneralRegister #(
     input wire [3:0] read_sel,
     input wire [3:0] write_sel,
     input wire clk,
+    input wire [1:0] clk_phase,
     input wire [7:0] bus_in,
     output wire [7:0] bus_out
 );
@@ -19,8 +20,10 @@ module GeneralRegister #(
 
 
     always @(posedge clk) begin
-        if (write_sel == POSITION && write_en == 1)
-            content <= bus_in;
+        if (clk_phase == 2) begin
+            if (write_sel == POSITION && write_en == 1)
+                content <= bus_in;
+        end
     end
 
 endmodule

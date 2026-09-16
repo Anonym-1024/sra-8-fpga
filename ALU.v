@@ -2,9 +2,10 @@
 
 module ALU (
     input wire read_en,
-    input wire write_en_1,
+    input wire write_en,
     input wire write_en_2,
     input wire clk,
+    input wire [1:0] clk_phase,
     input wire [3:0] opcode,
     input wire [7:0] bus_in,
     output wire [7:0] bus_out,
@@ -138,10 +139,12 @@ module ALU (
 
 
     always @(posedge clk) begin
-        if (write_en_1 == 1)
-            reg_1 <= bus_in;
-        if (write_en_2 == 1) 
-            reg_2 <= bus_in;
+        if (clk_phase == 2) begin
+            if (write_en == 1)
+                reg_1 <= bus_in;
+            if (write_en_2 == 1) 
+                reg_2 <= bus_in;
+        end
     end
 
 
