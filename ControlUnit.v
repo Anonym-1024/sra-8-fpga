@@ -3,6 +3,7 @@
 module ControlUnit (
     input wire clk,
     input wire [1:0] clk_phase,
+
     input wire [7:0] bus_in,
     output wire [7:0] bus_out,
     input wire [3:0] flags_in,
@@ -12,29 +13,40 @@ module ControlUnit (
     output wire gr_write,
     output wire [3:0] gr_read_sel,
     output wire [3:0] gr_write_sel,
+
     output wire alu_read,
     output wire alu_op1_write,
     output wire alu_op2_write,
     output wire [3:0] alu_opcode,
+
     output wire mem_read,
     output wire mem_write,
+
+    output wire byte_sel,
+
+
     output wire ptbr_read,
     output wire ptbr_write,
     output wire ptbr_addr_read,
-    output wire byte_sel,
+
     output wire pter_write,
     output wire pter_addr_read,
+
     output wire mar_write,
     output wire mar_addr_read,
+
     output wire pc_read,
     output wire pc_write,
     output wire pc_inc,
+
     output wire intpc_read,
     output wire intpc_write,
     output wire intpc_inc,
+
     output wire psr_read,
     output wire psr_write,
     output wire psr_flags_write,
+
     output wire intr_read,
     output wire intr_write,
     output wire svc
@@ -97,7 +109,7 @@ module ControlUnit (
 
     );
 
-    assign bus_out = (imm_read == 1) ? (byte_sel == 0) ? imm0_out : imm1_out : 8'b0;
+    
 
 
     wire z = flags_in[3];
@@ -218,7 +230,7 @@ module ControlUnit (
     
     assign gr_write_sel = arg1;
 
-    
+    assign bus_out = (imm_read == 1) ? (byte_sel == 0) ? imm0 : imm1 : 8'b0;
 
     initial begin
         $readmemh("control_rom.mem",instr_ucode);

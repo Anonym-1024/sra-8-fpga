@@ -18,8 +18,8 @@ module GeneralRegister #(
 );
     
 
-    
-    reg [7:0] content;
+
+    reg [7:0] content = 0;
 
 
     assign bus_out = (read_sel == POSITION && read_en == 1) ? content : 0;

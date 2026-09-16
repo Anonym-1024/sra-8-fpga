@@ -13,19 +13,19 @@ module InstructionRegister (
     output wire [3:0] arg2_out,
     output wire [3:0] arg3_out,
     output wire [7:0] imm0_out,
-    output wire [7:0] imm1_out
+    output wire [7:0] imm1_out,
 
     input wire write_en_0,
     input wire write_en_1,
     input wire write_en_2,
-    input wire write_en_3,
+    input wire write_en_3
     
     
     
 );
 
 
-    reg [31:0] instruction;
+    reg [31:0] instruction = 0;
 
     assign cond_out = instruction[31:28];
     assign opcode_out = instruction[27:21];

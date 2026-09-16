@@ -16,8 +16,8 @@ module MAR (
     input wire byte_sel
 );
 
-    reg [7:0] byte_0;
-    reg [7:0] byte_1;
+    reg [7:0] byte_0 = 0;
+    reg [7:0] byte_1 = 0;
 
     assign addr_out = {byte_1, byte_0};
 

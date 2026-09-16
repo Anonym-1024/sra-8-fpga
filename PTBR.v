@@ -16,8 +16,8 @@ module PTBR (
     
 );
     
-    reg [7:0] byte_0;
-    reg [7:0] byte_1;
+    reg [7:0] byte_0 = 0;
+    reg [7:0] byte_1 = 0;
 
     assign bus_out = (read_en == 1) ? (byte_sel == 0) ? byte_0 : byte_1 : 8'b0;
 

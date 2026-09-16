@@ -11,12 +11,12 @@ module ALU (
     input wire [7:0] bus_in,
     output wire [7:0] bus_out,
     input wire [3:0] flags_in,
-    output wire [3:0] flags_out
+    output wire [3:0] flags_out,
 
     input wire read_en,
     input wire write_en,
     input wire write_en_2,
-    input wire [3:0] opcode,
+    input wire [3:0] opcode
     
     
 );
@@ -36,8 +36,8 @@ module ALU (
 
 
 
-    reg [7:0] reg_1;
-    reg [7:0] reg_2;
+    reg [7:0] reg_1 = 0;
+    reg [7:0] reg_2 = 0;
 
     wire [7:0] result;
 

@@ -18,7 +18,7 @@ module PSR (
     
 );
 
-    reg [7:0] content;
+    reg [7:0] content = 8'b00000000;
 
     assign bus_out = read_en ? content : 0;
 

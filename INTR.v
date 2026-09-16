@@ -15,11 +15,13 @@ module INTR (
     input wire [1:0] clk_phase
 );
     
-    reg [4:0] content;
+    reg [4:0] content = 0;
 
     assign bus_out = read_en ? content : 0;
 
-    assign int_out = content[0];
+    //assign int_out = content[0];
+    reg tmp = 1;
+    assign int_out = tmp;
 /*
     always @(posedge irq_in) begin
         content[4] <= 1;
