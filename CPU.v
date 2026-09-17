@@ -18,7 +18,7 @@ module CPU (
         end
 
 end 
-
+    
     initial begin
         $dumpfile("dump.vcd"); // Name of the waveform output file
         $dumpvars(0); // Dump all variables in module tb_counter and below
@@ -171,10 +171,10 @@ end
 
     wire intr_read;
     wire intr_write;
-    wire irq_in;
+    reg irq_in = 0;
     wire svc_in;
-    wire ini_in;
-    wire pf_in;
+    reg ini_in = 0;
+    reg pf_in = 0;
     wire int_in;
 
     wire irq_out;
@@ -343,7 +343,12 @@ end
         .ini_in(ini_in),
         .svc_in(svc_in),
         .pf_in(pf_in),
-        .int_in(int_in)
+        .int_in(int_in),
+
+        .irq_out(irq_out),
+        .ini_out(ini_out),
+        .svc_out(svc_out),
+        .pf_out(pf_out)
     );
 
 

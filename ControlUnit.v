@@ -180,38 +180,46 @@ module ControlUnit (
     wire [1:0] mux4 = (alu_read == 0) ? ucode[3:2] : 0;
     wire [1:0] mux5 = (alu_read == 0) ? ucode[1:0] : 0;
 
+
+    wire xpc_read;
+    wire xpc_write;
+    wire xpc_inc; //
+
     assign gr_read = mux1 == 1;
     assign alu_read = mux1 == 2;
     assign mem_read = mux1 == 3;
     assign imm_read = mux1 == 4;
-    assign pc_read = mux1 == 5;
-    assign intpc_read = mux1 == 6;
-    assign psr_read = mux1 == 7;
-    assign ptbr_read = mux1 == 8;
-    assign intr_read = mux1 == 9;
+    assign pc_read = mux1 == 5 | (is_interrupted == 0 & xpc_read == 1); //
+    assign intpc_read = mux1 == 6 | (is_interrupted == 1 & xpc_read == 1); //
+    assign xpc_read = mux1 == 7;
+    assign psr_read = mux1 == 8;
+    assign ptbr_read = mux1 == 9;
+    assign intr_read = mux1 == 10;
 
     assign gr_write = mux2 == 1;
     assign alu_op1_write = mux2 == 2;
     assign alu_op2_write = mux2 == 3;
     assign mem_write = mux2 == 4;
-    assign pc_write = mux2 == 5;
-    assign intpc_write = mux2 == 6;
-    assign psr_write = mux2 == 7;
-    assign ptbr_write = mux2 == 8;
-    assign intr_write = mux2 == 9;
-    assign ir_frame0_write = mux2 == 10;
-    assign ir_frame1_write = mux2 == 11;
-    assign ir_frame2_write = mux2 == 12;
-    assign ir_frame3_write = mux2 == 13;
-    assign mar_write = mux2 == 14;
-    assign pter_write = mux2 == 15;
+    assign pc_write = (mux2 == 5) | (is_interrupted == 0 & xpc_write == 1); //
+    assign intpc_write = (mux2 == 6) | (is_interrupted == 1 & xpc_write == 1); //
+    assign xpc_write = mux2 == 7;
+    assign psr_write = mux2 == 8;
+    assign ptbr_write = mux2 == 9;
+    assign intr_write = mux2 == 10;
+    assign ir_frame0_write = mux2 == 11;
+    assign ir_frame1_write = mux2 == 12;
+    assign ir_frame2_write = mux2 == 13;
+    assign ir_frame3_write = mux2 == 14;
+    assign mar_write = mux2 == 15;
+    assign pter_write = mux2 == 13;
 
-    assign pc_inc = mux3 == 1;
-    assign intpc_inc = mux3 == 2;
-    assign svc = mux3 == 3;
-    assign psr_flags_write = mux3 == 4;
-    assign byte_sel = mux3 == 5;
-    assign uc_reset = mux3 == 6;
+    assign xpc_inc = mux3 == 1;
+    assign pc_inc = is_interrupted == 0 & xpc_inc == 1;
+    assign incpc_inc = is_interrupted == 1 & xpc_inc == 1;
+    assign svc_out = mux3 == 2;
+    assign psr_flags_write = mux3 == 3;
+    assign byte_sel = mux3 == 4;
+    assign uc_reset = mux3 == 5;
 
     assign gr_read_sel_arg1 = mux4 == 1;
     assign gr_read_sel_arg2 = mux4 == 2;
@@ -249,14 +257,18 @@ module ControlUnit (
             end else if (pl_in == 0 || is_interrupted == 1) begin
                 if (step < 9) 
                     ucode <= fetch_phys_ucode[step];
-                else
-                    ucode <= instr_ucode[step - 9];
+                else if (cond_met == 1)
+                    ucode <= instr_ucode[(step - 9) | (opcode << 3)];
+                else 
+                    ucode <= 16'h0060;
 
             end else begin
                 if (step < 11) 
-                    ucode <= fetch_phys_ucode[step];
-                else
-                    ucode <= instr_ucode[step - 11];
+                    ucode <= fetch_virt_ucode[step];
+                else if (cond_met == 1)
+                    ucode <= instr_ucode[(step - 11) | (opcode << 3)];
+                else 
+                    ucode <= 16'h0060;
 
             end
             

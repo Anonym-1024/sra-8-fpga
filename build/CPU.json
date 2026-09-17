@@ -23,7 +23,7 @@
         }
       },
       "cells": {
-        "$specify$1329": {
+        "$specify$1481": {
           "hide_name": 1,
           "type": "$specify2",
           "parameters": {
@@ -340,12 +340,16 @@
       "attributes": {
         "hdlname": "CPU",
         "top": "00000000000000000000000000000001",
-        "src": "Cpu.v:3.1-296.10"
+        "src": "CPU.v:3.1-423.10"
       },
       "ports": {
         "clk": {
           "direction": "input",
           "bits": [ 2 ]
+        },
+        "io": {
+          "direction": "output",
+          "bits": [ "x" ]
         }
       },
       "cells": {
@@ -357,7 +361,7 @@
           },
           "attributes": {
             "cell_module_not_derived": "00000000000000000000000000000001",
-            "cell_src": "Cpu.v:66.9-77.6",
+            "cell_src": "CPU.v:205.9-219.6",
             "module": "ALU",
             "module_hdlname": "ALU",
             "module_src": "ALU.v:7.1-164.10"
@@ -375,7 +379,7 @@
           },
           "attributes": {
             "cell_module_not_derived": "00000000000000000000000000000001",
-            "cell_src": "Cpu.v:10.11-13.6",
+            "cell_src": "CPU.v:32.11-35.6",
             "module": "Clock",
             "module_hdlname": "Clock",
             "module_src": "Clock.v:4.1-12.10"
@@ -393,10 +397,10 @@
           },
           "attributes": {
             "cell_module_not_derived": "00000000000000000000000000000001",
-            "cell_src": "Cpu.v:245.17-293.6",
+            "cell_src": "CPU.v:360.17-420.6",
             "module": "ControlUnit",
             "module_hdlname": "ControlUnit",
-            "module_src": "ControlUnit.v:3.1-229.10"
+            "module_src": "ControlUnit.v:3.1-321.10"
           },
           "port_directions": {
           },
@@ -411,7 +415,7 @@
           },
           "attributes": {
             "cell_module_not_derived": "00000000000000000000000000000001",
-            "cell_src": "ControlUnit.v:79.25-98.6",
+            "cell_src": "ControlUnit.v:292.25-311.6",
             "hdlname": "cu ir",
             "module": "InstructionRegister",
             "module_hdlname": "InstructionRegister",
@@ -430,7 +434,7 @@
           },
           "attributes": {
             "cell_module_not_derived": "00000000000000000000000000000001",
-            "cell_src": "ControlUnit.v:72.8-77.6",
+            "cell_src": "ControlUnit.v:285.8-290.6",
             "hdlname": "cu uc",
             "module": "UC",
             "module_hdlname": "UC",
@@ -449,10 +453,10 @@
           },
           "attributes": {
             "cell_module_not_derived": "00000000000000000000000000000001",
-            "cell_src": "Cpu.v:187.11-196.6",
+            "cell_src": "CPU.v:300.11-311.6",
             "module": "INTPC",
             "module_hdlname": "INTPC",
-            "module_src": "INTPC.v:4.1-41.10"
+            "module_src": "INTPC.v:3.1-40.10"
           },
           "port_directions": {
           },
@@ -467,10 +471,10 @@
           },
           "attributes": {
             "cell_module_not_derived": "00000000000000000000000000000001",
-            "cell_src": "Cpu.v:227.10-238.6",
+            "cell_src": "CPU.v:334.10-353.6",
             "module": "INTR",
             "module_hdlname": "INTR",
-            "module_src": "INTR.v:5.1-52.10"
+            "module_src": "INTR.v:5.1-59.10"
           },
           "port_directions": {
           },
@@ -485,7 +489,7 @@
           },
           "attributes": {
             "cell_module_not_derived": "00000000000000000000000000000001",
-            "cell_src": "Cpu.v:152.9-161.6",
+            "cell_src": "CPU.v:270.9-282.6",
             "module": "MAR",
             "module_hdlname": "MAR",
             "module_src": "MAR.v:5.1-38.10"
@@ -503,10 +507,10 @@
           },
           "attributes": {
             "cell_module_not_derived": "00000000000000000000000000000001",
-            "cell_src": "Cpu.v:90.12-98.6",
+            "cell_src": "CPU.v:223.12-234.6",
             "module": "Memory",
             "module_hdlname": "Memory",
-            "module_src": "Memory.v:5.1-32.10"
+            "module_src": "Memory.v:5.1-37.10"
           },
           "port_directions": {
           },
@@ -521,7 +525,7 @@
           },
           "attributes": {
             "cell_module_not_derived": "00000000000000000000000000000001",
-            "cell_src": "Cpu.v:170.8-179.6",
+            "cell_src": "CPU.v:285.8-296.6",
             "module": "PC",
             "module_hdlname": "PC",
             "module_src": "PC.v:4.1-33.10"
@@ -539,10 +543,10 @@
           },
           "attributes": {
             "cell_module_not_derived": "00000000000000000000000000000001",
-            "cell_src": "Cpu.v:204.9-214.6",
+            "cell_src": "CPU.v:315.9-330.6",
             "module": "PSR",
             "module_hdlname": "PSR",
-            "module_src": "PSR.v:6.1-37.10"
+            "module_src": "PSR.v:6.1-41.10"
           },
           "port_directions": {
           },
@@ -557,7 +561,7 @@
           },
           "attributes": {
             "cell_module_not_derived": "00000000000000000000000000000001",
-            "cell_src": "Cpu.v:112.10-121.6",
+            "cell_src": "CPU.v:237.10-249.6",
             "module": "PTBR",
             "module_hdlname": "PTBR",
             "module_src": "PTBR.v:5.1-35.10"
@@ -575,7 +579,7 @@
           },
           "attributes": {
             "cell_module_not_derived": "00000000000000000000000000000001",
-            "cell_src": "Cpu.v:133.10-140.6",
+            "cell_src": "CPU.v:254.10-264.6",
             "module": "PTER",
             "module_hdlname": "PTER",
             "module_src": "PTER.v:6.1-34.10"
@@ -593,7 +597,7 @@
           },
           "attributes": {
             "cell_module_not_derived": "00000000000000000000000000000001",
-            "cell_src": "Cpu.v:46.22-55.6",
+            "cell_src": "CPU.v:191.22-202.6",
             "module": "GeneralRegisters",
             "module_hdlname": "GeneralRegisters",
             "module_src": "GeneralRegisters.v:4.1-66.10"
@@ -994,7 +998,7 @@
           "hide_name": 0,
           "bits": [ 2 ],
           "attributes": {
-            "src": "Cpu.v:4.16-4.19"
+            "src": "CPU.v:4.16-4.19"
           }
         },
         "clock.clk": {
@@ -1011,7 +1015,7 @@
           "bits": [ "x" ],
           "attributes": {
             "hdlname": "cu c",
-            "src": "ControlUnit.v:105.10-105.11"
+            "src": "ControlUnit.v:107.10-107.11"
           }
         },
         "cu.clk": {
@@ -1028,7 +1032,7 @@
           "bits": [ "1" ],
           "attributes": {
             "hdlname": "cu cond_al",
-            "src": "ControlUnit.v:109.10-109.17"
+            "src": "ControlUnit.v:110.10-110.17"
           }
         },
         "cu.cond_eq": {
@@ -1036,7 +1040,7 @@
           "bits": [ "x" ],
           "attributes": {
             "hdlname": "cu cond_eq",
-            "src": "ControlUnit.v:110.10-110.17"
+            "src": "ControlUnit.v:111.10-111.17"
           }
         },
         "cu.cond_geu": {
@@ -1044,7 +1048,7 @@
           "bits": [ "x" ],
           "attributes": {
             "hdlname": "cu cond_geu",
-            "src": "ControlUnit.v:122.10-122.18"
+            "src": "ControlUnit.v:123.10-123.18"
           }
         },
         "cu.cond_lut": {
@@ -1052,7 +1056,7 @@
           "bits": [ "x", "x", "x", "x", "x", "x", "x", "0", "x", "x", "x", "x", "x", "x", "x", "1" ],
           "attributes": {
             "hdlname": "cu cond_lut",
-            "src": "ControlUnit.v:128.17-128.25"
+            "src": "ControlUnit.v:129.17-129.25"
           }
         },
         "cu.cond_mi": {
@@ -1060,7 +1064,7 @@
           "bits": [ "x" ],
           "attributes": {
             "hdlname": "cu cond_mi",
-            "src": "ControlUnit.v:111.10-111.17"
+            "src": "ControlUnit.v:112.10-112.17"
           }
         },
         "cu.cond_ne": {
@@ -1068,7 +1072,7 @@
           "bits": [ "x" ],
           "attributes": {
             "hdlname": "cu cond_ne",
-            "src": "ControlUnit.v:119.10-119.17"
+            "src": "ControlUnit.v:120.10-120.17"
           }
         },
         "cu.cond_nvr": {
@@ -1076,7 +1080,7 @@
           "bits": [ "0" ],
           "attributes": {
             "hdlname": "cu cond_nvr",
-            "src": "ControlUnit.v:118.10-118.18"
+            "src": "ControlUnit.v:119.10-119.18"
           }
         },
         "cu.cond_pl": {
@@ -1084,7 +1088,7 @@
           "bits": [ "x" ],
           "attributes": {
             "hdlname": "cu cond_pl",
-            "src": "ControlUnit.v:120.10-120.17"
+            "src": "ControlUnit.v:121.10-121.17"
           }
         },
         "cu.cond_ses": {
@@ -1092,7 +1096,7 @@
           "bits": [ "x" ],
           "attributes": {
             "hdlname": "cu cond_ses",
-            "src": "ControlUnit.v:125.10-125.18"
+            "src": "ControlUnit.v:126.10-126.18"
           }
         },
         "cu.cond_seu": {
@@ -1100,7 +1104,7 @@
           "bits": [ "x" ],
           "attributes": {
             "hdlname": "cu cond_seu",
-            "src": "ControlUnit.v:123.10-123.18"
+            "src": "ControlUnit.v:124.10-124.18"
           }
         },
         "cu.cond_ss": {
@@ -1108,7 +1112,7 @@
           "bits": [ "x" ],
           "attributes": {
             "hdlname": "cu cond_ss",
-            "src": "ControlUnit.v:115.10-115.17"
+            "src": "ControlUnit.v:116.10-116.17"
           }
         },
         "cu.cond_su": {
@@ -1116,7 +1120,7 @@
           "bits": [ "x" ],
           "attributes": {
             "hdlname": "cu cond_su",
-            "src": "ControlUnit.v:113.10-113.17"
+            "src": "ControlUnit.v:114.10-114.17"
           }
         },
         "cu.cond_vc": {
@@ -1124,7 +1128,7 @@
           "bits": [ "x" ],
           "attributes": {
             "hdlname": "cu cond_vc",
-            "src": "ControlUnit.v:121.10-121.17"
+            "src": "ControlUnit.v:122.10-122.17"
           }
         },
         "cu.cond_vs": {
@@ -1132,7 +1136,7 @@
           "bits": [ "x" ],
           "attributes": {
             "hdlname": "cu cond_vs",
-            "src": "ControlUnit.v:112.10-112.17"
+            "src": "ControlUnit.v:113.10-113.17"
           }
         },
         "cu.flags_in": {
@@ -1140,7 +1144,7 @@
           "bits": [ "x", "x", "x", "x" ],
           "attributes": {
             "hdlname": "cu flags_in",
-            "src": "ControlUnit.v:8.22-8.30"
+            "src": "ControlUnit.v:10.22-10.30"
           }
         },
         "cu.ir.clk": {
@@ -1157,7 +1161,7 @@
           "bits": [ "x" ],
           "attributes": {
             "hdlname": "cu n",
-            "src": "ControlUnit.v:104.10-104.11"
+            "src": "ControlUnit.v:106.10-106.11"
           }
         },
         "cu.uc.clk": {
@@ -1174,7 +1178,7 @@
           "bits": [ "x" ],
           "attributes": {
             "hdlname": "cu v",
-            "src": "ControlUnit.v:106.10-106.11"
+            "src": "ControlUnit.v:108.10-108.11"
           }
         },
         "cu.z": {
@@ -1182,14 +1186,21 @@
           "bits": [ "x" ],
           "attributes": {
             "hdlname": "cu z",
-            "src": "ControlUnit.v:103.10-103.11"
+            "src": "ControlUnit.v:105.10-105.11"
           }
         },
         "flags": {
           "hide_name": 0,
           "bits": [ "x", "x", "x", "x" ],
           "attributes": {
-            "src": "Cpu.v:36.16-36.21"
+            "src": "CPU.v:59.16-59.21"
+          }
+        },
+        "ini_in": {
+          "hide_name": 0,
+          "bits": [ "0" ],
+          "attributes": {
+            "src": "CPU.v:177.9-177.15"
           }
         },
         "intpc.clk": {
@@ -1197,7 +1208,7 @@
           "bits": [ 2 ],
           "attributes": {
             "hdlname": "intpc clk",
-            "src": "INTPC.v:12.16-12.19",
+            "src": "INTPC.v:11.16-11.19",
             "unused_bits": "0 "
           }
         },
@@ -1206,8 +1217,46 @@
           "bits": [ 2 ],
           "attributes": {
             "hdlname": "intr clk",
-            "src": "INTR.v:14.16-14.19",
+            "src": "INTR.v:6.16-6.19",
             "unused_bits": "0 "
+          }
+        },
+        "intr.ini_in": {
+          "hide_name": 0,
+          "bits": [ "0" ],
+          "attributes": {
+            "hdlname": "intr ini_in",
+            "src": "INTR.v:12.16-12.22"
+          }
+        },
+        "intr.irq_in": {
+          "hide_name": 0,
+          "bits": [ "0" ],
+          "attributes": {
+            "hdlname": "intr irq_in",
+            "src": "INTR.v:11.16-11.22"
+          }
+        },
+        "intr.pf_in": {
+          "hide_name": 0,
+          "bits": [ "0" ],
+          "attributes": {
+            "hdlname": "intr pf_in",
+            "src": "INTR.v:14.16-14.21"
+          }
+        },
+        "io": {
+          "hide_name": 0,
+          "bits": [ "x" ],
+          "attributes": {
+            "src": "CPU.v:5.17-5.19"
+          }
+        },
+        "irq_in": {
+          "hide_name": 0,
+          "bits": [ "0" ],
+          "attributes": {
+            "src": "CPU.v:175.9-175.15"
           }
         },
         "mar.clk": {
@@ -1237,6 +1286,13 @@
             "unused_bits": "0 "
           }
         },
+        "pf_in": {
+          "hide_name": 0,
+          "bits": [ "0" ],
+          "attributes": {
+            "src": "CPU.v:178.9-178.14"
+          }
+        },
         "psr.clk": {
           "hide_name": 0,
           "bits": [ 2 ],
@@ -1251,7 +1307,7 @@
           "bits": [ "x", "x", "x", "x", "x", "x", "x", "x" ],
           "attributes": {
             "hdlname": "psr content",
-            "src": "PSR.v:21.15-21.22"
+            "src": "PSR.v:23.15-23.22"
           }
         },
         "psr.flags_out": {
@@ -1266,7 +1322,7 @@
           "hide_name": 0,
           "bits": [ "x", "x", "x", "x" ],
           "attributes": {
-            "src": "Cpu.v:202.16-202.29"
+            "src": "CPU.v:159.16-159.29"
           }
         },
         "ptbr.clk": {

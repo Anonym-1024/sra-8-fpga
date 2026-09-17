@@ -1,5 +1,4 @@
 
-// TODO: Interrupt handling, timing
 
 module INTPC #(
     parameter DEFAULT_VALUE = 0

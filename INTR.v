@@ -37,31 +37,17 @@ module INTR (
     assign pf_out = content[0];
     
 
+
+
     always @(posedge clk) begin
         if (irq_in == 1)
             content[3] <= 1;
-        
-    end
-
-    always @(posedge clk) begin
         if (svc_in == 1)
             content[2] <= 1;
-        
-    end
-
-    always @(posedge clk) begin
         if (pf_in == 1)
             content[1] <= 1;
-        
-    end
-
-    always @(posedge clk) begin
         if (ini_in == 1)
             content[0] <= 1;
-        
-    end
-
-    always @(posedge clk) begin
         if (clk_phase == 2) begin
             if (reset == 1)
                 content <= 0;

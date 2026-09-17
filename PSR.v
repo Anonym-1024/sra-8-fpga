@@ -26,6 +26,8 @@ module PSR (
 
     assign flags_out = content[3:0];
 
+    assign pl_out = content[7:6];
+    assign irqm_out = content[5];
 
     always @(posedge clk) begin
         if (clk_phase == 2) begin

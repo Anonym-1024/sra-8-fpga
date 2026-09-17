@@ -169,9 +169,10 @@ enum mux1 {
     M1_IMM_READ,         /* 4 */
     M1_PC_READ,          /* 5 */
     M1_INTPC_READ,       /* 6 */
-    M1_PSR_READ,         /* 7 */
-    M1_PTBR_READ,        /* 8 */
-    M1_INTR_READ         /* 9 */
+    M1_XPC_READ,          /* 7 */
+    M1_PSR_READ,         /* 8 */
+    M1_PTBR_READ,        /* 9 */
+    M1_INTR_READ         /* 10 */
 };
 
 /* MUX 2 - 5 bit: what latches the internal bus */
@@ -183,15 +184,16 @@ enum mux2 {
     M2_MEM_WRITE,            /* 4  */
     M2_PC_WRITE,             /* 5  */
     M2_INTPC_WRITE,          /* 6  */
-    M2_PSR_WRITE,            /* 7  */
-    M2_PTBR_WRITE,           /* 8  */
-    M2_INTR_WRITE,           /* 9  */
-    M2_INSTR_FRAME0_WRITE,   /* 10 */
-    M2_INSTR_FRAME1_WRITE,   /* 11 */
-    M2_INSTR_FRAME2_WRITE,   /* 12 */
-    M2_INSTR_FRAME3_WRITE,   /* 13 */
-    M2_MAR_WRITE,            /* 14 */
-    M2_PTER_WRITE            /* 15 */
+    M2_XPC_WRITE,            /* 7  */
+    M2_PSR_WRITE,            /* 8  */
+    M2_PTBR_WRITE,           /* 9  */
+    M2_INTR_WRITE,           /* 10  */
+    M2_INSTR_FRAME0_WRITE,   /* 11 */
+    M2_INSTR_FRAME1_WRITE,   /* 12 */
+    M2_INSTR_FRAME2_WRITE,   /* 13 */
+    M2_INSTR_FRAME3_WRITE,   /* 14 */
+    M2_MAR_WRITE,            /* 15 */
+    M2_PTER_WRITE            /* 16 */
 };
 
 /* MUX 3 - 3 bit: counter strobes, flag strobe, the byte select and the
@@ -199,12 +201,11 @@ enum mux2 {
  * only the high-byte step of a 16 bit transfer needs it. */
 enum mux3 {
     M3_NONE = 0,
-    M3_PC_INC,           /* 1 */
-    M3_INTPC_INC,        /* 2 */
-    M3_SVC,              /* 3 */
-    M3_PSR_FLAGS_WRITE,  /* 4 */
-    M3_BYTE_SEL,         /* 5 */
-    M3_UCR               /* 6 microcode counter reset */
+    M3_XPC_INC,          /* 1 */
+    M3_SVC,              /* 2 */
+    M3_PSR_FLAGS_WRITE,  /* 3 */
+    M3_BYTE_SEL,         /* 4 */
+    M3_UCR               /* 5 microcode counter reset */
 };
 
 /* MUX 4 - 2 bit: which instruction field selects the GR read port.
@@ -853,31 +854,31 @@ static const step_t microcode[NUM_OPCODES][MAX_STEPS] = {
 
 /* BR rT */
 [OPC_BR] = {
-    STEP(M1_GR_READ,  M2_PC_WRITE, M3_NONE,     M4_GR_SEL_ARG1, M5_NONE),
-    STEP(M1_GR_READ,  M2_PC_WRITE, M3_BYTE_SEL, M4_GR_SEL_ARG1, M5_NONE),
+    STEP(M1_GR_READ,  M2_XPC_WRITE, M3_NONE,     M4_GR_SEL_ARG1, M5_NONE),
+    STEP(M1_GR_READ,  M2_XPC_WRITE, M3_BYTE_SEL, M4_GR_SEL_ARG1, M5_NONE),
     UCR_STEP,
 },
 /* BR imm16 */
 [OPC_BR_I] = {
-    STEP(M1_IMM_READ, M2_PC_WRITE, M3_NONE,     M4_NONE,        M5_NONE),
-    STEP(M1_IMM_READ, M2_PC_WRITE, M3_BYTE_SEL, M4_NONE,        M5_NONE),
+    STEP(M1_IMM_READ, M2_XPC_WRITE, M3_NONE,     M4_NONE,        M5_NONE),
+    STEP(M1_IMM_READ, M2_XPC_WRITE, M3_BYTE_SEL, M4_NONE,        M5_NONE),
     UCR_STEP,
 },
 
 /* BRL rL, rT -- link register first, then branch */
 [OPC_BRL] = {
-    STEP(M1_PC_READ,  M2_GR_WRITE, M3_NONE,     M4_NONE,        M5_NONE),
-    STEP(M1_PC_READ,  M2_GR_WRITE, M3_BYTE_SEL, M4_NONE,        M5_NONE),
-    STEP(M1_GR_READ,  M2_PC_WRITE, M3_NONE,     M4_GR_SEL_ARG2, M5_NONE),
-    STEP(M1_GR_READ,  M2_PC_WRITE, M3_BYTE_SEL, M4_GR_SEL_ARG2, M5_NONE),
+    STEP(M1_XPC_READ,  M2_GR_WRITE, M3_NONE,     M4_NONE,        M5_NONE),
+    STEP(M1_XPC_READ,  M2_GR_WRITE, M3_BYTE_SEL, M4_NONE,        M5_NONE),
+    STEP(M1_GR_READ,  M2_XPC_WRITE, M3_NONE,     M4_GR_SEL_ARG2, M5_NONE),
+    STEP(M1_GR_READ,  M2_XPC_WRITE, M3_BYTE_SEL, M4_GR_SEL_ARG2, M5_NONE),
     UCR_STEP,
 },
 /* BRL rL, imm16 */
 [OPC_BRL_I] = {
-    STEP(M1_PC_READ,  M2_GR_WRITE, M3_NONE,     M4_NONE,        M5_NONE),
-    STEP(M1_PC_READ,  M2_GR_WRITE, M3_BYTE_SEL, M4_NONE,        M5_NONE),
-    STEP(M1_IMM_READ, M2_PC_WRITE, M3_NONE,     M4_NONE,        M5_NONE),
-    STEP(M1_IMM_READ, M2_PC_WRITE, M3_BYTE_SEL, M4_NONE,        M5_NONE),
+    STEP(M1_XPC_READ,  M2_GR_WRITE, M3_NONE,     M4_NONE,        M5_NONE),
+    STEP(M1_XPC_READ,  M2_GR_WRITE, M3_BYTE_SEL, M4_NONE,        M5_NONE),
+    STEP(M1_IMM_READ, M2_XPC_WRITE, M3_NONE,     M4_NONE,        M5_NONE),
+    STEP(M1_IMM_READ, M2_XPC_WRITE, M3_BYTE_SEL, M4_NONE,        M5_NONE),
     UCR_STEP,
 },
 
