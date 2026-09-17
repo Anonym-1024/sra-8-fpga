@@ -24,14 +24,7 @@ set_io -nowarn FLASH_IO2  12
 set_io -nowarn FLASH_IO3  13
 
 # PMOD 1A
-set_io -nowarn port_in[0]        4
-set_io -nowarn port_in[1]        2
-set_io -nowarn port_in[2]       47
-set_io -nowarn port_in[3]       45
-set_io -nowarn port_in[4]        3
-set_io -nowarn port_in[5]       48
-set_io -nowarn port_in[6]       46
-set_io -nowarn port_in[7]       44
+
 
 
 

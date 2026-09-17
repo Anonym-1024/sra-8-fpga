@@ -15,14 +15,16 @@ module Port (
 
 
 
-    reg [7:0] outgoing = 0;
+    reg [7:0] outgoing = 3;
     assign port_out = outgoing;
+    reg a = 0;
+    assign bus_out = a;
 
     always @(posedge clk) begin
-        if (clk_phase == 2)
+        if (clk_phase == 2) begin
             if (port_write == 1)
                 outgoing <= bus_in;
-
+        end
         
     end
 
