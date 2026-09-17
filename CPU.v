@@ -5,7 +5,7 @@ module CPU (
     output wire [7:0] port_out
 );
 
-    
+    assign port_out = _port_out;
     
     initial begin
         $dumpfile("dump.vcd"); // Name of the waveform output file
@@ -349,7 +349,7 @@ module CPU (
         .pf_out(pf_out)
     );
 
-
+    wire [7:0] _port_out;
 
     Port port (
         .clk(clk),
@@ -358,7 +358,7 @@ module CPU (
         .bus_in(bus),
         .bus_out(port_bus),
         .port_in(port_in),
-        .port_out(port_out),
+        .port_out(_port_out),
 
         .port_read(port_read),
         .port_write(port_write)

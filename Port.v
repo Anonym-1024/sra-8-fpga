@@ -21,8 +21,8 @@ module Port (
     assign bus_out = a;
 
     always @(posedge clk) begin
-        if (clk_phase == 2) begin
-            if (port_write == 1)
+        if (clk_phase == 2 && port_write) begin
+            
                 outgoing <= bus_in;
         end
         
