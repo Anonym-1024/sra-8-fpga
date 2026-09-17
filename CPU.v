@@ -4,7 +4,6 @@ module CPU (
     input wire clk,
     output wire [7:0] port_out
 );
-
     assign port_out = _port_out;
     
     initial begin
@@ -431,7 +430,8 @@ module CPU (
         .psr_write(psr_write),
         .psr_flags_write(psr_flags_write),
         .intr_read(intr_read),
-        .intr_write(intr_write)
+        .intr_write(intr_write),
+
         
     );
 

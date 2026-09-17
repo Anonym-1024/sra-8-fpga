@@ -63,7 +63,6 @@ module ControlUnit (
 );
 
 
-
     // General register select
 
     wire gr_read_sel_arg1;
@@ -245,12 +244,17 @@ module ControlUnit (
     assign bus_out = (imm_read == 1) ? (byte_sel == 0) ? imm0 : imm1 : 8'b0;
 
 
+    reg [10:0] counter = 0;
 
     always @(posedge clk) begin
+
+
         if (clk_phase == 0) begin
             // Fetch ucode from ROM
-
-            if ((irq_in == 1 && irqm_in == 1 && step == 0) == 1 && is_interrupted == 0) begin
+            if (counter[10] == 0) begin
+                ucode <= 16'h0050;
+                counter <= counter + 1;
+            end else if ((irq_in == 1 && irqm_in == 1 && step == 0) == 1 && is_interrupted == 0) begin
                 ucode <= 16'h0050;
                 is_interrupted <= 1;
             end else if ((svc_in == 1 || pf_in == 1 || ini_in ==1) == 1 && is_interrupted == 0) begin
