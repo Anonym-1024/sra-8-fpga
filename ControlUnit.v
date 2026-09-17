@@ -6,8 +6,15 @@ module ControlUnit (
 
     input wire [7:0] bus_in,
     output wire [7:0] bus_out,
+    input wire [1:0] pl_in,
     input wire [3:0] flags_in,
-    input wire int_in,
+
+    input wire irq_in,
+    input wire svc_in,
+    input wire pf_in,
+    input wire ini_in,
+    output wire int_out,
+    input wire irqm_in,
 
     output wire gr_read,
     output wire gr_write,
@@ -49,26 +56,31 @@ module ControlUnit (
 
     output wire intr_read,
     output wire intr_write,
-    output wire svc
+    output wire svc_out
 );
 
 
 
+    // General register select
 
     wire gr_read_sel_arg1;
     wire gr_read_sel_arg2;
     wire gr_read_sel_arg3;
 
+
+    // Immediate read
+
     wire imm_read;
+
+
+    // Instruction register
 
     wire ir_frame0_write;
     wire ir_frame1_write;
     wire ir_frame2_write;
     wire ir_frame3_write;
 
-
-
-    wire [4:0] step;
+    
     wire [3:0] cond;
     wire [6:0] opcode;
     wire [3:0] arg1;
@@ -78,45 +90,22 @@ module ControlUnit (
     wire [7:0] imm1;
 
 
+    // UC
 
+    wire [4:0] step;
     wire uc_reset;
 
-    UC uc (
-        .clk(clk),
-        .clk_phase(clk_phase),
-        .reset(uc_reset),
-        .step(step)
-    );
 
-    InstructionRegister ir (
-        .clk(clk),
-        .clk_phase(clk_phase),
 
-        .bus_in(bus_in),
 
-        .write_en_0(ir_frame0_write),
-        .write_en_1(ir_frame1_write),
-        .write_en_2(ir_frame2_write),
-        .write_en_3(ir_frame3_write),
 
-        .cond_out(cond),
-        .opcode_out(opcode),
-        .arg1_out(arg1),
-        .arg2_out(arg2),
-        .arg3_out(arg3),
-        .imm0_out(imm0),
-        .imm1_out(imm1)
-
-    );
-
-    
+    // ------------------------- Condition logic ----------------------------- //
 
 
     wire z = flags_in[3];
     wire n = flags_in[2];
     wire c = flags_in[1];
     wire v = flags_in[0];
-
 
     wire cond_al  = 1'b1;          // always
     wire cond_eq  =  z;       
@@ -127,10 +116,10 @@ module ControlUnit (
     wire cond_ss  =  (v ^ n);      // smaller signed        V = ~N
     wire cond_gs  = ~(v ^ n) & ~z; // greater signed
 
-    wire cond_nvr = 1'b0;
+    wire cond_nvr = 1'b0;          // never
     wire cond_ne  = ~z;            // not equal / zero clear    (ZC)
     wire cond_pl  = ~n;            // positive or zero
-    wire cond_vc  = ~v;    
+    wire cond_vc  = ~v;            // overflow clear
     wire cond_geu =  c;            // greater or equal unsigned (CS)
     wire cond_seu = ~c |  z;       // smaller or equal unsigned
     wire cond_ges = ~(v ^ n);      // greater or equal signed   V = N
@@ -158,28 +147,38 @@ module ControlUnit (
 
     wire cond_met = cond_lut[cond];
 
-    wire [4:0] fetch_len = (int_in == 0) ? 12 : 10;
+    
+    // ------------------------- END OF SECTION ----------------------------- //
+
+
+
+
+
+
+
+
+
+
+
+
+    // ------------------------- Control logic ----------------------------- //
+
+
+    reg is_interrupted = 0;
+
+    assign int_out = is_interrupted;
+
     reg [15:0] fetch_virt_ucode [0:15];
     reg [15:0] fetch_phys_ucode [0:15];
     reg [15:0] instr_ucode [0:(1<<10)-1];
 
-
-    wire [15:0] fetch_ucode;
-    wire [15:0] ucode;
-
-    assign fetch_ucode = (int_in == 0) ? fetch_virt_ucode[step] : fetch_phys_ucode[step];
-
-    assign ucode = (step < fetch_len) ? fetch_ucode : instr_ucode[(step - fetch_len) | (opcode << 3)];
-
-    
+    reg [15:0] ucode = 0;
 
     wire [3:0] mux1 = ucode[15:12];
     wire [4:0] mux2 = ucode[11:7];
     wire [2:0] mux3 = ucode[6:4];
     wire [1:0] mux4 = (alu_read == 0) ? ucode[3:2] : 0;
     wire [1:0] mux5 = (alu_read == 0) ? ucode[1:0] : 0;
-    
-    
 
     assign gr_read = mux1 == 1;
     assign alu_read = mux1 == 2;
@@ -231,6 +230,75 @@ module ControlUnit (
     assign gr_write_sel = arg1;
 
     assign bus_out = (imm_read == 1) ? (byte_sel == 0) ? imm0 : imm1 : 8'b0;
+
+
+
+    always @(posedge clk) begin
+        if (clk_phase == 0) begin
+            // Fetch ucode from ROM
+
+            if ((irq_in == 1 && irqm_in == 1 && step == 0) == 1 && is_interrupted == 0) begin
+                ucode <= 16'h0060;
+                is_interrupted <= 1;
+            end else if ((svc_in == 1 || pf_in == 1 || ini_in ==1) == 1 && is_interrupted == 0) begin
+                ucode <= 16'h0060;
+                is_interrupted <= 1;
+            end else if ((svc_in == 1 || pf_in == 1 || ini_in ==1 || (irq_in == 1 && irqm_in == 1)) == 0 && is_interrupted == 1) begin
+                ucode <= 16'h0060;
+                is_interrupted <= 0;
+            end else if (pl_in == 0 || is_interrupted == 1) begin
+                if (step < 9) 
+                    ucode <= fetch_phys_ucode[step];
+                else
+                    ucode <= instr_ucode[step - 9];
+
+            end else begin
+                if (step < 11) 
+                    ucode <= fetch_phys_ucode[step];
+                else
+                    ucode <= instr_ucode[step - 11];
+
+            end
+            
+        end
+    
+    end
+
+
+
+    // ------------------------- END OF LOGIC ----------------------------- //
+
+
+
+    UC uc (
+        .clk(clk),
+        .clk_phase(clk_phase),
+        .reset(uc_reset),
+        .step(step)
+    );
+
+    InstructionRegister ir (
+        .clk(clk),
+        .clk_phase(clk_phase),
+
+        .bus_in(bus_in),
+
+        .write_en_0(ir_frame0_write),
+        .write_en_1(ir_frame1_write),
+        .write_en_2(ir_frame2_write),
+        .write_en_3(ir_frame3_write),
+
+        .cond_out(cond),
+        .opcode_out(opcode),
+        .arg1_out(arg1),
+        .arg2_out(arg2),
+        .arg3_out(arg3),
+        .imm0_out(imm0),
+        .imm1_out(imm1)
+
+    );
+
+
 
     initial begin
         $readmemh("control_rom.mem",instr_ucode);

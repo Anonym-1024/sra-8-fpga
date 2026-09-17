@@ -20,7 +20,7 @@ module UC (
     
     
     always @(posedge clk) begin
-        if (clk_phase == 3) begin
+        if (clk_phase == 3) begin // TODO: Try at phase 2
             content <= content + 1;
             if (reset == 1)
                 content <= 0;

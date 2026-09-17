@@ -1,54 +1,73 @@
 
-// TODO: Interrupt handling, timing
+
 
 
 module INTR (
-    input wire read_en,
-    input wire reset,
+    input wire clk,
+    input wire [1:0] clk_phase,
+
+    output wire [7:0] bus_out,
+
     input wire irq_in,
     input wire ini_in,
     input wire svc_in,
     input wire pf_in,
-    output wire int_out,
-    output wire [7:0] bus_out,
-    input wire clk,
-    input wire [1:0] clk_phase
+    input wire int_in,
+
+    output wire irq_out,
+    output wire ini_out,
+    output wire svc_out,
+    output wire pf_out,
+
+    input wire read_en,
+    input wire reset
+    
+    
+    
+    
 );
     
-    reg [4:0] content = 0;
+    reg [3:0] content = 0;
 
-    assign bus_out = read_en ? content : 0;
+    assign bus_out = read_en ? {content, int_in} : 0;
 
-    //assign int_out = content[0];
-    reg tmp = 1;
-    assign int_out = tmp;
-/*
-    always @(posedge irq_in) begin
-        content[4] <= 1;
-        
-    end
+    assign irq_out = content[3];
+    assign ini_out = content[2];
+    assign svc_out = content[1];
+    assign pf_out = content[0];
+    
 
-    always @(posedge svc_in) begin
-        content[3] <= 1;
-        
-    end
-
-    always @(posedge ini_in) begin
-        content[2] <= 1;
-        
-    end
-
-    always @(posedge pf_in) begin
-        content[1] <= 1;
-        
-    end
-*/
     always @(posedge clk) begin
-        if (reset == 1)
-            content <= 0;
+        if (irq_in == 1)
+            content[3] <= 1;
+        
+    end
 
-        if (content[4] == 1 || content[3] == 1 || content[2] == 1 || content[1] == 1) // mozna na negedge
+    always @(posedge clk) begin
+        if (svc_in == 1)
+            content[2] <= 1;
+        
+    end
+
+    always @(posedge clk) begin
+        if (pf_in == 1)
+            content[1] <= 1;
+        
+    end
+
+    always @(posedge clk) begin
+        if (ini_in == 1)
             content[0] <= 1;
+        
+    end
+
+    always @(posedge clk) begin
+        if (clk_phase == 2) begin
+            if (reset == 1)
+                content <= 0;
+        end
+
+        
     end
 
 endmodule

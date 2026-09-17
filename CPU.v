@@ -23,7 +23,7 @@ end
         $dumpfile("dump.vcd"); // Name of the waveform output file
         $dumpvars(0); // Dump all variables in module tb_counter and below
         
-        #10;
+        
     end
 
     wire [1:0] clk_phase;
@@ -156,6 +156,8 @@ end
     // PSR
 
     wire [3:0] psr_flags_out;
+    wire [1:0] pl;
+    wire irqm_out;
 
     assign flags = psr_flags_out;
 
@@ -169,11 +171,20 @@ end
 
     wire intr_read;
     wire intr_write;
-    wire irq;
-    wire svc;
-    wire ini;
-    wire pf;
-    wire int;
+    wire irq_in;
+    wire svc_in;
+    wire ini_in;
+    wire pf_in;
+    wire int_in;
+
+    wire irq_out;
+    wire svc_out;
+    wire pf_out;
+    wire int_out;
+
+    // Control unit
+
+    wire [4:0] step;
    
 
     GeneralRegisters registers (
@@ -308,6 +319,8 @@ end
         .bus_in(bus),
         .flags_out(psr_flags_out),
         .flags_in(alu_flags_out),
+        .pl_out(pl),
+        .irqm_out(irqm_out),
 
         .read_en(psr_read),
         .write_en(psr_write),
@@ -325,11 +338,12 @@ end
         .read_en(intr_read),
 
         .reset(intr_write),
-        .irq_in(irq),
-        .ini_in(ini),
-        .svc_in(svc),
-        .pf_in(pf),
-        .int_out(int)
+
+        .irq_in(irq_in),
+        .ini_in(ini_in),
+        .svc_in(svc_in),
+        .pf_in(pf_in),
+        .int_in(int_in)
     );
 
 
@@ -340,12 +354,22 @@ end
     ControlUnit cu(
         .clk(clk),
         .clk_phase(clk_phase),
-        
         .bus_in(bus),
         .bus_out(control_unit_bus),
         .flags_in(flags),
-        .int_in(int),
+        .pl_in(pl),
         
+
+
+        // interrupts
+        .irqm_in(irqm_out),
+        .irq_in(irq_out),
+        .svc_in(svc_out),
+        .pf_in(pf_out),
+        .ini_in(ini_out),
+        .int_out(int_in),
+        .svc_out(svc_in),
+
         // registers
         .gr_read(gr_read),
         .gr_write(gr_write),
@@ -385,8 +409,8 @@ end
         .psr_write(psr_write),
         .psr_flags_write(psr_flags_write),
         .intr_read(intr_read),
-        .intr_write(intr_write),
-        .svc(svc)
+        .intr_write(intr_write)
+        
     );
 
     

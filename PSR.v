@@ -1,6 +1,6 @@
 
 
-//TODO: PL handling in control unit.
+
 // Process state register
 
 module PSR (
@@ -11,6 +11,8 @@ module PSR (
     output wire [7:0] bus_out,
     input wire [3:0] flags_in,
     output wire [3:0] flags_out,
+    output wire [1:0] pl_out,
+    output wire irqm_out,
 
     input wire read_en,
     input wire write_en,
