@@ -32,8 +32,8 @@ module INTR (
     assign bus_out = read_en ? {content, int_in} : 0;
 
     assign irq_out = content[3];
-    assign ini_out = content[2];
-    assign svc_out = content[1];
+    assign svc_out = content[2];
+    assign ini_out = content[1];
     assign pf_out = content[0];
     
 

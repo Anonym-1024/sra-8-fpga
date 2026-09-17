@@ -52,7 +52,7 @@ bitstream: $(BUILD_DIR)/$(PROJ).bin
 
 # Step 4: Program FPGA SRAM (iceprog)
 prog: $(BUILD_DIR)/$(PROJ).bin
-	$(ICEPROG) -S $<
+	$(ICEPROG) $<
 
 # Clean up build artifacts
 clean:

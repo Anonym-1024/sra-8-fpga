@@ -1,18 +1,23 @@
 [*]
 [*] GTKWave Analyzer v3.3.128 (w)1999-2026 BSI
-[*] Thu Sep 17 11:00:10 2026
+[*] Thu Sep 17 14:57:59 2026
 [*]
 [dumpfile] "/home/vaclav-koukola/Documents/sra-8/dump.vcd"
-[dumpfile_mtime] "Thu Sep 17 10:59:03 2026"
-[dumpfile_size] 29363564
+[dumpfile_mtime] "Thu Sep 17 14:55:29 2026"
+[dumpfile_size] 99575973
 [savefile] "/home/vaclav-koukola/Documents/sra-8/test.gtkw"
-[timestart] 0
+[timestart] 846
 [size] 1920 996
-[pos] -46 -46
-*-2.400000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[pos] -1 -1
+*-2.355429 488 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] CPU.
+[treeopen] CPU.cu.
+[treeopen] CPU.registers.
+[treeopen] CPU.registers.genblk1[0].
+[treeopen] CPU.registers.genblk1[2].
+[treeopen] CPU.registers.genblk1[3].
 [sst_width] 209
-[signals_width] 142
+[signals_width] 183
 [sst_expanded] 1
 [sst_vpaned_height] 295
 @28
@@ -21,7 +26,38 @@ CPU.cu.clk_phase[1:0]
 @22
 CPU.cu.step[4:0]
 CPU.cu.ucode[15:0]
+CPU.cu.ir.instruction[31:0]
 @28
 CPU.cu.uc_reset
+@22
+CPU.bus[7:0]
+@200
+-
+-
+@22
+CPU.cu.mux1[3:0]
+CPU.cu.mux2[4:0]
+@28
+CPU.cu.mux3[2:0]
+CPU.cu.mux4[1:0]
+CPU.cu.mux5[1:0]
+@200
+-
+-
+-PC
+@22
+CPU.pc.byte_0[7:0]
+@200
+-INTPC
+@22
+CPU.intpc.byte_0[7:0]
+@29
+CPU.svc_out
+@28
+CPU.cu.svc_in
+@22
+CPU.registers.genblk1[0].registers.content[7:0]
+CPU.registers.genblk1[3].registers.content[7:0]
+CPU.registers.genblk1[2].registers.content[7:0]
 [pattern_trace] 1
 [pattern_trace] 0

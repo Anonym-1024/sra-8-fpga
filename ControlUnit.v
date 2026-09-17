@@ -54,6 +54,9 @@ module ControlUnit (
     output wire psr_write,
     output wire psr_flags_write,
 
+    output wire port_read,
+    output wire port_write,
+
     output wire intr_read,
     output wire intr_write,
     output wire svc_out
@@ -145,7 +148,7 @@ module ControlUnit (
         cond_ses
     }; 
 
-    wire cond_met = cond_lut[cond];
+    wire cond_met = cond_lut[15 - cond];
 
     
     // ------------------------- END OF SECTION ----------------------------- //
@@ -195,6 +198,7 @@ module ControlUnit (
     assign psr_read = mux1 == 8;
     assign ptbr_read = mux1 == 9;
     assign intr_read = mux1 == 10;
+    assign port_read = mux1 == 11;
 
     assign gr_write = mux2 == 1;
     assign alu_op1_write = mux2 == 2;
@@ -211,11 +215,12 @@ module ControlUnit (
     assign ir_frame2_write = mux2 == 13;
     assign ir_frame3_write = mux2 == 14;
     assign mar_write = mux2 == 15;
-    assign pter_write = mux2 == 13;
+    assign pter_write = mux2 == 16;
+    assign port_write = mux2 == 17;
 
     assign xpc_inc = mux3 == 1;
     assign pc_inc = is_interrupted == 0 & xpc_inc == 1;
-    assign incpc_inc = is_interrupted == 1 & xpc_inc == 1;
+    assign intpc_inc = is_interrupted == 1 & xpc_inc == 1;
     assign svc_out = mux3 == 2;
     assign psr_flags_write = mux3 == 3;
     assign byte_sel = mux3 == 4;
@@ -246,13 +251,13 @@ module ControlUnit (
             // Fetch ucode from ROM
 
             if ((irq_in == 1 && irqm_in == 1 && step == 0) == 1 && is_interrupted == 0) begin
-                ucode <= 16'h0060;
+                ucode <= 16'h0050;
                 is_interrupted <= 1;
             end else if ((svc_in == 1 || pf_in == 1 || ini_in ==1) == 1 && is_interrupted == 0) begin
-                ucode <= 16'h0060;
+                ucode <= 16'h0050;
                 is_interrupted <= 1;
             end else if ((svc_in == 1 || pf_in == 1 || ini_in ==1 || (irq_in == 1 && irqm_in == 1)) == 0 && is_interrupted == 1) begin
-                ucode <= 16'h0060;
+                ucode <= 16'h0050;
                 is_interrupted <= 0;
             end else if (pl_in == 0 || is_interrupted == 1) begin
                 if (step < 9) 
@@ -260,7 +265,7 @@ module ControlUnit (
                 else if (cond_met == 1)
                     ucode <= instr_ucode[(step - 9) | (opcode << 3)];
                 else 
-                    ucode <= 16'h0060;
+                    ucode <= 16'h0050;
 
             end else begin
                 if (step < 11) 
@@ -268,7 +273,7 @@ module ControlUnit (
                 else if (cond_met == 1)
                     ucode <= instr_ucode[(step - 11) | (opcode << 3)];
                 else 
-                    ucode <= 16'h0060;
+                    ucode <= 16'h0050;
 
             end
             

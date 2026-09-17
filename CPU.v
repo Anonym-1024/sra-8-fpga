@@ -1,23 +1,11 @@
 
 
 module CPU (
-    
+    input wire clk,
+    output wire [7:0] port_out,
 );
 
-    reg clk = 0;
-
-
-     initial begin
-
-        clk = 1'b0;
-
-        forever begin
-
-            #1    clk = ~clk;
-
-        end
-
-end 
+    
     
     initial begin
         $dumpfile("dump.vcd"); // Name of the waveform output file
@@ -25,6 +13,8 @@ end
         
         
     end
+
+    
 
     wire [1:0] clk_phase;
 
@@ -46,10 +36,11 @@ end
     wire [7:0] pc_bus;
     wire [7:0] intpc_bus;
     wire [7:0] intr_bus;
+    wire [7:0] port_bus;
     wire [7:0] control_unit_bus;
 
 
-    assign bus = registers_bus | alu_bus | memory_bus | ptbr_bus | psr_bus | pc_bus | intpc_bus | intr_bus | control_unit_bus;
+    assign bus = registers_bus | alu_bus | memory_bus | ptbr_bus | psr_bus | pc_bus | intpc_bus | intr_bus | port_bus | control_unit_bus;
     
 
 
@@ -181,6 +172,14 @@ end
     wire svc_out;
     wire pf_out;
     wire int_out;
+
+
+    // Port
+
+    wire [7:0] port_bus;
+    reg [7:0] port_in = 0;
+    wire port_read;
+    wire port_write;
 
     // Control unit
 
@@ -352,6 +351,20 @@ end
     );
 
 
+
+    Port port (
+        .clk(clk),
+        .clk_phase(clk_phase),
+
+        .bus_in(bus),
+        .bus_out(port_bus),
+        .port_in(port_in),
+        .port_out(port_out),
+
+        .port_read(port_read),
+        .port_write(port_write)
+    );
+
     // CONTROL UNIT
 
 
@@ -408,6 +421,11 @@ end
         .intpc_read(intpc_read),
         .intpc_write(intpc_write),
         .intpc_inc(intpc_inc),
+
+
+        // port
+        .port_read(port_read),
+        .port_write(port_write),
 
         // status and interrupts
         .psr_read(psr_read),
