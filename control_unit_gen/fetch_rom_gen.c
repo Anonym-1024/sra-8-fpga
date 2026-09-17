@@ -58,7 +58,8 @@ enum mux1 {
     M1_XPC_READ,          /* 7 */
     M1_PSR_READ,         /* 8 */
     M1_PTBR_READ,        /* 9 */
-    M1_INTR_READ         /* 10 */
+    M1_INTR_READ,        /* 10 */
+    M1_PORT_READ         /* 11 */
 };
 
 /* MUX 2 - 5 bit: what latches the internal bus */
@@ -79,7 +80,8 @@ enum mux2 {
     M2_INSTR_FRAME2_WRITE,   /* 13 */
     M2_INSTR_FRAME3_WRITE,   /* 14 */
     M2_MAR_WRITE,            /* 15 */
-    M2_PTER_WRITE            /* 16 */
+    M2_PTER_WRITE,           /* 16 */
+    M2_PORT_WRITE            /* 17 */
 };
 
 /* MUX 3 - 3 bit: counter strobes, flag strobe, the byte select and the

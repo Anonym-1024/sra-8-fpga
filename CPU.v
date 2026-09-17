@@ -2,7 +2,7 @@
 
 module CPU (
     input wire clk,
-    output wire [7:0] port_out,
+    output wire [7:0] port_out
 );
 
     
@@ -176,7 +176,6 @@ module CPU (
 
     // Port
 
-    wire [7:0] port_bus;
     reg [7:0] port_in = 0;
     wire port_read;
     wire port_write;

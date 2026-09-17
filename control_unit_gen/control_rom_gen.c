@@ -53,8 +53,11 @@
  *    there, which would make INTPCR identical to PCR.
  *
  * Not in the table, because the workbook defines no steps or no control
- * signals for them:  MOVS, MVN{S} (the ALU has no NOT operation), and the
- * I/O instructions PTR / PTW / PTSR (no port signals appear in any MUX).
+ * signals for them:  MOVS, MVN{S} (the ALU has no NOT operation) and PTSR.
+ *
+ *  - PTR / PTW move one byte between the port and a register.  PTR rD
+ *    latches the port input into rD (port_read, MUX 1 code 11); PTW rS
+ *    latches rS into the port output (port_write, MUX 2 code 17).
  *
  * Every instruction ends with a UCR_STEP: a step with only ucr (microcode
  * counter reset) asserted, which returns the sequencer to fetch.
@@ -152,7 +155,11 @@ enum opcode {
     OPC_BRL      = 102,  OPC_BRL_I    = 103,
 
     /* other */
-    OPC_SVC      = 104   /* 105 unused: no operand */
+    OPC_SVC      = 104,  /* 105 unused: no operand */
+
+    /* port I/O, one byte */
+    OPC_PTR      = 106,  /* 107 unused: source is the port */
+    OPC_PTW      = 108   /* 109 unused: register form only */
 };
 
 /* ------------------------------------------------------------------ */
@@ -172,7 +179,8 @@ enum mux1 {
     M1_XPC_READ,          /* 7 */
     M1_PSR_READ,         /* 8 */
     M1_PTBR_READ,        /* 9 */
-    M1_INTR_READ         /* 10 */
+    M1_INTR_READ,        /* 10 */
+    M1_PORT_READ         /* 11 */
 };
 
 /* MUX 2 - 5 bit: what latches the internal bus */
@@ -193,7 +201,8 @@ enum mux2 {
     M2_INSTR_FRAME2_WRITE,   /* 13 */
     M2_INSTR_FRAME3_WRITE,   /* 14 */
     M2_MAR_WRITE,            /* 15 */
-    M2_PTER_WRITE            /* 16 */
+    M2_PTER_WRITE,           /* 16 */
+    M2_PORT_WRITE            /* 17 */
 };
 
 /* MUX 3 - 3 bit: counter strobes, flag strobe, the byte select and the
@@ -887,6 +896,19 @@ static const step_t microcode[NUM_OPCODES][MAX_STEPS] = {
 /* SVC -- raise the supervisor call, everything else idle */
 [OPC_SVC] = {
     STEP(M1_NONE, M2_NONE, M3_SVC, M4_NONE, M5_NONE),
+    UCR_STEP,
+},
+
+/* ---------------- port I/O ---------------- */
+
+/* PTR rD -- rD <- port input */
+[OPC_PTR] = {
+    STEP(M1_PORT_READ, M2_GR_WRITE,   M3_NONE, M4_NONE,        M5_NONE),
+    UCR_STEP,
+},
+/* PTW rS -- port output <- rS */
+[OPC_PTW] = {
+    STEP(M1_GR_READ,   M2_PORT_WRITE, M3_NONE, M4_GR_SEL_ARG1, M5_NONE),
     UCR_STEP,
 },
 
