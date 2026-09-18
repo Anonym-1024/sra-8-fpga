@@ -82,7 +82,7 @@ module ControlUnit (
     wire ir_frame2_write;
     wire ir_frame3_write;
 
-    
+
     wire [3:0] cond;
     wire [6:0] opcode;
     wire [3:0] arg1;
@@ -110,9 +110,9 @@ module ControlUnit (
     wire v = flags_in[0];
 
     wire cond_al  = 1'b1;          // always
-    wire cond_eq  =  z;       
-    wire cond_mi  =  n;   
-    wire cond_vs  =  v;            // overflow set  
+    wire cond_eq  =  z;
+    wire cond_mi  =  n;
+    wire cond_vs  =  v;            // overflow set
     wire cond_su  = ~c;            // smaller unsigned          (CC)
     wire cond_gu  =  c & ~z;       // greater unsigned
     wire cond_ss  =  (v ^ n);      // smaller signed        V = ~N
@@ -145,11 +145,11 @@ module ControlUnit (
         cond_seu,
         cond_ges,
         cond_ses
-    }; 
+    };
 
     wire cond_met = cond_lut[15 - cond];
 
-    
+
     // ------------------------- END OF SECTION ----------------------------- //
 
 
@@ -170,8 +170,7 @@ module ControlUnit (
 
     assign int_out = is_interrupted;
 
-    reg [15:0] fetch_virt_ucode [0:15];
-    reg [15:0] fetch_phys_ucode [0:15];
+    reg [15:0] fetch_ucode [0:15];
     reg [15:0] instr_ucode [0:(1<<10)-1];
 
     reg [15:0] ucode = 0;
@@ -229,17 +228,22 @@ module ControlUnit (
     assign gr_read_sel_arg2 = mux4 == 2;
     assign gr_read_sel_arg3 = mux4 == 3;
 
-    assign mar_addr_read = mux5 == 1;
+    // Address translation is off at privilege level 0 and while interrupted:
+    // x_addr_read then addresses memory through MAR instead of PTER
+    wire phys = pl_in == 0 | is_interrupted == 1;
+    wire x_addr_read = mux5 == 1;
+
+    assign mar_addr_read = x_addr_read == 1 & phys == 1;
     assign ptbr_addr_read = mux5 == 2;
-    assign pter_addr_read = mux5 == 3;
+    assign pter_addr_read = x_addr_read == 1 & phys == 0;
 
     assign alu_opcode = ucode[3:0];
 
-    assign gr_read_sel = gr_read_sel_arg1 ? arg1 :
-                        gr_read_sel_arg2 ? arg2 :
-                        gr_read_sel_arg3 ? arg3 : 0;
-    
-    assign gr_write_sel = arg1;
+    assign gr_read_sel = gr_read_sel_arg1 ? arg1 + byte_sel :
+                        gr_read_sel_arg2 ? arg2 + byte_sel :
+                        gr_read_sel_arg3 ? arg3 + byte_sel : 0;
+
+    assign gr_write_sel = arg1 + byte_sel;
 
     assign bus_out = (imm_read == 1) ? (byte_sel == 0) ? imm0 : imm1 : 8'b0;
 
@@ -263,26 +267,18 @@ module ControlUnit (
             end else if ((svc_in == 1 || pf_in == 1 || ini_in ==1 || (irq_in == 1 && irqm_in == 1)) == 0 && is_interrupted == 1) begin
                 ucode <= 16'h0050;
                 is_interrupted <= 0;
-            end else if (pl_in == 0 || is_interrupted == 1) begin
-                if (step < 9) 
-                    ucode <= fetch_phys_ucode[step];
-                else if (cond_met == 1)
-                    ucode <= instr_ucode[(step - 9) | (opcode << 3)];
-                else 
-                    ucode <= 16'h0050;
-
             end else begin
-                if (step < 11) 
-                    ucode <= fetch_virt_ucode[step];
+                if (step < 11)
+                    ucode <= fetch_ucode[step];
                 else if (cond_met == 1)
                     ucode <= instr_ucode[(step - 11) | (opcode << 3)];
-                else 
+                else
                     ucode <= 16'h0050;
 
             end
-            
+
         end
-    
+
     end
 
 
@@ -323,8 +319,7 @@ module ControlUnit (
 
     initial begin
         $readmemh("control_rom.mem",instr_ucode);
-        $readmemh("fetch.mem",fetch_virt_ucode);
-        $readmemh("fetch2.mem",fetch_phys_ucode);
+        $readmemh("fetch.mem",fetch_ucode);
     end
-    
+
 endmodule

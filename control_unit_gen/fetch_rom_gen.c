@@ -1,9 +1,9 @@
 /*
- * fetch_rom_gen.c -- microcode for the SRA-8 FETCH and FETCH 2 procedures.
+ * fetch_rom_gen.c -- microcode for the SRA-8 FETCH procedure.
  *
- * Writes each procedure to its own text image for $readmemh, one 16 bit
- * control word per line, 16 lines per file (step 0 first).  Steps past the
- * end of a procedure are all-zero, the idle code in every MUX.
+ * Writes the procedure to fetch.mem for $readmemh, one 16 bit control word
+ * per line, 16 lines (step 0 first).  Steps past the end of the procedure
+ * are all-zero, the idle code in every MUX.
  *
  * Control word layout is the same as control_rom_gen.c (MSB first):
  *
@@ -16,8 +16,11 @@
  * Build:  cc -std=c99 -O2 -Wall -o fetch_rom_gen fetch_rom_gen.c
  * Run:    ./fetch_rom_gen
  *
- * FETCH 2 step 9 uses mar_addr_read; the workbook says pter_addr_read there,
- * while FETCH 2 reads frames 0-2 through mar_addr_read.
+ * There is one FETCH for both addressing modes.  The instruction bytes are
+ * read through x_addr_read, which the control unit resolves to mar_addr_read
+ * while translation is off (privilege level 0 or interrupted) and to
+ * pter_addr_read otherwise.  The page table walk runs either way; its result
+ * is simply not used while translation is off.
  */
 
 #include <stdio.h>
@@ -31,13 +34,11 @@
 
 enum procedure {
     PROC_FETCH  = 0,
-    PROC_FETCH2 = 1,
     NUM_PROCS
 };
 
 static const char *const proc_file[NUM_PROCS] = {
     [PROC_FETCH]  = "fetch.mem",
-    [PROC_FETCH2] = "fetch2.mem",
 };
 
 /* ------------------------------------------------------------------ */
@@ -105,12 +106,12 @@ enum mux4 {
     M4_GR_SEL_ARG3       /* 3 */
 };
 
-/* MUX 5 - 2 bit: which register drives the memory address */
+/* MUX 5 - 2 bit: which register drives the memory address.
+ * x_addr_read = mar_addr_read or pter_addr_read, chosen by the control unit */
 enum mux5 {
     M5_NONE = 0,
-    M5_MAR_ADDR_READ,    /* 1 */
-    M5_PTBR_ADDR_READ,   /* 2 */
-    M5_PTER_ADDR_READ    /* 3 */
+    M5_X_ADDR_READ,      /* 1 */
+    M5_PTBR_ADDR_READ    /* 2 */
 };
 
 /* ------------------------------------------------------------------ */
@@ -130,34 +131,22 @@ typedef struct {
 /* microcode[procedure][step] -- unlisted steps are all-zero */
 static const step_t microcode[NUM_PROCS][NUM_STEPS] = {
 
-/* FETCH -- translate PC through the page table, then read the four
- * instruction bytes through PTER */
+/* FETCH -- PC -> MAR, walk the page table into PTER, then read the four
+ * instruction bytes through x_addr_read (MAR or PTER).  Only the low MAR
+ * byte is refreshed between bytes, so an instruction must not cross a
+ * 256 byte page. */
 [PROC_FETCH] = {
     STEP(M1_XPC_READ,  M2_MAR_WRITE,          M3_NONE,     M4_NONE, M5_NONE),
     STEP(M1_XPC_READ,  M2_MAR_WRITE,          M3_BYTE_SEL, M4_NONE, M5_NONE),
     STEP(M1_MEM_READ, M2_PTER_WRITE,         M3_NONE,     M4_NONE, M5_PTBR_ADDR_READ),
     STEP(M1_MEM_READ, M2_PTER_WRITE,         M3_BYTE_SEL, M4_NONE, M5_PTBR_ADDR_READ),
-    STEP(M1_MEM_READ, M2_INSTR_FRAME0_WRITE, M3_XPC_INC,   M4_NONE, M5_PTER_ADDR_READ),
+    STEP(M1_MEM_READ, M2_INSTR_FRAME0_WRITE, M3_XPC_INC,   M4_NONE, M5_X_ADDR_READ),
     STEP(M1_XPC_READ,  M2_MAR_WRITE,          M3_NONE,     M4_NONE, M5_NONE),
-    STEP(M1_MEM_READ, M2_INSTR_FRAME1_WRITE, M3_XPC_INC,   M4_NONE, M5_PTER_ADDR_READ),
+    STEP(M1_MEM_READ, M2_INSTR_FRAME1_WRITE, M3_XPC_INC,   M4_NONE, M5_X_ADDR_READ),
     STEP(M1_XPC_READ,  M2_MAR_WRITE,          M3_NONE,     M4_NONE, M5_NONE),
-    STEP(M1_MEM_READ, M2_INSTR_FRAME2_WRITE, M3_XPC_INC,   M4_NONE, M5_PTER_ADDR_READ),
+    STEP(M1_MEM_READ, M2_INSTR_FRAME2_WRITE, M3_XPC_INC,   M4_NONE, M5_X_ADDR_READ),
     STEP(M1_XPC_READ,  M2_MAR_WRITE,          M3_NONE,     M4_NONE, M5_NONE),
-    STEP(M1_MEM_READ, M2_INSTR_FRAME3_WRITE, M3_XPC_INC,   M4_NONE, M5_PTER_ADDR_READ),
-},
-
-/* FETCH 2 -- read the four instruction bytes straight through MAR,
- * with no page table walk */
-[PROC_FETCH2] = {
-    STEP(M1_XPC_READ,  M2_MAR_WRITE,          M3_NONE,     M4_NONE, M5_NONE),
-    STEP(M1_XPC_READ,  M2_MAR_WRITE,          M3_BYTE_SEL, M4_NONE, M5_NONE),
-    STEP(M1_MEM_READ, M2_INSTR_FRAME0_WRITE, M3_XPC_INC,   M4_NONE, M5_MAR_ADDR_READ),
-    STEP(M1_XPC_READ,  M2_MAR_WRITE,          M3_NONE,     M4_NONE, M5_NONE),
-    STEP(M1_MEM_READ, M2_INSTR_FRAME1_WRITE, M3_XPC_INC,   M4_NONE, M5_MAR_ADDR_READ),
-    STEP(M1_XPC_READ,  M2_MAR_WRITE,          M3_NONE,     M4_NONE, M5_NONE),
-    STEP(M1_MEM_READ, M2_INSTR_FRAME2_WRITE, M3_XPC_INC,   M4_NONE, M5_MAR_ADDR_READ),
-    STEP(M1_XPC_READ,  M2_MAR_WRITE,          M3_NONE,     M4_NONE, M5_NONE),
-    STEP(M1_MEM_READ, M2_INSTR_FRAME3_WRITE, M3_XPC_INC,   M4_NONE, M5_MAR_ADDR_READ),
+    STEP(M1_MEM_READ, M2_INSTR_FRAME3_WRITE, M3_XPC_INC,   M4_NONE, M5_X_ADDR_READ),
 },
 
 };

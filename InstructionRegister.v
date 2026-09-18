@@ -19,16 +19,16 @@ module InstructionRegister (
     input wire write_en_1,
     input wire write_en_2,
     input wire write_en_3
-    
-    
-    
+
+
+
 );
 
 
     reg [31:0] instruction = 0;
 
     assign cond_out = instruction[31:28];
-    assign opcode_out = instruction[27:21];
+    assign opcode_out = instruction[26:20];
     assign arg1_out = instruction[19:16];
     assign arg2_out = instruction[15:12];
     assign arg3_out = instruction[11:8];

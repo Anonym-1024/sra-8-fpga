@@ -26,7 +26,7 @@
  * When a step drives the ALU, MUX4 carries alu_opcode[3:2] and MUX5 carries
  * alu_opcode[1:0]; that is what ALU_STEP() below expands to.
  *
- * FETCH and FETCH 2 are not in this table -- see fetch_rom_gen.c.
+ * FETCH is not in this table -- see fetch_rom_gen.c.
  *
  * Build:  cc -std=c99 -O2 -Wall -o control_rom_gen control_rom_gen.c
  * Run:    ./control_rom_gen [output.mem]
@@ -35,7 +35,9 @@
  * Choices made where the workbook does not say:
  *
  *  - Opcode numbers.  The workbook lists mnemonics but no encoding, so the
- *    opcode enum below is the encoding; the assembler has to match it.
+ *    opcode enum below is the encoding; the assembler (asm/sra8asm.py) has
+ *    to match it.  Opcodes are numbered in "Instruction set" sheet order,
+ *    skipping the instructions that have no microcode.
  *
  *  - Register vs immediate forms are separate opcodes.  The ROM only sees
  *    {opcode, step}, so a step has to commit to gr_read or imm_read.
@@ -48,9 +50,6 @@
  *
  *  - Index 0 of every MUX is the idle / nothing-selected code, so an
  *    undefined opcode or an unused step reads back as 0x0000.
- *
- *  - INTPCR reads intpc_read; the workbook's Definitions sheet says pc_read
- *    there, which would make INTPCR identical to PCR.
  *
  * Not in the table, because the workbook defines no steps or no control
  * signals for them:  MOVS, MVN{S} (the ALU has no NOT operation) and PTSR.
@@ -85,81 +84,84 @@
 /* Opcodes -- {instruction[5:0], immediate}                            */
 /* Even = register operand form, odd = immediate form.                 */
 /* Instructions with no immediate form simply have no odd entry.       */
+/* The order follows the "Instruction set" sheet.                      */
 /* ------------------------------------------------------------------ */
 
 enum opcode {
     /* register operations */
     OPC_MOV      =   0,  OPC_MOV_I    =   1,
     OPC_MOVA     =   2,  OPC_MOVA_I   =   3,
-    OPC_PCR      =   4,  /* 5  unused: source is the PC    */
-    OPC_PCW      =   6,  OPC_PCW_I    =   7,
-    OPC_INTPCR   =   8,  /* 9  unused: source is the INTPC */
-    OPC_INTPCW   =  10,  OPC_INTPCW_I =  11,
-    OPC_PTBRR    =  12,  /* 13 unused: source is the PTBR  */
-    OPC_PTBRW    =  14,  OPC_PTBRW_I  =  15,
-    OPC_PSRR     =  16,  /* 17 unused: source is the PSR   */
-    OPC_PSRW     =  18,  OPC_PSRW_I   =  19,
-    OPC_INTRR    =  20,  /* 21 unused: source is the INTR  */
-    OPC_INTRW    =  22,  OPC_INTRW_I  =  23,
+    OPC_PCW      =   4,  OPC_PCW_I    =   5,
+    OPC_PCR      =   6,  /* 7   unused: source is the PC */
+    OPC_XPCW     =   8,  OPC_XPCW_I   =   9,
+    OPC_XPCR     =  10,  /* 11  unused: source is the current PC */
+    OPC_INTPCW   =  12,  OPC_INTPCW_I =  13,
+    OPC_INTPCR   =  14,  /* 15  unused: source is the INTPC */
+    OPC_PSRW     =  16,  OPC_PSRW_I   =  17,
+    OPC_PSRR     =  18,  /* 19  unused: source is the PSR */
+    OPC_PTBRW    =  20,  OPC_PTBRW_I  =  21,
+    OPC_PTBRR    =  22,  /* 23  unused: source is the PTBR */
+    OPC_INTRW    =  24,  OPC_INTRW_I  =  25,
+    OPC_INTRR    =  26,  /* 27  unused: source is the INTR */
 
     /* memory access */
-    OPC_LDR      =  24,  OPC_LDR_I    =  25,
-    OPC_STR      =  26,  OPC_STR_I    =  27,
+    OPC_LDR      =  28,  OPC_LDR_I    =  29,
+    OPC_STR      =  30,  OPC_STR_I    =  31,
 
     /* arithmetic and logic, rD = rN op rM */
-    OPC_ADD      =  28,  OPC_ADD_I    =  29,
-    OPC_ADDS     =  30,  OPC_ADDS_I   =  31,
-    OPC_ADDC     =  32,  OPC_ADDC_I   =  33,
-    OPC_ADDCS    =  34,  OPC_ADDCS_I  =  35,
-    OPC_SUB      =  36,  OPC_SUB_I    =  37,
-    OPC_SUBS     =  38,  OPC_SUBS_I   =  39,
-    OPC_SUBC     =  40,  OPC_SUBC_I   =  41,
-    OPC_SUBCS    =  42,  OPC_SUBCS_I  =  43,
-    OPC_AND      =  44,  OPC_AND_I    =  45,
-    OPC_ANDS     =  46,  OPC_ANDS_I   =  47,
-    OPC_OR       =  48,  OPC_OR_I     =  49,
-    OPC_ORS      =  50,  OPC_ORS_I    =  51,
-    OPC_EOR      =  52,  OPC_EOR_I    =  53,
-    OPC_EORS     =  54,  OPC_EORS_I   =  55,
-
-    /* arithmetic and logic, flags only -- result discarded */
-    OPC_CMN      =  56,  OPC_CMN_I    =  57,
-    OPC_ADDCD    =  58,  OPC_ADDCD_I  =  59,
-    OPC_CMP      =  60,  OPC_CMP_I    =  61,
-    OPC_SUBCD    =  62,  OPC_SUBCD_I  =  63,
-    OPC_ANDD     =  64,  OPC_ANDD_I   =  65,
-    OPC_ORD      =  66,  OPC_ORD_I    =  67,
-    OPC_EORD     =  68,  OPC_EORD_I   =  69,
+    OPC_ADD      =  32,  OPC_ADD_I    =  33,
+    OPC_ADDS     =  34,  OPC_ADDS_I   =  35,
+    OPC_ADDC     =  36,  OPC_ADDC_I   =  37,
+    OPC_ADDCS    =  38,  OPC_ADDCS_I  =  39,
+    OPC_SUB      =  40,  OPC_SUB_I    =  41,
+    OPC_SUBS     =  42,  OPC_SUBS_I   =  43,
+    OPC_SUBC     =  44,  OPC_SUBC_I   =  45,
+    OPC_SUBCS    =  46,  OPC_SUBCS_I  =  47,
+    OPC_AND      =  48,  OPC_AND_I    =  49,
+    OPC_ANDS     =  50,  OPC_ANDS_I   =  51,
+    OPC_OR       =  52,  OPC_OR_I     =  53,
+    OPC_ORS      =  54,  OPC_ORS_I    =  55,
+    OPC_EOR      =  56,  OPC_EOR_I    =  57,
+    OPC_EORS     =  58,  OPC_EORS_I   =  59,
 
     /* shifts, rD = op rN */
-    OPC_LSL      =  70,  OPC_LSL_I    =  71,
-    OPC_LSLS     =  72,  OPC_LSLS_I   =  73,
-    OPC_LSR      =  74,  OPC_LSR_I    =  75,
-    OPC_LSRS     =  76,  OPC_LSRS_I   =  77,
-    OPC_ASR      =  78,  OPC_ASR_I    =  79,
-    OPC_ASRS     =  80,  OPC_ASRS_I   =  81,
-    OPC_CSL      =  82,  OPC_CSL_I    =  83,
-    OPC_CSLS     =  84,  OPC_CSLS_I   =  85,
-    OPC_CSR      =  86,  OPC_CSR_I    =  87,
-    OPC_CSRS     =  88,  OPC_CSRS_I   =  89,
+    OPC_LSL      =  60,  OPC_LSL_I    =  61,
+    OPC_LSLS     =  62,  OPC_LSLS_I   =  63,
+    OPC_LSR      =  64,  OPC_LSR_I    =  65,
+    OPC_LSRS     =  66,  OPC_LSRS_I   =  67,
+    OPC_ASR      =  68,  OPC_ASR_I    =  69,
+    OPC_ASRS     =  70,  OPC_ASRS_I   =  71,
+    OPC_CSL      =  72,  OPC_CSL_I    =  73,
+    OPC_CSLS     =  74,  OPC_CSLS_I   =  75,
+    OPC_CSR      =  76,  OPC_CSR_I    =  77,
+    OPC_CSRS     =  78,  OPC_CSRS_I   =  79,
+
+    /* arithmetic and logic, flags only -- result discarded */
+    OPC_CMN      =  80,  OPC_CMN_I    =  81,
+    OPC_ADDCD    =  82,  OPC_ADDCD_I  =  83,
+    OPC_CMP      =  84,  OPC_CMP_I    =  85,
+    OPC_SUBCD    =  86,  OPC_SUBCD_I  =  87,
+    OPC_ANDD     =  88,  OPC_ANDD_I   =  89,
+    OPC_ORD      =  90,  OPC_ORD_I    =  91,
+    OPC_EORD     =  92,  OPC_EORD_I   =  93,
 
     /* shifts, flags only -- result discarded */
-    OPC_LSLD     =  90,  OPC_LSLD_I   =  91,
-    OPC_LSRD     =  92,  OPC_LSRD_I   =  93,
-    OPC_ASRD     =  94,  OPC_ASRD_I   =  95,
-    OPC_CSLD     =  96,  OPC_CSLD_I   =  97,
-    OPC_CSRD     =  98,  OPC_CSRD_I   =  99,
+    OPC_LSLD     =  94,  OPC_LSLD_I   =  95,
+    OPC_LSRD     =  96,  OPC_LSRD_I   =  97,
+    OPC_ASRD     =  98,  OPC_ASRD_I   =  99,
+    OPC_CSLD     = 100,  OPC_CSLD_I   = 101,
+    OPC_CSRD     = 102,  OPC_CSRD_I   = 103,
 
     /* branching */
-    OPC_BR       = 100,  OPC_BR_I     = 101,
-    OPC_BRL      = 102,  OPC_BRL_I    = 103,
-
-    /* other */
-    OPC_SVC      = 104,  /* 105 unused: no operand */
+    OPC_BR       = 104,  OPC_BR_I     = 105,
+    OPC_BRL      = 106,  OPC_BRL_I    = 107,
 
     /* port I/O, one byte */
-    OPC_PTR      = 106,  /* 107 unused: source is the port */
-    OPC_PTW      = 108   /* 109 unused: register form only */
+    OPC_PTR      = 108,  /* 109 unused: source is the port */
+    OPC_PTW      = 110,  /* 111 unused: register form only */
+
+    /* other */
+    OPC_SVC      = 112   /* 113 unused: no operand */
 };
 
 /* ------------------------------------------------------------------ */
@@ -227,12 +229,15 @@ enum mux4 {
 };
 
 /* MUX 5 - 2 bit: which register drives the memory address.
- * Doubles as alu_opcode[1:0] on ALU steps. */
+ * Doubles as alu_opcode[1:0] on ALU steps.
+ * x_addr_read is resolved by the control unit: mar_addr_read while
+ * translation is off (privilege level 0 or interrupted), pter_addr_read
+ * otherwise.  The page table walk runs either way; its result is ignored
+ * while translation is off. */
 enum mux5 {
     M5_NONE = 0,
-    M5_MAR_ADDR_READ,    /* 1 */
-    M5_PTBR_ADDR_READ,   /* 2 */
-    M5_PTER_ADDR_READ    /* 3 */
+    M5_X_ADDR_READ,      /* 1 */
+    M5_PTBR_ADDR_READ    /* 2 */
 };
 
 /* ALU operation codes -- "ALU operations" sheet */
@@ -283,6 +288,7 @@ typedef struct {
  *   ALU rD,rN,rM      arg1 <- rN, arg2 <- rM/imm, then alu -> rD
  *   ALU flags only    same two loads, then psr_flags_write with no destination
  *   LDR / STR         address -> MAR, two page-table reads -> PTER, then access
+ *                     through x_addr_read (MAR or PTER, see enum mux5)
  */
 static const step_t microcode[NUM_OPCODES][MAX_STEPS] = {
 
@@ -312,12 +318,6 @@ static const step_t microcode[NUM_OPCODES][MAX_STEPS] = {
     UCR_STEP,
 },
 
-/* PCR rD */
-[OPC_PCR] = {
-    STEP(M1_PC_READ,  M2_GR_WRITE, M3_NONE,     M4_NONE, M5_NONE),
-    STEP(M1_PC_READ,  M2_GR_WRITE, M3_BYTE_SEL, M4_NONE, M5_NONE),
-    UCR_STEP,
-},
 /* PCW rS */
 [OPC_PCW] = {
     STEP(M1_GR_READ,  M2_PC_WRITE, M3_NONE,     M4_GR_SEL_ARG1, M5_NONE),
@@ -331,12 +331,33 @@ static const step_t microcode[NUM_OPCODES][MAX_STEPS] = {
     UCR_STEP,
 },
 
-/* INTPCR rD */
-[OPC_INTPCR] = {
-    STEP(M1_INTPC_READ, M2_GR_WRITE,    M3_NONE,     M4_NONE, M5_NONE),
-    STEP(M1_INTPC_READ, M2_GR_WRITE,    M3_BYTE_SEL, M4_NONE, M5_NONE),
+/* PCR rD */
+[OPC_PCR] = {
+    STEP(M1_PC_READ,  M2_GR_WRITE, M3_NONE,     M4_NONE, M5_NONE),
+    STEP(M1_PC_READ,  M2_GR_WRITE, M3_BYTE_SEL, M4_NONE, M5_NONE),
     UCR_STEP,
 },
+
+/* XPCW rS */
+[OPC_XPCW] = {
+    STEP(M1_GR_READ,  M2_XPC_WRITE, M3_NONE,     M4_GR_SEL_ARG1, M5_NONE),
+    STEP(M1_GR_READ,  M2_XPC_WRITE, M3_BYTE_SEL, M4_GR_SEL_ARG1, M5_NONE),
+    UCR_STEP,
+},
+/* XPCW imm16 */
+[OPC_XPCW_I] = {
+    STEP(M1_IMM_READ, M2_XPC_WRITE, M3_NONE,     M4_NONE, M5_NONE),
+    STEP(M1_IMM_READ, M2_XPC_WRITE, M3_BYTE_SEL, M4_NONE, M5_NONE),
+    UCR_STEP,
+},
+
+/* XPCR rD -- current program counter (PC, or INTPC while interrupted) */
+[OPC_XPCR] = {
+    STEP(M1_XPC_READ, M2_GR_WRITE,  M3_NONE,     M4_NONE, M5_NONE),
+    STEP(M1_XPC_READ, M2_GR_WRITE,  M3_BYTE_SEL, M4_NONE, M5_NONE),
+    UCR_STEP,
+},
+
 /* INTPCW rS */
 [OPC_INTPCW] = {
     STEP(M1_GR_READ,  M2_INTPC_WRITE, M3_NONE,     M4_GR_SEL_ARG1, M5_NONE),
@@ -350,12 +371,28 @@ static const step_t microcode[NUM_OPCODES][MAX_STEPS] = {
     UCR_STEP,
 },
 
-/* PTBRR rD */
-[OPC_PTBRR] = {
-    STEP(M1_PTBR_READ, M2_GR_WRITE,   M3_NONE,     M4_NONE, M5_NONE),
-    STEP(M1_PTBR_READ, M2_GR_WRITE,   M3_BYTE_SEL, M4_NONE, M5_NONE),
+/* INTPCR rD */
+[OPC_INTPCR] = {
+    STEP(M1_INTPC_READ, M2_GR_WRITE,    M3_NONE,     M4_NONE, M5_NONE),
+    STEP(M1_INTPC_READ, M2_GR_WRITE,    M3_BYTE_SEL, M4_NONE, M5_NONE),
     UCR_STEP,
 },
+
+/* PSR and INTR are 8 bit -- one step, no byte select */
+[OPC_PSRW] = {
+    STEP(M1_GR_READ,   M2_PSR_WRITE,  M3_NONE, M4_GR_SEL_ARG1, M5_NONE),
+    UCR_STEP,
+},
+[OPC_PSRW_I] = {
+    STEP(M1_IMM_READ,  M2_PSR_WRITE,  M3_NONE, M4_NONE,        M5_NONE),
+    UCR_STEP,
+},
+
+[OPC_PSRR] = {
+    STEP(M1_PSR_READ,  M2_GR_WRITE,   M3_NONE, M4_NONE,        M5_NONE),
+    UCR_STEP,
+},
+
 /* PTBRW rS */
 [OPC_PTBRW] = {
     STEP(M1_GR_READ,  M2_PTBR_WRITE, M3_NONE,     M4_GR_SEL_ARG1, M5_NONE),
@@ -369,29 +406,24 @@ static const step_t microcode[NUM_OPCODES][MAX_STEPS] = {
     UCR_STEP,
 },
 
-/* PSR and INTR are 8 bit -- one step, no byte select */
-[OPC_PSRR] = {
-    STEP(M1_PSR_READ,  M2_GR_WRITE,   M3_NONE, M4_NONE,        M5_NONE),
+/* PTBRR rD */
+[OPC_PTBRR] = {
+    STEP(M1_PTBR_READ, M2_GR_WRITE,   M3_NONE,     M4_NONE, M5_NONE),
+    STEP(M1_PTBR_READ, M2_GR_WRITE,   M3_BYTE_SEL, M4_NONE, M5_NONE),
     UCR_STEP,
 },
-[OPC_PSRW] = {
-    STEP(M1_GR_READ,   M2_PSR_WRITE,  M3_NONE, M4_GR_SEL_ARG1, M5_NONE),
-    UCR_STEP,
-},
-[OPC_PSRW_I] = {
-    STEP(M1_IMM_READ,  M2_PSR_WRITE,  M3_NONE, M4_NONE,        M5_NONE),
-    UCR_STEP,
-},
-[OPC_INTRR] = {
-    STEP(M1_INTR_READ, M2_GR_WRITE,   M3_NONE, M4_NONE,        M5_NONE),
-    UCR_STEP,
-},
+
 [OPC_INTRW] = {
     STEP(M1_GR_READ,   M2_INTR_WRITE, M3_NONE, M4_GR_SEL_ARG1, M5_NONE),
     UCR_STEP,
 },
 [OPC_INTRW_I] = {
     STEP(M1_IMM_READ,  M2_INTR_WRITE, M3_NONE, M4_NONE,        M5_NONE),
+    UCR_STEP,
+},
+
+[OPC_INTRR] = {
+    STEP(M1_INTR_READ, M2_GR_WRITE,   M3_NONE, M4_NONE,        M5_NONE),
     UCR_STEP,
 },
 
@@ -403,7 +435,7 @@ static const step_t microcode[NUM_OPCODES][MAX_STEPS] = {
     STEP(M1_GR_READ,  M2_MAR_WRITE,  M3_BYTE_SEL, M4_GR_SEL_ARG2, M5_NONE),
     STEP(M1_MEM_READ, M2_PTER_WRITE, M3_NONE,     M4_NONE, M5_PTBR_ADDR_READ),
     STEP(M1_MEM_READ, M2_PTER_WRITE, M3_BYTE_SEL, M4_NONE, M5_PTBR_ADDR_READ),
-    STEP(M1_MEM_READ, M2_GR_WRITE,   M3_NONE,     M4_NONE, M5_PTER_ADDR_READ),
+    STEP(M1_MEM_READ, M2_GR_WRITE,   M3_NONE,     M4_NONE, M5_X_ADDR_READ),
     UCR_STEP,
 },
 /* LDR rD, imm16 */
@@ -412,7 +444,7 @@ static const step_t microcode[NUM_OPCODES][MAX_STEPS] = {
     STEP(M1_IMM_READ, M2_MAR_WRITE,  M3_BYTE_SEL, M4_NONE, M5_NONE),
     STEP(M1_MEM_READ, M2_PTER_WRITE, M3_NONE,     M4_NONE, M5_PTBR_ADDR_READ),
     STEP(M1_MEM_READ, M2_PTER_WRITE, M3_BYTE_SEL, M4_NONE, M5_PTBR_ADDR_READ),
-    STEP(M1_MEM_READ, M2_GR_WRITE,   M3_NONE,     M4_NONE, M5_PTER_ADDR_READ),
+    STEP(M1_MEM_READ, M2_GR_WRITE,   M3_NONE,     M4_NONE, M5_X_ADDR_READ),
     UCR_STEP,
 },
 
@@ -422,7 +454,7 @@ static const step_t microcode[NUM_OPCODES][MAX_STEPS] = {
     STEP(M1_GR_READ,  M2_MAR_WRITE,  M3_BYTE_SEL, M4_GR_SEL_ARG2, M5_NONE),
     STEP(M1_MEM_READ, M2_PTER_WRITE, M3_NONE,     M4_NONE, M5_PTBR_ADDR_READ),
     STEP(M1_MEM_READ, M2_PTER_WRITE, M3_BYTE_SEL, M4_NONE, M5_PTBR_ADDR_READ),
-    STEP(M1_GR_READ,  M2_MEM_WRITE,  M3_NONE, M4_GR_SEL_ARG1, M5_PTER_ADDR_READ),
+    STEP(M1_GR_READ,  M2_MEM_WRITE,  M3_NONE, M4_GR_SEL_ARG1, M5_X_ADDR_READ),
     UCR_STEP,
 },
 /* STR rS, imm16 */
@@ -431,7 +463,7 @@ static const step_t microcode[NUM_OPCODES][MAX_STEPS] = {
     STEP(M1_IMM_READ, M2_MAR_WRITE,  M3_BYTE_SEL, M4_NONE, M5_NONE),
     STEP(M1_MEM_READ, M2_PTER_WRITE, M3_NONE,     M4_NONE, M5_PTBR_ADDR_READ),
     STEP(M1_MEM_READ, M2_PTER_WRITE, M3_BYTE_SEL, M4_NONE, M5_PTBR_ADDR_READ),
-    STEP(M1_GR_READ,  M2_MEM_WRITE,  M3_NONE, M4_GR_SEL_ARG1, M5_PTER_ADDR_READ),
+    STEP(M1_GR_READ,  M2_MEM_WRITE,  M3_NONE, M4_GR_SEL_ARG1, M5_X_ADDR_READ),
     UCR_STEP,
 },
 
@@ -449,6 +481,7 @@ static const step_t microcode[NUM_OPCODES][MAX_STEPS] = {
     ALU_STEP(M1_ALU_READ, M2_GR_WRITE, M3_NONE, ALU_ADD),
     UCR_STEP,
 },
+
 [OPC_ADDS] = {
     STEP(M1_GR_READ,  M2_ALU_ARG1_WRITE, M3_NONE, M4_GR_SEL_ARG2, M5_NONE),
     STEP(M1_GR_READ,  M2_ALU_ARG2_WRITE, M3_NONE, M4_GR_SEL_ARG3, M5_NONE),
@@ -474,6 +507,7 @@ static const step_t microcode[NUM_OPCODES][MAX_STEPS] = {
     ALU_STEP(M1_ALU_READ, M2_GR_WRITE, M3_NONE, ALU_ADDC),
     UCR_STEP,
 },
+
 [OPC_ADDCS] = {
     STEP(M1_GR_READ,  M2_ALU_ARG1_WRITE, M3_NONE, M4_GR_SEL_ARG2, M5_NONE),
     STEP(M1_GR_READ,  M2_ALU_ARG2_WRITE, M3_NONE, M4_GR_SEL_ARG3, M5_NONE),
@@ -499,6 +533,7 @@ static const step_t microcode[NUM_OPCODES][MAX_STEPS] = {
     ALU_STEP(M1_ALU_READ, M2_GR_WRITE, M3_NONE, ALU_SUB),
     UCR_STEP,
 },
+
 [OPC_SUBS] = {
     STEP(M1_GR_READ,  M2_ALU_ARG1_WRITE, M3_NONE, M4_GR_SEL_ARG2, M5_NONE),
     STEP(M1_GR_READ,  M2_ALU_ARG2_WRITE, M3_NONE, M4_GR_SEL_ARG3, M5_NONE),
@@ -524,6 +559,7 @@ static const step_t microcode[NUM_OPCODES][MAX_STEPS] = {
     ALU_STEP(M1_ALU_READ, M2_GR_WRITE, M3_NONE, ALU_SUBC),
     UCR_STEP,
 },
+
 [OPC_SUBCS] = {
     STEP(M1_GR_READ,  M2_ALU_ARG1_WRITE, M3_NONE, M4_GR_SEL_ARG2, M5_NONE),
     STEP(M1_GR_READ,  M2_ALU_ARG2_WRITE, M3_NONE, M4_GR_SEL_ARG3, M5_NONE),
@@ -549,6 +585,7 @@ static const step_t microcode[NUM_OPCODES][MAX_STEPS] = {
     ALU_STEP(M1_ALU_READ, M2_GR_WRITE, M3_NONE, ALU_AND),
     UCR_STEP,
 },
+
 [OPC_ANDS] = {
     STEP(M1_GR_READ,  M2_ALU_ARG1_WRITE, M3_NONE, M4_GR_SEL_ARG2, M5_NONE),
     STEP(M1_GR_READ,  M2_ALU_ARG2_WRITE, M3_NONE, M4_GR_SEL_ARG3, M5_NONE),
@@ -574,6 +611,7 @@ static const step_t microcode[NUM_OPCODES][MAX_STEPS] = {
     ALU_STEP(M1_ALU_READ, M2_GR_WRITE, M3_NONE, ALU_OR),
     UCR_STEP,
 },
+
 [OPC_ORS] = {
     STEP(M1_GR_READ,  M2_ALU_ARG1_WRITE, M3_NONE, M4_GR_SEL_ARG2, M5_NONE),
     STEP(M1_GR_READ,  M2_ALU_ARG2_WRITE, M3_NONE, M4_GR_SEL_ARG3, M5_NONE),
@@ -599,6 +637,7 @@ static const step_t microcode[NUM_OPCODES][MAX_STEPS] = {
     ALU_STEP(M1_ALU_READ, M2_GR_WRITE, M3_NONE, ALU_EOR),
     UCR_STEP,
 },
+
 [OPC_EORS] = {
     STEP(M1_GR_READ,  M2_ALU_ARG1_WRITE, M3_NONE, M4_GR_SEL_ARG2, M5_NONE),
     STEP(M1_GR_READ,  M2_ALU_ARG2_WRITE, M3_NONE, M4_GR_SEL_ARG3, M5_NONE),
@@ -609,93 +648,6 @@ static const step_t microcode[NUM_OPCODES][MAX_STEPS] = {
     STEP(M1_GR_READ,  M2_ALU_ARG1_WRITE, M3_NONE, M4_GR_SEL_ARG2, M5_NONE),
     STEP(M1_IMM_READ, M2_ALU_ARG2_WRITE, M3_NONE, M4_NONE,        M5_NONE),
     ALU_STEP(M1_ALU_READ, M2_GR_WRITE, M3_PSR_FLAGS_WRITE, ALU_EOR),
-    UCR_STEP,
-},
-
-/* ------------- arithmetic and logic, flags only ------------- */
-
-[OPC_CMN] = {
-    STEP(M1_GR_READ,  M2_ALU_ARG1_WRITE, M3_NONE, M4_GR_SEL_ARG1, M5_NONE),
-    STEP(M1_GR_READ,  M2_ALU_ARG2_WRITE, M3_NONE, M4_GR_SEL_ARG2, M5_NONE),
-    ALU_STEP(M1_ALU_READ, M2_NONE, M3_PSR_FLAGS_WRITE, ALU_ADD),
-    UCR_STEP,
-},
-[OPC_CMN_I] = {
-    STEP(M1_GR_READ,  M2_ALU_ARG1_WRITE, M3_NONE, M4_GR_SEL_ARG1, M5_NONE),
-    STEP(M1_IMM_READ, M2_ALU_ARG2_WRITE, M3_NONE, M4_NONE,        M5_NONE),
-    ALU_STEP(M1_ALU_READ, M2_NONE, M3_PSR_FLAGS_WRITE, ALU_ADD),
-    UCR_STEP,
-},
-[OPC_ADDCD] = {
-    STEP(M1_GR_READ,  M2_ALU_ARG1_WRITE, M3_NONE, M4_GR_SEL_ARG1, M5_NONE),
-    STEP(M1_GR_READ,  M2_ALU_ARG2_WRITE, M3_NONE, M4_GR_SEL_ARG2, M5_NONE),
-    ALU_STEP(M1_ALU_READ, M2_NONE, M3_PSR_FLAGS_WRITE, ALU_ADDC),
-    UCR_STEP,
-},
-[OPC_ADDCD_I] = {
-    STEP(M1_GR_READ,  M2_ALU_ARG1_WRITE, M3_NONE, M4_GR_SEL_ARG1, M5_NONE),
-    STEP(M1_IMM_READ, M2_ALU_ARG2_WRITE, M3_NONE, M4_NONE,        M5_NONE),
-    ALU_STEP(M1_ALU_READ, M2_NONE, M3_PSR_FLAGS_WRITE, ALU_ADDC),
-    UCR_STEP,
-},
-[OPC_CMP] = {
-    STEP(M1_GR_READ,  M2_ALU_ARG1_WRITE, M3_NONE, M4_GR_SEL_ARG1, M5_NONE),
-    STEP(M1_GR_READ,  M2_ALU_ARG2_WRITE, M3_NONE, M4_GR_SEL_ARG2, M5_NONE),
-    ALU_STEP(M1_ALU_READ, M2_NONE, M3_PSR_FLAGS_WRITE, ALU_SUB),
-    UCR_STEP,
-},
-[OPC_CMP_I] = {
-    STEP(M1_GR_READ,  M2_ALU_ARG1_WRITE, M3_NONE, M4_GR_SEL_ARG1, M5_NONE),
-    STEP(M1_IMM_READ, M2_ALU_ARG2_WRITE, M3_NONE, M4_NONE,        M5_NONE),
-    ALU_STEP(M1_ALU_READ, M2_NONE, M3_PSR_FLAGS_WRITE, ALU_SUB),
-    UCR_STEP,
-},
-[OPC_SUBCD] = {
-    STEP(M1_GR_READ,  M2_ALU_ARG1_WRITE, M3_NONE, M4_GR_SEL_ARG1, M5_NONE),
-    STEP(M1_GR_READ,  M2_ALU_ARG2_WRITE, M3_NONE, M4_GR_SEL_ARG2, M5_NONE),
-    ALU_STEP(M1_ALU_READ, M2_NONE, M3_PSR_FLAGS_WRITE, ALU_SUBC),
-    UCR_STEP,
-},
-[OPC_SUBCD_I] = {
-    STEP(M1_GR_READ,  M2_ALU_ARG1_WRITE, M3_NONE, M4_GR_SEL_ARG1, M5_NONE),
-    STEP(M1_IMM_READ, M2_ALU_ARG2_WRITE, M3_NONE, M4_NONE,        M5_NONE),
-    ALU_STEP(M1_ALU_READ, M2_NONE, M3_PSR_FLAGS_WRITE, ALU_SUBC),
-    UCR_STEP,
-},
-[OPC_ANDD] = {
-    STEP(M1_GR_READ,  M2_ALU_ARG1_WRITE, M3_NONE, M4_GR_SEL_ARG1, M5_NONE),
-    STEP(M1_GR_READ,  M2_ALU_ARG2_WRITE, M3_NONE, M4_GR_SEL_ARG2, M5_NONE),
-    ALU_STEP(M1_ALU_READ, M2_NONE, M3_PSR_FLAGS_WRITE, ALU_AND),
-    UCR_STEP,
-},
-[OPC_ANDD_I] = {
-    STEP(M1_GR_READ,  M2_ALU_ARG1_WRITE, M3_NONE, M4_GR_SEL_ARG1, M5_NONE),
-    STEP(M1_IMM_READ, M2_ALU_ARG2_WRITE, M3_NONE, M4_NONE,        M5_NONE),
-    ALU_STEP(M1_ALU_READ, M2_NONE, M3_PSR_FLAGS_WRITE, ALU_AND),
-    UCR_STEP,
-},
-[OPC_ORD] = {
-    STEP(M1_GR_READ,  M2_ALU_ARG1_WRITE, M3_NONE, M4_GR_SEL_ARG1, M5_NONE),
-    STEP(M1_GR_READ,  M2_ALU_ARG2_WRITE, M3_NONE, M4_GR_SEL_ARG2, M5_NONE),
-    ALU_STEP(M1_ALU_READ, M2_NONE, M3_PSR_FLAGS_WRITE, ALU_OR),
-    UCR_STEP,
-},
-[OPC_ORD_I] = {
-    STEP(M1_GR_READ,  M2_ALU_ARG1_WRITE, M3_NONE, M4_GR_SEL_ARG1, M5_NONE),
-    STEP(M1_IMM_READ, M2_ALU_ARG2_WRITE, M3_NONE, M4_NONE,        M5_NONE),
-    ALU_STEP(M1_ALU_READ, M2_NONE, M3_PSR_FLAGS_WRITE, ALU_OR),
-    UCR_STEP,
-},
-[OPC_EORD] = {
-    STEP(M1_GR_READ,  M2_ALU_ARG1_WRITE, M3_NONE, M4_GR_SEL_ARG1, M5_NONE),
-    STEP(M1_GR_READ,  M2_ALU_ARG2_WRITE, M3_NONE, M4_GR_SEL_ARG2, M5_NONE),
-    ALU_STEP(M1_ALU_READ, M2_NONE, M3_PSR_FLAGS_WRITE, ALU_EOR),
-    UCR_STEP,
-},
-[OPC_EORD_I] = {
-    STEP(M1_GR_READ,  M2_ALU_ARG1_WRITE, M3_NONE, M4_GR_SEL_ARG1, M5_NONE),
-    STEP(M1_IMM_READ, M2_ALU_ARG2_WRITE, M3_NONE, M4_NONE,        M5_NONE),
-    ALU_STEP(M1_ALU_READ, M2_NONE, M3_PSR_FLAGS_WRITE, ALU_EOR),
     UCR_STEP,
 },
 
@@ -711,6 +663,7 @@ static const step_t microcode[NUM_OPCODES][MAX_STEPS] = {
     ALU_STEP(M1_ALU_READ, M2_GR_WRITE, M3_NONE, ALU_LSL),
     UCR_STEP,
 },
+
 [OPC_LSLS] = {
     STEP(M1_GR_READ,  M2_ALU_ARG1_WRITE, M3_NONE, M4_GR_SEL_ARG2, M5_NONE),
     ALU_STEP(M1_ALU_READ, M2_GR_WRITE, M3_PSR_FLAGS_WRITE, ALU_LSL),
@@ -732,6 +685,7 @@ static const step_t microcode[NUM_OPCODES][MAX_STEPS] = {
     ALU_STEP(M1_ALU_READ, M2_GR_WRITE, M3_NONE, ALU_LSR),
     UCR_STEP,
 },
+
 [OPC_LSRS] = {
     STEP(M1_GR_READ,  M2_ALU_ARG1_WRITE, M3_NONE, M4_GR_SEL_ARG2, M5_NONE),
     ALU_STEP(M1_ALU_READ, M2_GR_WRITE, M3_PSR_FLAGS_WRITE, ALU_LSR),
@@ -753,6 +707,7 @@ static const step_t microcode[NUM_OPCODES][MAX_STEPS] = {
     ALU_STEP(M1_ALU_READ, M2_GR_WRITE, M3_NONE, ALU_ASR),
     UCR_STEP,
 },
+
 [OPC_ASRS] = {
     STEP(M1_GR_READ,  M2_ALU_ARG1_WRITE, M3_NONE, M4_GR_SEL_ARG2, M5_NONE),
     ALU_STEP(M1_ALU_READ, M2_GR_WRITE, M3_PSR_FLAGS_WRITE, ALU_ASR),
@@ -774,6 +729,7 @@ static const step_t microcode[NUM_OPCODES][MAX_STEPS] = {
     ALU_STEP(M1_ALU_READ, M2_GR_WRITE, M3_NONE, ALU_CSL),
     UCR_STEP,
 },
+
 [OPC_CSLS] = {
     STEP(M1_GR_READ,  M2_ALU_ARG1_WRITE, M3_NONE, M4_GR_SEL_ARG2, M5_NONE),
     ALU_STEP(M1_ALU_READ, M2_GR_WRITE, M3_PSR_FLAGS_WRITE, ALU_CSL),
@@ -795,6 +751,7 @@ static const step_t microcode[NUM_OPCODES][MAX_STEPS] = {
     ALU_STEP(M1_ALU_READ, M2_GR_WRITE, M3_NONE, ALU_CSR),
     UCR_STEP,
 },
+
 [OPC_CSRS] = {
     STEP(M1_GR_READ,  M2_ALU_ARG1_WRITE, M3_NONE, M4_GR_SEL_ARG2, M5_NONE),
     ALU_STEP(M1_ALU_READ, M2_GR_WRITE, M3_PSR_FLAGS_WRITE, ALU_CSR),
@@ -806,7 +763,100 @@ static const step_t microcode[NUM_OPCODES][MAX_STEPS] = {
     UCR_STEP,
 },
 
-/* ---------------- shifts, flags only ---------------- */
+/* ---------------- arithmetic and logic, flags only -- result discarded ---------------- */
+
+[OPC_CMN] = {
+    STEP(M1_GR_READ,  M2_ALU_ARG1_WRITE, M3_NONE, M4_GR_SEL_ARG1, M5_NONE),
+    STEP(M1_GR_READ,  M2_ALU_ARG2_WRITE, M3_NONE, M4_GR_SEL_ARG2, M5_NONE),
+    ALU_STEP(M1_ALU_READ, M2_NONE, M3_PSR_FLAGS_WRITE, ALU_ADD),
+    UCR_STEP,
+},
+[OPC_CMN_I] = {
+    STEP(M1_GR_READ,  M2_ALU_ARG1_WRITE, M3_NONE, M4_GR_SEL_ARG1, M5_NONE),
+    STEP(M1_IMM_READ, M2_ALU_ARG2_WRITE, M3_NONE, M4_NONE,        M5_NONE),
+    ALU_STEP(M1_ALU_READ, M2_NONE, M3_PSR_FLAGS_WRITE, ALU_ADD),
+    UCR_STEP,
+},
+
+[OPC_ADDCD] = {
+    STEP(M1_GR_READ,  M2_ALU_ARG1_WRITE, M3_NONE, M4_GR_SEL_ARG1, M5_NONE),
+    STEP(M1_GR_READ,  M2_ALU_ARG2_WRITE, M3_NONE, M4_GR_SEL_ARG2, M5_NONE),
+    ALU_STEP(M1_ALU_READ, M2_NONE, M3_PSR_FLAGS_WRITE, ALU_ADDC),
+    UCR_STEP,
+},
+[OPC_ADDCD_I] = {
+    STEP(M1_GR_READ,  M2_ALU_ARG1_WRITE, M3_NONE, M4_GR_SEL_ARG1, M5_NONE),
+    STEP(M1_IMM_READ, M2_ALU_ARG2_WRITE, M3_NONE, M4_NONE,        M5_NONE),
+    ALU_STEP(M1_ALU_READ, M2_NONE, M3_PSR_FLAGS_WRITE, ALU_ADDC),
+    UCR_STEP,
+},
+
+[OPC_CMP] = {
+    STEP(M1_GR_READ,  M2_ALU_ARG1_WRITE, M3_NONE, M4_GR_SEL_ARG1, M5_NONE),
+    STEP(M1_GR_READ,  M2_ALU_ARG2_WRITE, M3_NONE, M4_GR_SEL_ARG2, M5_NONE),
+    ALU_STEP(M1_ALU_READ, M2_NONE, M3_PSR_FLAGS_WRITE, ALU_SUB),
+    UCR_STEP,
+},
+[OPC_CMP_I] = {
+    STEP(M1_GR_READ,  M2_ALU_ARG1_WRITE, M3_NONE, M4_GR_SEL_ARG1, M5_NONE),
+    STEP(M1_IMM_READ, M2_ALU_ARG2_WRITE, M3_NONE, M4_NONE,        M5_NONE),
+    ALU_STEP(M1_ALU_READ, M2_NONE, M3_PSR_FLAGS_WRITE, ALU_SUB),
+    UCR_STEP,
+},
+
+[OPC_SUBCD] = {
+    STEP(M1_GR_READ,  M2_ALU_ARG1_WRITE, M3_NONE, M4_GR_SEL_ARG1, M5_NONE),
+    STEP(M1_GR_READ,  M2_ALU_ARG2_WRITE, M3_NONE, M4_GR_SEL_ARG2, M5_NONE),
+    ALU_STEP(M1_ALU_READ, M2_NONE, M3_PSR_FLAGS_WRITE, ALU_SUBC),
+    UCR_STEP,
+},
+[OPC_SUBCD_I] = {
+    STEP(M1_GR_READ,  M2_ALU_ARG1_WRITE, M3_NONE, M4_GR_SEL_ARG1, M5_NONE),
+    STEP(M1_IMM_READ, M2_ALU_ARG2_WRITE, M3_NONE, M4_NONE,        M5_NONE),
+    ALU_STEP(M1_ALU_READ, M2_NONE, M3_PSR_FLAGS_WRITE, ALU_SUBC),
+    UCR_STEP,
+},
+
+[OPC_ANDD] = {
+    STEP(M1_GR_READ,  M2_ALU_ARG1_WRITE, M3_NONE, M4_GR_SEL_ARG1, M5_NONE),
+    STEP(M1_GR_READ,  M2_ALU_ARG2_WRITE, M3_NONE, M4_GR_SEL_ARG2, M5_NONE),
+    ALU_STEP(M1_ALU_READ, M2_NONE, M3_PSR_FLAGS_WRITE, ALU_AND),
+    UCR_STEP,
+},
+[OPC_ANDD_I] = {
+    STEP(M1_GR_READ,  M2_ALU_ARG1_WRITE, M3_NONE, M4_GR_SEL_ARG1, M5_NONE),
+    STEP(M1_IMM_READ, M2_ALU_ARG2_WRITE, M3_NONE, M4_NONE,        M5_NONE),
+    ALU_STEP(M1_ALU_READ, M2_NONE, M3_PSR_FLAGS_WRITE, ALU_AND),
+    UCR_STEP,
+},
+
+[OPC_ORD] = {
+    STEP(M1_GR_READ,  M2_ALU_ARG1_WRITE, M3_NONE, M4_GR_SEL_ARG1, M5_NONE),
+    STEP(M1_GR_READ,  M2_ALU_ARG2_WRITE, M3_NONE, M4_GR_SEL_ARG2, M5_NONE),
+    ALU_STEP(M1_ALU_READ, M2_NONE, M3_PSR_FLAGS_WRITE, ALU_OR),
+    UCR_STEP,
+},
+[OPC_ORD_I] = {
+    STEP(M1_GR_READ,  M2_ALU_ARG1_WRITE, M3_NONE, M4_GR_SEL_ARG1, M5_NONE),
+    STEP(M1_IMM_READ, M2_ALU_ARG2_WRITE, M3_NONE, M4_NONE,        M5_NONE),
+    ALU_STEP(M1_ALU_READ, M2_NONE, M3_PSR_FLAGS_WRITE, ALU_OR),
+    UCR_STEP,
+},
+
+[OPC_EORD] = {
+    STEP(M1_GR_READ,  M2_ALU_ARG1_WRITE, M3_NONE, M4_GR_SEL_ARG1, M5_NONE),
+    STEP(M1_GR_READ,  M2_ALU_ARG2_WRITE, M3_NONE, M4_GR_SEL_ARG2, M5_NONE),
+    ALU_STEP(M1_ALU_READ, M2_NONE, M3_PSR_FLAGS_WRITE, ALU_EOR),
+    UCR_STEP,
+},
+[OPC_EORD_I] = {
+    STEP(M1_GR_READ,  M2_ALU_ARG1_WRITE, M3_NONE, M4_GR_SEL_ARG1, M5_NONE),
+    STEP(M1_IMM_READ, M2_ALU_ARG2_WRITE, M3_NONE, M4_NONE,        M5_NONE),
+    ALU_STEP(M1_ALU_READ, M2_NONE, M3_PSR_FLAGS_WRITE, ALU_EOR),
+    UCR_STEP,
+},
+
+/* ---------------- shifts, flags only -- result discarded ---------------- */
 
 [OPC_LSLD] = {
     STEP(M1_GR_READ,  M2_ALU_ARG1_WRITE, M3_NONE, M4_GR_SEL_ARG1, M5_NONE),
@@ -818,6 +868,7 @@ static const step_t microcode[NUM_OPCODES][MAX_STEPS] = {
     ALU_STEP(M1_ALU_READ, M2_NONE, M3_PSR_FLAGS_WRITE, ALU_LSL),
     UCR_STEP,
 },
+
 [OPC_LSRD] = {
     STEP(M1_GR_READ,  M2_ALU_ARG1_WRITE, M3_NONE, M4_GR_SEL_ARG1, M5_NONE),
     ALU_STEP(M1_ALU_READ, M2_NONE, M3_PSR_FLAGS_WRITE, ALU_LSR),
@@ -828,6 +879,7 @@ static const step_t microcode[NUM_OPCODES][MAX_STEPS] = {
     ALU_STEP(M1_ALU_READ, M2_NONE, M3_PSR_FLAGS_WRITE, ALU_LSR),
     UCR_STEP,
 },
+
 [OPC_ASRD] = {
     STEP(M1_GR_READ,  M2_ALU_ARG1_WRITE, M3_NONE, M4_GR_SEL_ARG1, M5_NONE),
     ALU_STEP(M1_ALU_READ, M2_NONE, M3_PSR_FLAGS_WRITE, ALU_ASR),
@@ -838,6 +890,7 @@ static const step_t microcode[NUM_OPCODES][MAX_STEPS] = {
     ALU_STEP(M1_ALU_READ, M2_NONE, M3_PSR_FLAGS_WRITE, ALU_ASR),
     UCR_STEP,
 },
+
 [OPC_CSLD] = {
     STEP(M1_GR_READ,  M2_ALU_ARG1_WRITE, M3_NONE, M4_GR_SEL_ARG1, M5_NONE),
     ALU_STEP(M1_ALU_READ, M2_NONE, M3_PSR_FLAGS_WRITE, ALU_CSL),
@@ -848,6 +901,7 @@ static const step_t microcode[NUM_OPCODES][MAX_STEPS] = {
     ALU_STEP(M1_ALU_READ, M2_NONE, M3_PSR_FLAGS_WRITE, ALU_CSL),
     UCR_STEP,
 },
+
 [OPC_CSRD] = {
     STEP(M1_GR_READ,  M2_ALU_ARG1_WRITE, M3_NONE, M4_GR_SEL_ARG1, M5_NONE),
     ALU_STEP(M1_ALU_READ, M2_NONE, M3_PSR_FLAGS_WRITE, ALU_CSR),
@@ -891,24 +945,25 @@ static const step_t microcode[NUM_OPCODES][MAX_STEPS] = {
     UCR_STEP,
 },
 
-/* ---------------- other ---------------- */
-
-/* SVC -- raise the supervisor call, everything else idle */
-[OPC_SVC] = {
-    STEP(M1_NONE, M2_NONE, M3_SVC, M4_NONE, M5_NONE),
-    UCR_STEP,
-},
-
-/* ---------------- port I/O ---------------- */
+/* ---------------- port I/O, one byte ---------------- */
 
 /* PTR rD -- rD <- port input */
 [OPC_PTR] = {
     STEP(M1_PORT_READ, M2_GR_WRITE,   M3_NONE, M4_NONE,        M5_NONE),
     UCR_STEP,
 },
+
 /* PTW rS -- port output <- rS */
 [OPC_PTW] = {
     STEP(M1_GR_READ,   M2_PORT_WRITE, M3_NONE, M4_GR_SEL_ARG1, M5_NONE),
+    UCR_STEP,
+},
+
+/* ---------------- other ---------------- */
+
+/* SVC -- raise the supervisor call, everything else idle */
+[OPC_SVC] = {
+    STEP(M1_NONE, M2_NONE, M3_SVC, M4_NONE, M5_NONE),
     UCR_STEP,
 },
 

@@ -1,0 +1,4 @@
+sra8asm
+*.mem
+*.bin
+*.lst
