@@ -343,7 +343,7 @@ module CPU (
 
         .irq_in(irq_in),
         .ini_in(ini_in),
-        .svc_in(svc_in),s
+        .svc_in(svc_in),
         .pf_in(pf_in),
         .int_in(int_in),
 
