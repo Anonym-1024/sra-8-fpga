@@ -4,39 +4,27 @@
 .code
 .org #0x0000
 start:
-        mov   !cnt, #0
+        
+        
+        add r0, r0, #1
+        ptw p0, r0
+
+        brl r10a, =delay
+        br =start
+
+
+
+delay:
+        mov r14, #0
+        mov r15, #0
 .l loop:
-        add   !cnt, !cnt, #1
-        ptw   p0, !cnt
-        cmp   !cnt, !LIMIT
-        br.ne .b =loop            ; nearest 'loop' above
+        adds r14, r14, #1
+        addc r15, r15, #0
+        cmp r15, #255
+        br.ne .b =loop
 
-        mova  !ptr, =message
-        brl   !lr, =puts
-        br    .f =loop            ; nearest 'loop' below
-.l loop:
-        br    .b =loop            ; halt: spin here
+        br r10a
 
-; print zero terminated string at r2a, return address in r12a
-puts:
-.l next:
-        ldr   r4, !ptr
-        cmp   r4, #0
-        br.eq .f =done
-        ptw   r4
-        adds  r2, r2, #1
-        addc  r3, r3, #0
-        br    .b =next
-.l done:
-        br    !lr
 
-.data
-.org #0x0200
-message:  .asciz "Hi; there\n"
-table:    .word #1, #0b10, #0o3, #0x4, #0d5, #-1, #'a'
-vectors:  .addr =start, =puts
-wide:     .dword #0xBEEF
-          .qword #0xDEADBEEF, #-2
-          .align #4
-buffer:   .res #16
-counter:  .res #1
+
+

@@ -2,8 +2,14 @@
 
 module CPU (
     input wire clk,
-    output wire [7:0] port_out
+    output wire [7:0] port_out,
+    input wire BTN2,
+    output wire LEDR_N,
+    output wire LEDG_N
 );
+
+    assign LEDR_N = ~BTN2;
+    assign LEDG_N = BTN2;
     assign port_out = _port_out;
     
     initial begin
@@ -431,7 +437,7 @@ module CPU (
         .psr_flags_write(psr_flags_write),
         .intr_read(intr_read),
         .intr_write(intr_write),
-
+        ._reset(BTN2)
         
     );
 

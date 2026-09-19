@@ -59,7 +59,12 @@ module ControlUnit (
 
     output wire intr_read,
     output wire intr_write,
-    output wire svc_out
+    output wire svc_out,
+
+
+
+
+    input wire _reset
 );
 
 
@@ -248,16 +253,19 @@ module ControlUnit (
     assign bus_out = (imm_read == 1) ? (byte_sel == 0) ? imm0 : imm1 : 8'b0;
 
 
-    reg [10:0] counter = 0;
+    reg [24:0] counter = 0;
 
     always @(posedge clk) begin
 
 
         if (clk_phase == 0) begin
             // Fetch ucode from ROM
-            if (counter[10] == 0) begin
+             if (counter[24] == 0) begin
                 ucode <= 16'h0050;
                 counter <= counter + 1;
+             end else if (_reset == 1 && step == 0) begin
+                ucode <= 16'h0050;
+                counter <= 0;
             end else if ((irq_in == 1 && irqm_in == 1 && step == 0) == 1 && is_interrupted == 0) begin
                 ucode <= 16'h0050;
                 is_interrupted <= 1;
