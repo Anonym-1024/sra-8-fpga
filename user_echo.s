@@ -4,7 +4,7 @@
 ; that data addresses are translated as well as the fetches.
 ;
 ; Assemble with:  asm/sra8asm user_echo.s -f bin -o user_echo.bin
-; and put the bytes into arduino_loader/arduino_loader.ino:  xxd -i user_echo.bin
+; or make arduino_loader/program.h from it:  python3 arduino_loader/make_program.py user_echo.s
 ;
 ; The IRQ is masked, the program polls INTR for a received byte instead.
 ; An interrupt handler would not fit here: interrupt mode is not translated,

@@ -1,5 +1,5 @@
-// Uploads a program to the SRA-8 loader (loader.s), then works as a
-// Serial Monitor <-> FPGA bridge so the uploaded program can be used.
+// Uploads a program (program.h) to the SRA-8 loader (loader.s), then works
+// as a Serial Monitor <-> FPGA bridge so the uploaded program can be used.
 //
 // Wiring (iCEBreaker PMOD 1A, see icebreaker.pcf):
 //   FPGA uart_tx (pin 4) ------------------> UNO D10
@@ -9,7 +9,8 @@
 //
 // Use: load the FPGA with loader.s, open the Serial Monitor at 9600 baud
 // and send any character.  The FPGA needs about 6 s after configuration
-// before the loader runs.
+// before the loader runs.  For terminal.s set the line ending of the
+// Serial Monitor to "Newline" or "Carriage return".
 //
 // Upload protocol: 0xA5, length low, length high, the program bytes.  The
 // loader answers with the 8 bit sum of the program bytes and starts the
@@ -21,24 +22,19 @@
 const byte FPGA_RX_PIN = 10;    // UNO receives here, from FPGA uart_tx
 const byte FPGA_TX_PIN = 11;    // UNO transmits here, to FPGA uart_rx
 
-// Pause after every byte.  The loader needs well under 1 ms to store a
-// byte, and has no receive buffer: a byte that arrives before the previous
-// one has been read replaces it.
+// Pause after every byte, during the upload and afterwards in the bridge.
+// Neither the loader nor the programs have a receive buffer: a byte that
+// arrives before the previous one has been read replaces it.  The loader
+// needs well under 1 ms for a byte, terminal.s about 2 ms because it echoes.
+// The pause is also when SoftwareSerial can hear the echo, it does not
+// receive while it sends.
 const unsigned int BYTE_DELAY_MS = 5;
 
 const byte START_MARK = 0xA5;
 
-// user_echo.s:  asm/sra8asm user_echo.s -f bin -o user_echo.bin && xxd -i user_echo.bin
-const byte program[] PROGMEM = {
-  0x00, 0x32, 0x00, 0x48, 0x01, 0xC0, 0x20, 0x00, 0x05, 0x50, 0x00, 0x00,
-  0x16, 0x90, 0x00, 0x2C, 0x06, 0xE0, 0x00, 0x00, 0x00, 0x11, 0x00, 0x60,
-  0x02, 0x31, 0x10, 0x01, 0x46, 0x90, 0x00, 0x18, 0x02, 0x32, 0x20, 0x01,
-  0x02, 0x53, 0x30, 0x00, 0x06, 0x90, 0x00, 0x04, 0x01, 0xA1, 0x00, 0x00,
-  0x05, 0x91, 0x00, 0x10, 0x16, 0x90, 0x00, 0x2C, 0x06, 0xC0, 0x00, 0x00,
-  0x01, 0x90, 0x00, 0x00, 0x06, 0xE0, 0x00, 0x00, 0x06, 0x90, 0x00, 0x2C,
-  0x68, 0x65, 0x6C, 0x6C, 0x6F, 0x20, 0x66, 0x72, 0x6F, 0x6D, 0x20, 0x70,
-  0x6C, 0x20, 0x31, 0x0D, 0x0A, 0x00
-};
+// The program to upload.  Make program.h with
+//   python3 arduino_loader/make_program.py terminal.s      (or user_echo.s, ...)
+#include "program.h"
 const unsigned int PROGRAM_SIZE = sizeof(program);
 
 SoftwareSerial fpga(FPGA_RX_PIN, FPGA_TX_PIN);
@@ -52,6 +48,8 @@ void sendSlowly(byte b) {
 
 void upload() {
   Serial.print(F("uploading "));
+  Serial.print(PROGRAM_NAME);
+  Serial.print(F(", "));
   Serial.print(PROGRAM_SIZE);
   Serial.println(F(" bytes"));
 
@@ -92,7 +90,8 @@ void upload() {
 void setup() {
   Serial.begin(9600);
   fpga.begin(9600);             // must match DIV in UartTx.v / UartRx.v
-  Serial.println(F("send any character to upload the program"));
+  Serial.print(F("send any character to upload "));
+  Serial.println(PROGRAM_NAME);
 }
 
 void loop() {
@@ -110,7 +109,7 @@ void loop() {
   }
 
   if (Serial.available())
-    fpga.write(Serial.read());  // PC -> FPGA
+    sendSlowly(Serial.read());  // PC -> FPGA
 
   if (fpga.available())
     Serial.write(fpga.read());  // FPGA -> PC
