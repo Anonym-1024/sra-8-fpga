@@ -2,7 +2,8 @@
 
 module CPU (
     input wire clk,
-    output wire [7:0] port_out,
+    input wire uart_rx,
+    output wire uart_tx,
     input wire BTN2,
     output wire LEDR_N,
     output wire LEDG_N
@@ -10,16 +11,15 @@ module CPU (
 
     assign LEDR_N = ~BTN2;
     assign LEDG_N = BTN2;
-    assign port_out = _port_out;
-    
+
     initial begin
         $dumpfile("dump.vcd"); // Name of the waveform output file
         $dumpvars(0); // Dump all variables in module tb_counter and below
-        
-        
+
+
     end
 
-    
+
 
     wire [1:0] clk_phase;
 
@@ -46,13 +46,13 @@ module CPU (
 
 
     assign bus = registers_bus | alu_bus | memory_bus | ptbr_bus | psr_bus | pc_bus | intpc_bus | intr_bus | port_bus | control_unit_bus;
-    
+
 
 
     // ETC
 
     wire [3:0] flags;
-    
+
 
     wire byte_sel;
 
@@ -81,7 +81,7 @@ module CPU (
     // MEMORY
 
     wire [15:0] mem_addr;
-    
+
 
     wire mem_read;
     wire mem_write;
@@ -89,8 +89,8 @@ module CPU (
 
 
     // PTBR
-    
-    
+
+
     wire [15:0] ptbr_addr_out;
 
     wire ptbr_addr_read;
@@ -109,8 +109,8 @@ module CPU (
 
     wire pter_addr_read;
     wire [15:0] pter_output;
-    
-    
+
+
     wire pter_write;
 
 
@@ -167,7 +167,7 @@ module CPU (
 
     wire intr_read;
     wire intr_write;
-    reg irq_in = 0;
+    wire irq_in;
     wire svc_in;
     reg ini_in = 0;
     reg pf_in = 0;
@@ -181,14 +181,13 @@ module CPU (
 
     // Port
 
-    reg [7:0] port_in = 0;
     wire port_read;
     wire port_write;
 
     // Control unit
 
     wire [4:0] step;
-   
+
 
     GeneralRegisters registers (
         .clk(clk),
@@ -202,7 +201,7 @@ module CPU (
         .read_sel(gr_sel_read),
         .write_sel(gr_sel_write)
     );
-    
+
 
     ALU alu (
         .clk(clk),
@@ -217,10 +216,10 @@ module CPU (
         .write_en(alu_op1_write),
         .write_en_2(alu_op2_write),
         .opcode(alu_opcode)
-        
+
     );
 
-    
+
 
     Memory memory (
         .clk(clk),
@@ -232,9 +231,9 @@ module CPU (
 
         .read_en(mem_read),
         .write_en(mem_write)
-        
+
     );
-    
+
 
     PTBR ptbr (
         .clk(clk),
@@ -247,11 +246,11 @@ module CPU (
         .read_en(ptbr_read),
         .write_en(ptbr_write),
         .byte_sel(byte_sel)
-        
+
     );
 
 
-    
+
 
     PTER pter (
         .clk(clk),
@@ -262,12 +261,12 @@ module CPU (
 
         .write_en(pter_write),
         .byte_sel(byte_sel)
-        
+
     );
 
 
 
-    
+
 
     MAR mar (
         .clk(clk),
@@ -280,10 +279,10 @@ module CPU (
 
         .write_en(mar_write),
         .byte_sel(byte_sel)
-        
+
     );
 
-   
+
     PC pc (
         .clk(clk),
         .clk_phase(clk_phase),
@@ -296,7 +295,7 @@ module CPU (
         .byte_sel(byte_sel),
         .inc(pc_inc)
     );
-    
+
 
 
     INTPC intpc (
@@ -311,8 +310,8 @@ module CPU (
         .byte_sel(byte_sel),
         .inc(intpc_inc)
     );
-   
-    
+
+
 
     PSR psr (
         .clk(clk),
@@ -328,10 +327,10 @@ module CPU (
         .read_en(psr_read),
         .write_en(psr_write),
         .flags_write_en(psr_flags_write)
-        
+
     );
 
-    
+
 
     INTR intr (
         .clk(clk),
@@ -344,7 +343,7 @@ module CPU (
 
         .irq_in(irq_in),
         .ini_in(ini_in),
-        .svc_in(svc_in),
+        .svc_in(svc_in),s
         .pf_in(pf_in),
         .int_in(int_in),
 
@@ -354,7 +353,6 @@ module CPU (
         .pf_out(pf_out)
     );
 
-    wire [7:0] _port_out;
 
     Port port (
         .clk(clk),
@@ -362,8 +360,10 @@ module CPU (
 
         .bus_in(bus),
         .bus_out(port_bus),
-        .port_in(port_in),
-        .port_out(_port_out),
+
+        .uart_rx(uart_rx),
+        .uart_tx(uart_tx),
+        .irq_out(irq_in),
 
         .port_read(port_read),
         .port_write(port_write)
@@ -380,7 +380,7 @@ module CPU (
         .bus_out(control_unit_bus),
         .flags_in(flags),
         .pl_in(pl),
-        
+
 
 
         // interrupts
@@ -438,8 +438,8 @@ module CPU (
         .intr_read(intr_read),
         .intr_write(intr_write),
         ._reset(BTN2)
-        
+
     );
 
-    
+
 endmodule

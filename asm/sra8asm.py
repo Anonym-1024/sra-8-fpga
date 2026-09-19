@@ -25,7 +25,7 @@ Source syntax
     mov  r1, #0x1f              immediates: #123 #0d123 #0x7b #0o173 #0b1111011 #-1 #'a'
     add.eq r1, r2, r3           optional condition suffix: al eq mi vs su gu ss gs
                                                            nvr ne pl vc geu seu ges ses
-    ptr r1, p0 / ptw p0, r1     port operand is optional (the CPU has one port)
+    ptr r1 / ptw r1             read / write one byte on the port (UART)
 
 Directives
     .code / .data               select section (instructions are rejected in .data)
@@ -80,8 +80,6 @@ F_RD_SRC8 = "rd_src8"       # rD, rS / imm8
 F_RD_SRC16 = "rd_src16"     # rD, rSa / imm16
 F_RDA_SRC16 = "rda_src16"   # rDa, rSa / imm16
 F_ALU3 = "alu3"             # rD, rN, rM / imm8
-F_PTR = "ptr"               # rD [, pS]
-F_PTW = "ptw"               # [pD,] rS
 
 # format -> (widths of the register operands before src, src width or 0)
 FORMATS = {
@@ -140,8 +138,8 @@ INSTRUCTIONS = {
     "br": (104, F_SRC16),
     "brl": (106, F_RDA_SRC16),
     # port I/O
-    "ptr": (108, F_PTR),
-    "ptw": (110, F_PTW),
+    "ptr": (108, F_RD),
+    "ptw": (110, F_RD),         # the operand is the source register
     # other
     "svc": (112, F_NONE),
 }
@@ -150,7 +148,7 @@ INSTRUCTIONS = {
 DATA_WIDTHS = {".byte": 1, ".word": 1, ".dword": 2, ".qword": 4, ".addr": 2}
 
 # In Instructions.xlsx but without microcode in control_rom_gen.c
-UNIMPLEMENTED = ("movs", "mvn", "mvns", "ptsr")
+UNIMPLEMENTED = ("movs", "mvn", "mvns")
 
 
 class AsmError(Exception):
@@ -254,7 +252,6 @@ def preprocess(path, defines, out, depth=0):
 
 RE_LABEL_DEF = re.compile(r"(\.l\s+)?([A-Za-z_][A-Za-z0-9_]*)\s*:\s*")
 RE_REGISTER = re.compile(r"r([0-9]|1[0-5])(a?)")
-RE_PORT = re.compile(r"p([0-9]|1[0-5])")
 RE_LABEL_REF = re.compile(r"(?:\.([bf])\s+)?=([A-Za-z_][A-Za-z0-9_]*)")
 
 RADIX = {"0b": 2, "0o": 8, "0d": 10, "0x": 16}
@@ -300,13 +297,10 @@ def parse_number(text):
 
 
 def parse_operand(text):
-    """-> ('reg', n) | ('areg', n) | ('port', n) | ('imm', value) | ('label', name, direction)"""
+    """-> ('reg', n) | ('areg', n) | ('imm', value) | ('label', name, direction)"""
     m = RE_REGISTER.fullmatch(text)
     if m:
         return ("areg" if m.group(2) else "reg", int(m.group(1)))
-    m = RE_PORT.fullmatch(text)
-    if m:
-        return ("port", int(m.group(1)))
     if text.startswith("#"):
         return ("imm", parse_number(text[1:].strip()))
     m = RE_LABEL_REF.fullmatch(text)
@@ -527,23 +521,12 @@ class Assembler:
         opcode, fmt = INSTRUCTIONS[item.mnemonic]
         ops = list(item.operands)
 
-        # the port number is not decoded by the hardware; it is kept in arg2
-        port = 0
-        if fmt == F_PTR:
-            if len(ops) == 2 and ops[1][0] == "port":
-                port = ops.pop()[1]
-            fmt = F_RD
-        elif fmt == F_PTW:
-            if len(ops) == 2 and ops[0][0] == "port":
-                port = ops.pop(0)[1]
-            fmt = F_RD
-
         reg_bits, src_bits = FORMATS[fmt]
         n_ops = len(reg_bits) + (1 if src_bits else 0)
         if len(ops) != n_ops:
             raise AsmError("'%s' takes %d operand%s, got %d" % (item.mnemonic, n_ops, "" if n_ops == 1 else "s", len(ops)))
 
-        word = (item.cond << COND_SHIFT) | (port << ARG2_SHIFT)
+        word = item.cond << COND_SHIFT
         shifts = [ARG1_SHIFT, ARG2_SHIFT, ARG3_SHIFT]
         for i, op in enumerate(ops):
             is_src = src_bits and i == n_ops - 1

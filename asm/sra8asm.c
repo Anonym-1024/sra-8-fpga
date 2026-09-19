@@ -25,7 +25,7 @@
  *     mov  r1, #0x1f              immediates: #123 #0d123 #0x7b #0o173 #0b1111011 #-1 #'a'
  *     add.eq r1, r2, r3           optional condition suffix: al eq mi vs su gu ss gs
  *                                                            nvr ne pl vc geu seu ges ses
- *     ptr r1, p0 / ptw p0, r1     port operand is optional (the CPU has one port)
+ *     ptr r1 / ptw r1             read / write one byte on the port (UART)
  *
  * Directives
  *     .code / .data               select section (instructions are rejected in .data)
@@ -84,9 +84,7 @@ enum format {
     F_RD_SRC8,      /* rD, rS / imm8        */
     F_RD_SRC16,     /* rD, rSa / imm16      */
     F_RDA_SRC16,    /* rDa, rSa / imm16     */
-    F_ALU3,         /* rD, rN, rM / imm8    */
-    F_PTR,          /* rD [, pS]            */
-    F_PTW           /* [pD,] rS             */
+    F_ALU3          /* rD, rN, rM / imm8    */
 };
 
 /* widths of the register operands before src, then the src width or 0 */
@@ -158,8 +156,8 @@ static const instr_t INSTRUCTIONS[] = {
     { "br",     104, F_SRC16 },
     { "brl",    106, F_RDA_SRC16 },
     /* port I/O */
-    { "ptr",    108, F_PTR },
-    { "ptw",    110, F_PTW },
+    { "ptr",    108, F_RD },
+    { "ptw",    110, F_RD },        /* the operand is the source register */
     /* other */
     { "svc",    112, F_NONE },
 };
@@ -172,7 +170,7 @@ static const struct { const char *name; int width; } DATA_WIDTHS[] = {
 };
 
 /* In Instructions.xlsx but without microcode in control_rom_gen.c */
-static const char *const UNIMPLEMENTED[] = { "movs", "mvn", "mvns", "ptsr" };
+static const char *const UNIMPLEMENTED[] = { "movs", "mvn", "mvns" };
 
 /* ------------------------------------------------------------------ */
 /* Errors, memory, strings                                             */
@@ -510,11 +508,11 @@ static void preprocess(const char *path, int depth)
 /* Operand parsing                                                     */
 /* ------------------------------------------------------------------ */
 
-enum op_kind { OP_REG, OP_AREG, OP_PORT, OP_IMM, OP_LABEL };
+enum op_kind { OP_REG, OP_AREG, OP_IMM, OP_LABEL };
 
 typedef struct {
     enum op_kind kind;
-    long long value;    /* register / port number, or immediate value */
+    long long value;    /* register number, or immediate value */
     char *name;         /* label name */
     char direction;     /* label: 0 = global, 'b' / 'f' = local before / after */
 } operand_t;
@@ -607,7 +605,7 @@ static long long parse_number(const char *text)
     return sign * value;
 }
 
-/* "r0".."r15" / "p0".."p15" with an optional one letter suffix.
+/* "r0".."r15" with an optional one letter suffix.
  * Returns the number, or -1 if text is not such a name. */
 static int parse_numbered(const char *text, char prefix, char suffix, int *has_suffix)
 {
@@ -658,9 +656,6 @@ static operand_t parse_operand(const char *text)
 
     if ((n = parse_numbered(text, 'r', 'a', &suffix)) >= 0) {
         op.kind = suffix ? OP_AREG : OP_REG;
-        op.value = n;
-    } else if ((n = parse_numbered(text, 'p', 0, &suffix)) >= 0) {
-        op.kind = OP_PORT;
         op.value = n;
     } else if (text[0] == '#') {
         op.kind = OP_IMM;
@@ -1046,30 +1041,16 @@ static void encode_instr(item_t *item, int index)
     enum format fmt = item->instr->format;
     operand_t *ops = item->operands;
     int n_ops = item->n_operands;
-    unsigned long port = 0, word;
+    unsigned long word;
     const format_t *f;
     int expected, i;
-
-    /* the port number is not decoded by the hardware; it is kept in arg2 */
-    if (fmt == F_PTR) {
-        if (n_ops == 2 && ops[1].kind == OP_PORT)
-            port = (unsigned long)ops[--n_ops].value;
-        fmt = F_RD;
-    } else if (fmt == F_PTW) {
-        if (n_ops == 2 && ops[0].kind == OP_PORT) {
-            port = (unsigned long)ops[0].value;
-            ops++;
-            n_ops--;
-        }
-        fmt = F_RD;
-    }
 
     f = &FORMATS[fmt];
     expected = f->n_regs + (f->src_bits ? 1 : 0);
     if (n_ops != expected)
         die("'%s' takes %d operand%s, got %d", mnemonic, expected, expected == 1 ? "" : "s", n_ops);
 
-    word = ((unsigned long)item->cond << COND_SHIFT) | (port << ARG2_SHIFT);
+    word = (unsigned long)item->cond << COND_SHIFT;
     for (i = 0; i < n_ops; i++) {
         const operand_t *op = &ops[i];
         int is_src = f->src_bits && i == n_ops - 1;

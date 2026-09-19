@@ -7,7 +7,7 @@ start:
         
         
         add r0, r0, #1
-        ptw p0, r0
+        ptw r0
 
         brl r10a, =delay
         br =start

@@ -52,11 +52,12 @@
  *    undefined opcode or an unused step reads back as 0x0000.
  *
  * Not in the table, because the workbook defines no steps or no control
- * signals for them:  MOVS, MVN{S} (the ALU has no NOT operation) and PTSR.
+ * signals for them:  MOVS and MVN{S} (the ALU has no NOT operation).
  *
- *  - PTR / PTW move one byte between the port and a register.  PTR rD
- *    latches the port input into rD (port_read, MUX 1 code 11); PTW rS
- *    latches rS into the port output (port_write, MUX 2 code 17).
+ *  - PTR / PTW move one byte between the port and a register.  There is
+ *    one port, a UART, so neither takes a port operand.  PTR rD latches
+ *    the last received byte into rD (port_read, MUX 1 code 11) and clears
+ *    the port's IRQ; PTW rS sends rS (port_write, MUX 2 code 17).
  *
  * Every instruction ends with a UCR_STEP: a step with only ucr (microcode
  * counter reset) asserted, which returns the sequencer to fetch.
@@ -947,13 +948,13 @@ static const step_t microcode[NUM_OPCODES][MAX_STEPS] = {
 
 /* ---------------- port I/O, one byte ---------------- */
 
-/* PTR rD -- rD <- port input */
+/* PTR rD -- rD <- received byte, clears the port IRQ */
 [OPC_PTR] = {
     STEP(M1_PORT_READ, M2_GR_WRITE,   M3_NONE, M4_NONE,        M5_NONE),
     UCR_STEP,
 },
 
-/* PTW rS -- port output <- rS */
+/* PTW rS -- send rS */
 [OPC_PTW] = {
     STEP(M1_GR_READ,   M2_PORT_WRITE, M3_NONE, M4_GR_SEL_ARG1, M5_NONE),
     UCR_STEP,
