@@ -186,7 +186,6 @@ module CPU (
 
     // Control unit
 
-    wire [4:0] step;
 
 
     GeneralRegisters registers (
@@ -308,7 +307,8 @@ module CPU (
         .read_en(intpc_read),
         .write_en(intpc_write),
         .byte_sel(byte_sel),
-        .inc(intpc_inc)
+        .inc(intpc_inc),
+        .int_in(int_in)
     );
 
 

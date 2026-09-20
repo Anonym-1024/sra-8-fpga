@@ -16,7 +16,7 @@ module Memory (
 );
 
 
-    reg [7:0] spram [0:(1<<12)-1];
+    reg [7:0] spram [0:(1<<16)-1];
 
     reg [7:0] read_buffer = 0;
 
@@ -31,7 +31,7 @@ module Memory (
 
 
     initial begin
-        $readmemh("program.mem", spram);
+        // $readmemh("program.mem", spram);
     end
 
 endmodule

@@ -17,7 +17,7 @@
 // program.
 
 #include <SoftwareSerial.h>
-#include <avr/pgmspace.h>
+
 
 const byte FPGA_RX_PIN = 10;    // UNO receives here, from FPGA uart_tx
 const byte FPGA_TX_PIN = 11;    // UNO transmits here, to FPGA uart_rx
@@ -43,10 +43,11 @@ bool uploaded = false;
 
 void sendSlowly(byte b) {
   fpga.write(b);
-  delay(BYTE_DELAY_MS);
+  delay(1);
 }
 
 void upload() {
+  Serial.print(F("ARDUINO: "));
   Serial.print(F("uploading "));
   Serial.print(PROGRAM_NAME);
   Serial.print(F(", "));
@@ -71,11 +72,13 @@ void upload() {
     ;
 
   if (!fpga.available()) {
+    Serial.print(F("ARDUINO: "));
     Serial.println(F("no answer from the loader, send a character to try again"));
     return;
   }
   byte answer = fpga.read();
   if (answer != sum) {
+    Serial.print(F("ARDUINO: "));
     Serial.print(F("checksum mismatch: sent "));
     Serial.print(sum, HEX);
     Serial.print(F(", loader got "));
@@ -83,6 +86,7 @@ void upload() {
     Serial.println(F("reconfigure the FPGA to run the loader again"));
     return;
   }
+  Serial.print(F("ARDUINO: "));
   Serial.println(F("checksum ok, the program is running"));
   uploaded = true;
 }
@@ -90,6 +94,7 @@ void upload() {
 void setup() {
   Serial.begin(9600);
   fpga.begin(9600);             // must match DIV in UartTx.v / UartRx.v
+  Serial.print(F("ARDUINO: "));
   Serial.print(F("send any character to upload "));
   Serial.println(PROGRAM_NAME);
 }
@@ -101,7 +106,7 @@ void loop() {
     if (Serial.available()) {
       while (Serial.available()) {      // the whole line is only the trigger
         Serial.read();
-        delay(5);
+        delay(1);
       }
       upload();
     }
