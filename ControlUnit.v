@@ -64,7 +64,12 @@ module ControlUnit (
 
     // boot: copy of the boot ROM into memory
     input wire btc_done_in,
-    output wire btrom_read
+    output wire btrom_read,
+
+
+    output reg led_normal,
+    output reg led_interrupted,
+    output reg led_boot,
 );
 
 
@@ -262,21 +267,25 @@ module ControlUnit (
     //   3. normal operation
     localparam BOOT_UCODE = 16'hC250;   // btrom_read (MUX 1), mem_write (MUX 2), ucr (MUX 3)
 
-    reg [24:0] counter = 0;
+    reg [22:0] counter = 0;
 
     always @(posedge clk) begin
 
 
         if (clk_phase == 0) begin
             // Fetch ucode from ROM
-             if (counter[24] == 0) begin
+            if (counter[22] == 0) begin
                 ucode <= 16'h0050;
                 counter <= counter + 1;
-             end else if (btc_done_in == 0) begin
+
+                
+                led_boot <= 1;
+            end else if (btc_done_in == 0) begin
                 ucode <= BOOT_UCODE;
             end else if ((irq_in == 1 && irqm_in == 1 && step == 0) == 1 && is_interrupted == 0) begin
                 ucode <= 16'h0050;
                 is_interrupted <= 1;
+
             end else if ((svc_in == 1 || pf_in == 1 || ini_in ==1) == 1 && is_interrupted == 0) begin
                 ucode <= 16'h0050;
                 is_interrupted <= 1;
@@ -291,18 +300,26 @@ module ControlUnit (
                 else
                     ucode <= 16'h0050;
 
+
+                led_boot <= 0;
+        
+
             end
 
         end
 
         if (global_reset == 1) begin
-            ucode <= 16'h0050;
-            is_interrupted <= 0;
+            // ucode <= 16'h0050;
+            // is_interrupted <= 0;
             counter <= 0;
         end
 
     end
 
+
+
+    assign led_interrupted = is_interrupted;
+    assign led_normal = ~is_interrupted;
 
 
     // ------------------------- END OF LOGIC ----------------------------- //

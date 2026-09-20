@@ -5,12 +5,16 @@ module CPU (
     input wire uart_rx,
     output wire uart_tx,
     input wire BTN2,
-    output wire LEDR_N,
-    output wire LEDG_N
+    output wire LED1,
+    output wire LED4,
+    output wire LED5,
+    output wire LED2,
+    output wire LED3
+
 );
 
-    assign LEDR_N = ~BTN2;
-    assign LEDG_N = BTN2;
+    assign LED2 = 0;
+    assign LED4 = 0;
 
     initial begin
         $dumpfile("dump.vcd"); // Name of the waveform output file
@@ -506,7 +510,12 @@ module CPU (
 
         // boot
         .btc_done_in(btc_done),
-        .btrom_read(btrom_read)
+        .btrom_read(btrom_read),
+
+
+        .led_boot(LED5),
+        .led_normal(LED1),
+        .led_interrupted(LED3)
 
     );
 
