@@ -3,6 +3,7 @@
 
 module GeneralRegisters (
     input wire clk,
+    input wire global_reset,
     input wire [1:0] clk_phase,
 
     input wire [7:0] bus_in,
@@ -35,6 +36,7 @@ module GeneralRegisters (
                 .read_sel(read_sel),
                 .write_sel(write_sel),
                 .clk(clk),
+                .global_reset(global_reset),
                 .clk_phase(clk_phase),
                 .bus_in(bus_in),
                 .bus_out(reg_bus_out[i])

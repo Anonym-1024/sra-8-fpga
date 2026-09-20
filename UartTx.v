@@ -5,6 +5,7 @@ module UartTx #(
     parameter DIV = 1250        // clk / baud = 12 MHz / 9600
 ) (
     input wire clk,
+    input wire global_reset,
 
     input wire [7:0] data_in,
     input wire start,
@@ -31,6 +32,11 @@ module UartTx #(
             bits <= bits - 1;
         end else
             div <= div + 1;
+
+        if (global_reset == 1) begin
+            tx <= 1;                        // idle line, a byte being sent is cut off
+            bits <= 0;
+        end
     end
 
 endmodule

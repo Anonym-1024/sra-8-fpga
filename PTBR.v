@@ -4,6 +4,7 @@
 
 module PTBR (
     input wire clk,
+    input wire global_reset,
     input wire [1:0] clk_phase,
 
     input wire [7:0] bus_in,
@@ -30,6 +31,9 @@ module PTBR (
             if (byte_sel == 1 && write_en == 1)
                 byte_1 <= bus_in;
         end
+
+        if (global_reset == 1)
+            {byte_1, byte_0} <= 0;
     end
 
 endmodule

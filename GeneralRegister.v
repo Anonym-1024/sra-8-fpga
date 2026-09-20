@@ -6,6 +6,7 @@ module GeneralRegister #(
     parameter POSITION = 0
 ) (
     input wire clk,
+    input wire global_reset,
     input wire [1:0] clk_phase,
 
     input wire [7:0] bus_in,
@@ -30,6 +31,9 @@ module GeneralRegister #(
             if (write_sel == POSITION && write_en == 1)
                 content <= bus_in;
         end
+
+        if (global_reset == 1)
+            content <= 0;
     end
 
 endmodule

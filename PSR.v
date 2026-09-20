@@ -5,6 +5,7 @@
 
 module PSR (
     input wire clk,
+    input wire global_reset,
     input wire [1:0] clk_phase,
 
     input wire [7:0] bus_in,
@@ -36,6 +37,9 @@ module PSR (
             if (flags_write_en == 1)
                 content[3:0] <= flags_in;
         end
+
+        if (global_reset == 1)
+            content <= 0;
     end
 
 endmodule

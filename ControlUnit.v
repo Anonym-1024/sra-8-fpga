@@ -2,6 +2,7 @@
 
 module ControlUnit (
     input wire clk,
+    input wire global_reset,
     input wire [1:0] clk_phase,
 
     input wire [7:0] bus_in,
@@ -61,10 +62,9 @@ module ControlUnit (
     output wire intr_write,
     output wire svc_out,
 
-
-
-
-    input wire _reset
+    // boot: copy of the boot ROM into memory
+    input wire btc_done_in,
+    output wire btrom_read
 );
 
 
@@ -202,6 +202,7 @@ module ControlUnit (
     assign ptbr_read = mux1 == 9;
     assign intr_read = mux1 == 10;
     assign port_read = mux1 == 11;
+    assign btrom_read = mux1 == 12;
 
     assign gr_write = mux2 == 1;
     assign alu_op1_write = mux2 == 2;
@@ -253,6 +254,14 @@ module ControlUnit (
     assign bus_out = (imm_read == 1) ? (byte_sel == 0) ? imm0 : imm1 : 8'b0;
 
 
+    // Boot, in this order after configuration and after every global reset:
+    //   1. the stabilization counter runs, the CPU idles
+    //   2. until the boot counter is done every step is the boot ucode, which
+    //      copies one byte, boot ROM -> bus -> memory; btrom_read also
+    //      increments the boot counter
+    //   3. normal operation
+    localparam BOOT_UCODE = 16'hC250;   // btrom_read (MUX 1), mem_write (MUX 2), ucr (MUX 3)
+
     reg [24:0] counter = 0;
 
     always @(posedge clk) begin
@@ -263,9 +272,8 @@ module ControlUnit (
              if (counter[24] == 0) begin
                 ucode <= 16'h0050;
                 counter <= counter + 1;
-             end else if (_reset == 1 && step == 0) begin
-                ucode <= 16'h0050;
-                counter <= 0;
+             end else if (btc_done_in == 0) begin
+                ucode <= BOOT_UCODE;
             end else if ((irq_in == 1 && irqm_in == 1 && step == 0) == 1 && is_interrupted == 0) begin
                 ucode <= 16'h0050;
                 is_interrupted <= 1;
@@ -287,6 +295,12 @@ module ControlUnit (
 
         end
 
+        if (global_reset == 1) begin
+            ucode <= 16'h0050;
+            is_interrupted <= 0;
+            counter <= 0;
+        end
+
     end
 
 
@@ -297,6 +311,7 @@ module ControlUnit (
 
     UC uc (
         .clk(clk),
+        .global_reset(global_reset),
         .clk_phase(clk_phase),
         .reset(uc_reset),
         .step(step)
@@ -304,6 +319,7 @@ module ControlUnit (
 
     InstructionRegister ir (
         .clk(clk),
+        .global_reset(global_reset),
         .clk_phase(clk_phase),
 
         .bus_in(bus_in),

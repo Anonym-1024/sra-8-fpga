@@ -6,6 +6,7 @@
 
 module ALU (
     input wire clk,
+    input wire global_reset,
     input wire [1:0] clk_phase,
 
     input wire [7:0] bus_in,
@@ -156,6 +157,11 @@ module ALU (
                 reg_1 <= bus_in;
             if (write_en_2 == 1) 
                 reg_2 <= bus_in;
+        end
+
+        if (global_reset == 1) begin
+            reg_1 <= 0;
+            reg_2 <= 0;
         end
     end
 

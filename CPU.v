@@ -21,6 +21,22 @@ module CPU (
 
 
 
+    // PARAMETERS of the modules below
+
+    localparam BOOT_FILE = "program.mem";       // BootROM: $readmemh image copied into memory at boot
+    localparam BOOT_ADDR_BITS = 12;             // BootROM, BootCounter: 4096 bytes
+    localparam INTPC_DEFAULT_VALUE = 0;         // INTPC: where interrupts start executing
+    localparam UART_DIV = 1250;                 // Port: clk / baud = 12 MHz / 9600
+
+
+    // GLOBAL RESET: BTN2.  It returns every register to its power-up value,
+    // so the control unit runs the stabilization counter and the boot copy
+    // again.  The button bounces; that only restarts the stabilization
+    // counter a few more times.
+
+    wire global_reset = BTN2;
+
+
     wire [1:0] clk_phase;
 
     Clock clock (
@@ -42,10 +58,11 @@ module CPU (
     wire [7:0] intpc_bus;
     wire [7:0] intr_bus;
     wire [7:0] port_bus;
+    wire [7:0] btrom_bus;
     wire [7:0] control_unit_bus;
 
 
-    assign bus = registers_bus | alu_bus | memory_bus | ptbr_bus | psr_bus | pc_bus | intpc_bus | intr_bus | port_bus | control_unit_bus;
+    assign bus = registers_bus | alu_bus | memory_bus | ptbr_bus | psr_bus | pc_bus | intpc_bus | intr_bus | port_bus | btrom_bus | control_unit_bus;
 
 
 
@@ -127,8 +144,15 @@ module CPU (
 
 
 
+    // Boot ROM
+
+    wire btrom_read;
+    wire btc_done;
+    wire [BOOT_ADDR_BITS-1:0] boot_addr;
+    wire [15:0] boot_output = btrom_read ? boot_addr : 0;
+
     // Memory address assign
-    assign mem_addr = mar_output | ptbr_output | pter_output;
+    assign mem_addr = mar_output | ptbr_output | pter_output | boot_output;
 
     assign ptbr_output = ptbr_addr_read ? ((ptbr_addr_out << 9) | (mar_addr_byte1_out << 1) | byte_sel) : 0;
 
@@ -190,6 +214,7 @@ module CPU (
 
     GeneralRegisters registers (
         .clk(clk),
+        .global_reset(global_reset),
         .clk_phase(clk_phase),
 
         .bus_out(registers_bus),
@@ -204,6 +229,7 @@ module CPU (
 
     ALU alu (
         .clk(clk),
+        .global_reset(global_reset),
         .clk_phase(clk_phase),
 
         .bus_out(alu_bus),
@@ -234,8 +260,36 @@ module CPU (
     );
 
 
+    BootROM #(
+        .ADDR_BITS(BOOT_ADDR_BITS),
+        .FILE(BOOT_FILE)
+    ) btrom (
+        .clk(clk),
+
+        .bus_out(btrom_bus),
+        .addr(boot_addr),
+
+        .read_en(btrom_read)
+    );
+
+
+    BootCounter #(
+        .ADDR_BITS(BOOT_ADDR_BITS)
+    ) btc (
+        .clk(clk),
+        .global_reset(global_reset),
+        .clk_phase(clk_phase),
+
+        .addr_out(boot_addr),
+        .done_out(btc_done),
+
+        .inc(btrom_read)                // every byte read moves on to the next one
+    );
+
+
     PTBR ptbr (
         .clk(clk),
+        .global_reset(global_reset),
         .clk_phase(clk_phase),
 
         .bus_out(ptbr_bus),
@@ -253,6 +307,7 @@ module CPU (
 
     PTER pter (
         .clk(clk),
+        .global_reset(global_reset),
         .clk_phase(clk_phase),
 
         .bus_in(bus),
@@ -269,6 +324,7 @@ module CPU (
 
     MAR mar (
         .clk(clk),
+        .global_reset(global_reset),
         .clk_phase(clk_phase),
 
         .bus_in(bus),
@@ -284,6 +340,7 @@ module CPU (
 
     PC pc (
         .clk(clk),
+        .global_reset(global_reset),
         .clk_phase(clk_phase),
 
         .bus_out(pc_bus),
@@ -297,8 +354,11 @@ module CPU (
 
 
 
-    INTPC intpc (
+    INTPC #(
+        .DEFAULT_VALUE(INTPC_DEFAULT_VALUE)
+    ) intpc (
         .clk(clk),
+        .global_reset(global_reset),
         .clk_phase(clk_phase),
 
         .bus_out(intpc_bus),
@@ -315,6 +375,7 @@ module CPU (
 
     PSR psr (
         .clk(clk),
+        .global_reset(global_reset),
         .clk_phase(clk_phase),
 
         .bus_out(psr_bus),
@@ -334,6 +395,7 @@ module CPU (
 
     INTR intr (
         .clk(clk),
+        .global_reset(global_reset),
         .clk_phase(clk_phase),
 
         .bus_out(intr_bus),
@@ -354,8 +416,11 @@ module CPU (
     );
 
 
-    Port port (
+    Port #(
+        .UART_DIV(UART_DIV)
+    ) port (
         .clk(clk),
+        .global_reset(global_reset),
         .clk_phase(clk_phase),
 
         .bus_in(bus),
@@ -375,6 +440,7 @@ module CPU (
 
     ControlUnit cu(
         .clk(clk),
+        .global_reset(global_reset),
         .clk_phase(clk_phase),
         .bus_in(bus),
         .bus_out(control_unit_bus),
@@ -437,7 +503,10 @@ module CPU (
         .psr_flags_write(psr_flags_write),
         .intr_read(intr_read),
         .intr_write(intr_write),
-        ._reset(BTN2)
+
+        // boot
+        .btc_done_in(btc_done),
+        .btrom_read(btrom_read)
 
     );
 

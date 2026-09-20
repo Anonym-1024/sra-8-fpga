@@ -60,7 +60,8 @@ enum mux1 {
     M1_PSR_READ,         /* 8 */
     M1_PTBR_READ,        /* 9 */
     M1_INTR_READ,        /* 10 */
-    M1_PORT_READ         /* 11 */
+    M1_PORT_READ,        /* 11 */
+    M1_BTROM_READ        /* 12 - boot ROM, only in the boot ucode of ControlUnit.v */
 };
 
 /* MUX 2 - 5 bit: what latches the internal bus */

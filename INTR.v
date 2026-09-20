@@ -4,6 +4,7 @@
 
 module INTR (
     input wire clk,
+    input wire global_reset,
     input wire [1:0] clk_phase,
 
     output wire [7:0] bus_out,
@@ -53,7 +54,8 @@ module INTR (
                 content <= 0;
         end
 
-        
+        if (global_reset == 1)
+            content <= 0;
     end
 
 endmodule

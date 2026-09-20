@@ -5,6 +5,7 @@ module UartRx #(
     parameter DIV = 1250        // clk / baud = 12 MHz / 9600
 ) (
     input wire clk,
+    input wire global_reset,
 
     input wire rx,
 
@@ -41,6 +42,11 @@ module UartRx #(
                 shift <= {sync[1], shift[7:1]};
         end else
             div <= div + 1;
+
+        if (global_reset == 1) begin
+            valid <= 0;
+            bits <= 0;
+        end
     end
 
 endmodule

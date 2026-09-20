@@ -59,6 +59,13 @@
  *    the last received byte into rD (port_read, MUX 1 code 11) and clears
  *    the port's IRQ; PTW rS sends rS (port_write, MUX 2 code 17).
  *
+ *  - btrom_read (MUX 1 code 12) puts a boot ROM byte on the bus and
+ *    increments the boot counter, which is the address of both the boot
+ *    ROM and the memory meanwhile.  No instruction uses it.  After the
+ *    stabilization counter the control unit issues the boot ucode
+ *    0xC250 = btrom_read, mem_write, ucr until the boot counter is done,
+ *    and only then starts fetching.
+ *
  * Every instruction ends with a UCR_STEP: a step with only ucr (microcode
  * counter reset) asserted, which returns the sequencer to fetch.
  */
@@ -183,7 +190,8 @@ enum mux1 {
     M1_PSR_READ,         /* 8 */
     M1_PTBR_READ,        /* 9 */
     M1_INTR_READ,        /* 10 */
-    M1_PORT_READ         /* 11 */
+    M1_PORT_READ,        /* 11 */
+    M1_BTROM_READ        /* 12 - boot ROM, only in the boot ucode of ControlUnit.v */
 };
 
 /* MUX 2 - 5 bit: what latches the internal bus */

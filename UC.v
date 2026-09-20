@@ -4,6 +4,7 @@
 
 module UC (
     input wire clk,
+    input wire global_reset,
     input wire [1:0] clk_phase,
 
     output wire [4:0] step,
@@ -25,6 +26,9 @@ module UC (
             if (reset == 1)
                 content <= 0;
         end
+
+        if (global_reset == 1)
+            content <= 0;
     end
     
 endmodule

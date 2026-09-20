@@ -3,6 +3,7 @@
 
 module InstructionRegister (
     input wire clk,
+    input wire global_reset,
     input wire [1:0] clk_phase,
 
     input wire [7:0] bus_in,
@@ -47,6 +48,9 @@ module InstructionRegister (
             if (write_en_3 == 1)
                 instruction[7:0] <= bus_in;
         end
+
+        if (global_reset == 1)
+            instruction <= 0;
     end
 
 endmodule
