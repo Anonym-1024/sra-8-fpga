@@ -1,2 +1,3 @@
 check all if reset statements
 cleanup port
+check alu subc

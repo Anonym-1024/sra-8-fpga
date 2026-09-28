@@ -194,7 +194,7 @@ putc:
         ptw   r0
         mov   r1, !TX_WAIT
 .l wait:
-        adds  r1, r1, #1
+        adds  r1, r1, #8
         br.su .b =wait          ; su = carry clear
         br    r10a
 

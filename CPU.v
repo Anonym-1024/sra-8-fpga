@@ -2,8 +2,8 @@
 
 module CPU (
     input wire clk,
-    input wire uart_rx,
-    output wire uart_tx,
+    input wire RX,
+    output wire TX,
     input wire BTN2,
     output wire LED1,
     output wire LED4,
@@ -30,8 +30,8 @@ module CPU (
     localparam BOOT_FILE = "program.mem";       // BootROM: $readmemh image copied into memory at boot
     localparam BOOT_ADDR_BITS = 12;             // BootROM, BootCounter: 4096 bytes
     localparam INTPC_DEFAULT_VALUE = 0;         // INTPC: where interrupts start executing
-    localparam UART_DIV = 1250;                 // Port: clk / baud = 12 MHz / 9600
-
+    // localparam UART_DIV = 1250;                 // Port: clk / baud = 12 MHz / 9600
+    localparam UART_DIV = 104;
 
     // GLOBAL RESET: BTN2.  It returns every register to its power-up value,
     // so the control unit runs the stabilization counter and the boot copy
@@ -430,8 +430,8 @@ module CPU (
         .bus_in(bus),
         .bus_out(port_bus),
 
-        .uart_rx(uart_rx),
-        .uart_tx(uart_tx),
+        .uart_rx(RX),
+        .uart_tx(TX),
         .irq_out(irq_in),
 
         .port_read(port_read),
