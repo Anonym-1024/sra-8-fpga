@@ -60,9 +60,9 @@ module ALU (
     
 
     assign add_result = reg_1 + reg_2;
-    assign sub_result = reg_1 + (~reg_2 + 1);
+    assign sub_result = reg_1 + {1'b0, ~reg_2} + 1;     // ~b is 8 bit: bit 8 is the adder carry
     assign addc_result = reg_1 + reg_2 + flags_in[1];
-    assign subc_result = reg_1 + (~reg_2 + 1) + flags_in[1];
+    assign subc_result = reg_1 + {1'b0, ~reg_2} + flags_in[1];    // C takes the place of the + 1
     assign and_result = reg_1 & reg_2;
     assign or_result   = reg_1 | reg_2;
     assign eor_result  = reg_1 ^ reg_2;
@@ -112,9 +112,9 @@ module ALU (
     assign n     = result[7];
 
     assign c_add = add_result[8];
-    assign c_sub = ~sub_result[8];
+    assign c_sub = sub_result[8];
     assign c_addc = addc_result[8];
-    assign c_subc = ~subc_result[8];     
+    assign c_subc = subc_result[8];
     assign c_lsl = reg_1[7];       
     assign c_lsr = reg_1[0];        
     assign c_asr = reg_1[0];       
