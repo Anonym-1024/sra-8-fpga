@@ -7,10 +7,12 @@
  *
  * Control word layout is the same as control_rom_gen.c (MSB first):
  *
- *     [15:12] MUX 1 select (4 bit)  - source / read enable
- *     [11: 7] MUX 2 select (5 bit)  - destination / write enable
- *     [ 6: 4] MUX 3 select (3 bit)  - misc. strobes + byte select
- *     [ 3: 2] MUX 4 select (2 bit)  - GR read port select
+ *     [15:11] MUX 1 select (5 bit)  - source / read enable; GR reads and
+ *                                     ALU reads name their register field
+ *                                     or ALU operation
+ *     [10: 6] MUX 2 select (5 bit)  - destination / write enable
+ *     [ 5: 3] MUX 3 select (3 bit)  - misc. strobes + byte select
+ *     [    2] unused, 0
  *     [ 1: 0] MUX 5 select (2 bit)  - address source select
  *
  * Build:  cc -std=c99 -O2 -Wall -o fetch_rom_gen fetch_rom_gen.c
@@ -47,22 +49,31 @@ static const char *const proc_file[NUM_PROCS] = {
 /* ------------------------------------------------------------------ */
 
 
-/* MUX 1 - 4 bit: what drives the internal bus */
+/* MUX 1 - 5 bit: what drives the internal bus.  A GR read names the
+ * instruction field that selects the register; an ALU read names the ALU
+ * operation, alu_opcode = code - 16 (alu_read = code[4]). */
 enum mux1 {
     M1_NONE = 0,
-    M1_GR_READ,          /* 1 */
-    M1_ALU_READ,         /* 2 */
-    M1_MEM_READ,         /* 3 */
-    M1_IMM_READ,         /* 4 */
-    M1_PC_READ,          /* 5 */
-    M1_INTPC_READ,       /* 6 */
-    M1_XPC_READ,          /* 7 */
-    M1_PSR_READ,         /* 8 */
-    M1_PTBR_READ,        /* 9 */
-    M1_INTR_READ,        /* 10 */
-    M1_PORT_READ,        /* 11 */
-    M1_BTROM_READ        /* 12 - boot ROM, only in the boot ucode of ControlUnit.v */
+    M1_GR_READ_ARG1,     /* 1  GR[arg1 + byte_sel] */
+    M1_GR_READ_ARG2,     /* 2  GR[arg2 + byte_sel] */
+    M1_GR_READ_ARG3,     /* 3  GR[arg3 + byte_sel] */
+    M1_MEM_READ,         /* 4 */
+    M1_IMM_READ,         /* 5  imm byte (byte_sel) */
+    M1_PC_READ,          /* 6 */
+    M1_INTPC_READ,       /* 7 */
+    M1_XPC_READ,         /* 8 */
+    M1_PSR_READ,         /* 9 */
+    M1_PTBR_READ,        /* 10 */
+    M1_INTR_READ,        /* 11 */
+    M1_PORT_READ,        /* 12 */
+    M1_BTROM_READ,       /* 13 - boot ROM, only in the boot ucode of ControlUnit.v */
+    M1_OFF12_READ,       /* 14 - sign-extended 12 bit offset, byte (byte_sel) */
+    M1_MAR_READ,         /* 15 - MAR byte (byte_sel), the untranslated address */
+    M1_ALU_BASE          /* 16 ... 27: ALU result, see M1_ALU(); 28 ... 31 unused */
 };
+
+/* An ALU step: put the result of ALU operation op on the bus. */
+#define M1_ALU(op)  (M1_ALU_BASE + (op))
 
 /* MUX 2 - 5 bit: what latches the internal bus */
 enum mux2 {
@@ -83,7 +94,9 @@ enum mux2 {
     M2_INSTR_FRAME3_WRITE,   /* 14 */
     M2_MAR_WRITE,            /* 15 */
     M2_PTER_WRITE,           /* 16 */
-    M2_PORT_WRITE            /* 17 */
+    M2_PORT_WRITE,           /* 17 */
+    M2_MAR_ADD,              /* 18 MAR byte (byte_sel) += bus, MAR's own carry */
+    M2_GR_WRITE_BASE         /* 19 GR[arg2 + byte_sel] <- bus: base write-back */
 };
 
 /* MUX 3 - 3 bit: counter strobes, flag strobe, the byte select and the
@@ -98,14 +111,6 @@ enum mux3 {
     M3_UCR               /* 5 microcode counter reset */
 };
 
-
-/* MUX 4 - 2 bit: which instruction field selects the GR read port */
-enum mux4 {
-    M4_NONE = 0,
-    M4_GR_SEL_ARG1,      /* 1 */
-    M4_GR_SEL_ARG2,      /* 2 */
-    M4_GR_SEL_ARG3       /* 3 */
-};
 
 /* MUX 5 - 2 bit: which register drives the memory address.
  * x_addr_read = mar_addr_read or pter_addr_read, chosen by the control unit */
@@ -123,11 +128,11 @@ typedef struct {
     unsigned char m1;   /* enum mux1 */
     unsigned char m2;   /* enum mux2 */
     unsigned char m3;   /* enum mux3 */
-    unsigned char m4;   /* enum mux4 */
     unsigned char m5;   /* enum mux5 */
 } step_t;
 
-#define STEP(m1, m2, m3, m4, m5)  { (m1), (m2), (m3), (m4), (m5) }
+/* A step: the four MUX selects spelled out. */
+#define STEP(m1, m2, m3, m5)  { (m1), (m2), (m3), (m5) }
 
 /* microcode[procedure][step] -- unlisted steps are all-zero */
 static const step_t microcode[NUM_PROCS][NUM_STEPS] = {
@@ -137,17 +142,17 @@ static const step_t microcode[NUM_PROCS][NUM_STEPS] = {
  * byte is refreshed between bytes, so an instruction must not cross a
  * 256 byte page. */
 [PROC_FETCH] = {
-    STEP(M1_XPC_READ,  M2_MAR_WRITE,          M3_NONE,     M4_NONE, M5_NONE),
-    STEP(M1_XPC_READ,  M2_MAR_WRITE,          M3_BYTE_SEL, M4_NONE, M5_NONE),
-    STEP(M1_MEM_READ, M2_PTER_WRITE,         M3_NONE,     M4_NONE, M5_PTBR_ADDR_READ),
-    STEP(M1_MEM_READ, M2_PTER_WRITE,         M3_BYTE_SEL, M4_NONE, M5_PTBR_ADDR_READ),
-    STEP(M1_MEM_READ, M2_INSTR_FRAME0_WRITE, M3_XPC_INC,   M4_NONE, M5_X_ADDR_READ),
-    STEP(M1_XPC_READ,  M2_MAR_WRITE,          M3_NONE,     M4_NONE, M5_NONE),
-    STEP(M1_MEM_READ, M2_INSTR_FRAME1_WRITE, M3_XPC_INC,   M4_NONE, M5_X_ADDR_READ),
-    STEP(M1_XPC_READ,  M2_MAR_WRITE,          M3_NONE,     M4_NONE, M5_NONE),
-    STEP(M1_MEM_READ, M2_INSTR_FRAME2_WRITE, M3_XPC_INC,   M4_NONE, M5_X_ADDR_READ),
-    STEP(M1_XPC_READ,  M2_MAR_WRITE,          M3_NONE,     M4_NONE, M5_NONE),
-    STEP(M1_MEM_READ, M2_INSTR_FRAME3_WRITE, M3_XPC_INC,   M4_NONE, M5_X_ADDR_READ),
+    STEP(M1_XPC_READ,      M2_MAR_WRITE,          M3_NONE,            M5_NONE),
+    STEP(M1_XPC_READ,      M2_MAR_WRITE,          M3_BYTE_SEL,        M5_NONE),
+    STEP(M1_MEM_READ,      M2_PTER_WRITE,         M3_NONE,            M5_PTBR_ADDR_READ),
+    STEP(M1_MEM_READ,      M2_PTER_WRITE,         M3_BYTE_SEL,        M5_PTBR_ADDR_READ),
+    STEP(M1_MEM_READ,      M2_INSTR_FRAME0_WRITE, M3_XPC_INC,         M5_X_ADDR_READ),
+    STEP(M1_XPC_READ,      M2_MAR_WRITE,          M3_NONE,            M5_NONE),
+    STEP(M1_MEM_READ,      M2_INSTR_FRAME1_WRITE, M3_XPC_INC,         M5_X_ADDR_READ),
+    STEP(M1_XPC_READ,      M2_MAR_WRITE,          M3_NONE,            M5_NONE),
+    STEP(M1_MEM_READ,      M2_INSTR_FRAME2_WRITE, M3_XPC_INC,         M5_X_ADDR_READ),
+    STEP(M1_XPC_READ,      M2_MAR_WRITE,          M3_NONE,            M5_NONE),
+    STEP(M1_MEM_READ,      M2_INSTR_FRAME3_WRITE, M3_XPC_INC,         M5_X_ADDR_READ),
 },
 
 };
@@ -174,10 +179,9 @@ int main(void)
             const step_t *s = &microcode[p][step];
             unsigned word;
 
-            word = ((unsigned)(s->m1 & 0x0F) << 12) |
-                   ((unsigned)(s->m2 & 0x1F) <<  7) |
-                   ((unsigned)(s->m3 & 0x07) <<  4) |
-                   ((unsigned)(s->m4 & 0x03) <<  2) |
+            word = ((unsigned)(s->m1 & 0x1F) << 11) |
+                   ((unsigned)(s->m2 & 0x1F) <<  6) |
+                   ((unsigned)(s->m3 & 0x07) <<  3) |
                    ((unsigned)(s->m5 & 0x03));
 
             fprintf(f[p], "%04X\n", word);

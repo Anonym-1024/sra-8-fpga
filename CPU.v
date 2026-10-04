@@ -64,9 +64,10 @@ module CPU (
     wire [7:0] port_bus;
     wire [7:0] btrom_bus;
     wire [7:0] control_unit_bus;
+    wire [7:0] mar_bus;
 
 
-    assign bus = registers_bus | alu_bus | memory_bus | ptbr_bus | psr_bus | pc_bus | intpc_bus | intr_bus | port_bus | btrom_bus | control_unit_bus;
+    assign bus = registers_bus | alu_bus | memory_bus | ptbr_bus | psr_bus | pc_bus | intpc_bus | intr_bus | port_bus | btrom_bus | control_unit_bus | mar_bus;
 
 
 
@@ -144,6 +145,8 @@ module CPU (
 
     wire mar_write;
     wire mar_addr_read;
+    wire mar_read;                  // MAR byte onto the bus (ldi, sti, lea)
+    wire mar_add;                   // MAR byte += bus (ldo, sto, ldi, sti, lea)
     wire [15:0] mar_output = mar_addr_read ? mar_addr_out : 0;
 
 
@@ -332,11 +335,14 @@ module CPU (
         .clk_phase(clk_phase),
 
         .bus_in(bus),
+        .bus_out(mar_bus),
         .addr_out(mar_addr_out),
         .byte_0_out(mar_addr_byte0_out),
         .byte_1_out(mar_addr_byte1_out),
 
         .write_en(mar_write),
+        .read_en(mar_read),
+        .add_en(mar_add),
         .byte_sel(byte_sel)
 
     );
@@ -487,6 +493,8 @@ module CPU (
         .pter_addr_read(pter_addr_read),
         .mar_write(mar_write),
         .mar_addr_read(mar_addr_read),
+        .mar_read(mar_read),
+        .mar_add(mar_add),
 
         // program counters
         .pc_read(pc_read),

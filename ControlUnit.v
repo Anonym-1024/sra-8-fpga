@@ -42,6 +42,8 @@ module ControlUnit (
 
     output wire mar_write,
     output wire mar_addr_read,
+    output wire mar_read,
+    output wire mar_add,
 
     output wire pc_read,
     output wire pc_write,
@@ -69,20 +71,15 @@ module ControlUnit (
 
     output reg led_normal,
     output reg led_interrupted,
-    output reg led_boot,
+    output reg led_boot
 );
 
 
-    // General register select
-
-    wire gr_read_sel_arg1;
-    wire gr_read_sel_arg2;
-    wire gr_read_sel_arg3;
-
-
-    // Immediate read
+    // Immediate and offset read
 
     wire imm_read;
+    wire off12_read;
+    wire gr_write_base;
 
 
     // Instruction register
@@ -98,8 +95,10 @@ module ControlUnit (
     wire [3:0] arg1;
     wire [3:0] arg2;
     wire [3:0] arg3;
-    wire [7:0] imm0;
-    wire [7:0] imm1;
+    wire [7:0] imm_byte0;
+    wire [7:0] imm_byte1;
+    wire [7:0] off12_byte0;
+    wire [7:0] off12_byte1;
 
 
     // UC
@@ -181,35 +180,40 @@ module ControlUnit (
     assign int_out = is_interrupted;
 
     reg [15:0] fetch_ucode [0:15];
-    reg [15:0] instr_ucode [0:(1<<10)-1];
+    reg [15:0] instr_ucode [0:(1<<11)-1];   // {opcode, step[3:0]}: 16 steps per opcode
 
     reg [15:0] ucode = 0;
 
-    wire [3:0] mux1 = ucode[15:12];
-    wire [4:0] mux2 = ucode[11:7];
-    wire [2:0] mux3 = ucode[6:4];
-    wire [1:0] mux4 = (alu_read == 0) ? ucode[3:2] : 0;
-    wire [1:0] mux5 = (alu_read == 0) ? ucode[1:0] : 0;
+    // Control word: [15:11] MUX 1, [10:6] MUX 2, [5:3] MUX 3, [2] unused,
+    // [1:0] MUX 5.  A GR read names its register field in MUX 1 (codes
+    // 1 ... 3), an ALU read its operation (codes 16 ... 27: alu_opcode =
+    // code - 16).
+    wire [4:0] mux1 = ucode[15:11];
+    wire [4:0] mux2 = ucode[10:6];
+    wire [2:0] mux3 = ucode[5:3];
+    wire [1:0] mux5 = ucode[1:0];
 
 
     wire xpc_read;
     wire xpc_write;
     wire xpc_inc; //
 
-    assign gr_read = mux1 == 1;
-    assign alu_read = mux1 == 2;
-    assign mem_read = mux1 == 3;
-    assign imm_read = mux1 == 4;
-    assign pc_read = mux1 == 5 | (is_interrupted == 0 & xpc_read == 1); //
-    assign intpc_read = mux1 == 6 | (is_interrupted == 1 & xpc_read == 1); //
-    assign xpc_read = mux1 == 7;
-    assign psr_read = mux1 == 8;
-    assign ptbr_read = mux1 == 9;
-    assign intr_read = mux1 == 10;
-    assign port_read = mux1 == 11;
-    assign btrom_read = mux1 == 12;
+    assign gr_read = mux1 == 1 | mux1 == 2 | mux1 == 3;
+    assign mem_read = mux1 == 4;
+    assign imm_read = mux1 == 5;
+    assign pc_read = mux1 == 6 | (is_interrupted == 0 & xpc_read == 1); //
+    assign intpc_read = mux1 == 7 | (is_interrupted == 1 & xpc_read == 1); //
+    assign xpc_read = mux1 == 8;
+    assign psr_read = mux1 == 9;
+    assign ptbr_read = mux1 == 10;
+    assign intr_read = mux1 == 11;
+    assign port_read = mux1 == 12;
+    assign btrom_read = mux1 == 13;
+    assign off12_read = mux1 == 14;
+    assign mar_read = mux1 == 15;
+    assign alu_read = mux1[4] == 1;
 
-    assign gr_write = mux2 == 1;
+    assign gr_write = mux2 == 1 | gr_write_base;
     assign alu_op1_write = mux2 == 2;
     assign alu_op2_write = mux2 == 3;
     assign mem_write = mux2 == 4;
@@ -226,6 +230,8 @@ module ControlUnit (
     assign mar_write = mux2 == 15;
     assign pter_write = mux2 == 16;
     assign port_write = mux2 == 17;
+    assign mar_add = mux2 == 18;
+    assign gr_write_base = mux2 == 19;
 
     assign xpc_inc = mux3 == 1;
     assign pc_inc = is_interrupted == 0 & xpc_inc == 1;
@@ -234,10 +240,6 @@ module ControlUnit (
     assign psr_flags_write = mux3 == 3;
     assign byte_sel = mux3 == 4;
     assign uc_reset = mux3 == 5;
-
-    assign gr_read_sel_arg1 = mux4 == 1;
-    assign gr_read_sel_arg2 = mux4 == 2;
-    assign gr_read_sel_arg3 = mux4 == 3;
 
     // Address translation is off at privilege level 0 and while interrupted:
     // x_addr_read then addresses memory through MAR instead of PTER
@@ -248,15 +250,17 @@ module ControlUnit (
     assign ptbr_addr_read = mux5 == 2;
     assign pter_addr_read = x_addr_read == 1 & phys == 0;
 
-    assign alu_opcode = ucode[3:0];
+    assign alu_opcode = mux1[3:0];
 
-    assign gr_read_sel = gr_read_sel_arg1 ? arg1 + byte_sel :
-                        gr_read_sel_arg2 ? arg2 + byte_sel :
-                        gr_read_sel_arg3 ? arg3 + byte_sel : 0;
+    assign gr_read_sel = (mux1 == 1) ? arg1 + byte_sel :
+                         (mux1 == 2) ? arg2 + byte_sel :
+                         (mux1 == 3) ? arg3 + byte_sel : 0;
 
-    assign gr_write_sel = arg1 + byte_sel;
+    // GR writes go to arg1, except the base write-back of ldi / sti (arg2)
+    assign gr_write_sel = (gr_write_base == 1) ? arg2 + byte_sel : arg1 + byte_sel;
 
-    assign bus_out = (imm_read == 1) ? (byte_sel == 0) ? imm0 : imm1 : 8'b0;
+    assign bus_out = ((imm_read == 1) ? ((byte_sel == 0) ? imm_byte0 : imm_byte1) : 8'b0)
+                   | ((off12_read == 1) ? ((byte_sel == 0) ? off12_byte0 : off12_byte1) : 8'b0);
 
 
     // Boot, in this order after configuration and after every global reset:
@@ -265,7 +269,8 @@ module ControlUnit (
     //      copies one byte, boot ROM -> bus -> memory; btrom_read also
     //      increments the boot counter
     //   3. normal operation
-    localparam BOOT_UCODE = 16'hC250;   // btrom_read (MUX 1), mem_write (MUX 2), ucr (MUX 3)
+    localparam BOOT_UCODE = 16'h6928;   // btrom_read (MUX 1 = 13), mem_write (MUX 2 = 4), ucr (MUX 3 = 5)
+    localparam UCR_UCODE  = 16'h0028;   // ucr (MUX 3 = 5) only: idle, back to fetch
 
     reg [22:0] counter = 0;
 
@@ -275,7 +280,7 @@ module ControlUnit (
         if (clk_phase == 0) begin
             // Fetch ucode from ROM
             if (counter[22] == 0) begin
-                ucode <= 16'h0050;
+                ucode <= UCR_UCODE;
                 counter <= counter + 1;
 
                 
@@ -283,22 +288,22 @@ module ControlUnit (
             end else if (btc_done_in == 0) begin
                 ucode <= BOOT_UCODE;
             end else if ((irq_in == 1 && irqm_in == 1 && step == 0) == 1 && is_interrupted == 0) begin
-                ucode <= 16'h0050;
+                ucode <= UCR_UCODE;
                 is_interrupted <= 1;
 
             end else if ((svc_in == 1 || pf_in == 1 || ini_in ==1) == 1 && is_interrupted == 0) begin
-                ucode <= 16'h0050;
+                ucode <= UCR_UCODE;
                 is_interrupted <= 1;
             end else if ((svc_in == 1 || pf_in == 1 || ini_in ==1 || (irq_in == 1 && irqm_in == 1)) == 0 && is_interrupted == 1) begin
-                ucode <= 16'h0050;
+                ucode <= UCR_UCODE;
                 is_interrupted <= 0;
             end else begin
                 if (step < 11)
                     ucode <= fetch_ucode[step];
                 else if (cond_met == 1)
-                    ucode <= instr_ucode[(step - 11) | (opcode << 3)];
+                    ucode <= instr_ucode[(step - 11) | (opcode << 4)];
                 else
-                    ucode <= 16'h0050;
+                    ucode <= UCR_UCODE;
 
 
                 led_boot <= 0;
@@ -309,7 +314,7 @@ module ControlUnit (
         end
 
         if (global_reset == 1) begin
-            // ucode <= 16'h0050;
+            // ucode <= UCR_UCODE;
             // is_interrupted <= 0;
             counter <= 0;
         end
@@ -351,8 +356,10 @@ module ControlUnit (
         .arg1_out(arg1),
         .arg2_out(arg2),
         .arg3_out(arg3),
-        .imm0_out(imm0),
-        .imm1_out(imm1)
+        .imm_byte0_out(imm_byte0),
+        .imm_byte1_out(imm_byte1),
+        .off12_byte0_out(off12_byte0),
+        .off12_byte1_out(off12_byte1)
 
     );
 

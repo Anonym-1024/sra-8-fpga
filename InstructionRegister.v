@@ -13,8 +13,10 @@ module InstructionRegister (
     output wire [3:0] arg1_out,
     output wire [3:0] arg2_out,
     output wire [3:0] arg3_out,
-    output wire [7:0] imm0_out,
-    output wire [7:0] imm1_out,
+    output wire [7:0] imm_byte0_out,
+    output wire [7:0] imm_byte1_out,
+    output wire [7:0] off12_byte0_out,  // the 12 bit offset of ldo, sto, ldi, sti, lea,
+    output wire [7:0] off12_byte1_out,  // bits 11:0, sign-extended to 16 bits
 
     input wire write_en_0,
     input wire write_en_1,
@@ -33,8 +35,10 @@ module InstructionRegister (
     assign arg1_out = instruction[19:16];
     assign arg2_out = instruction[15:12];
     assign arg3_out = instruction[11:8];
-    assign imm0_out = instruction[7:0];
-    assign imm1_out = instruction[15:8];
+    assign imm_byte0_out = instruction[7:0];
+    assign imm_byte1_out = instruction[15:8];
+    assign off12_byte0_out = instruction[7:0];
+    assign off12_byte1_out = {{4{instruction[11]}}, instruction[11:8]};
 
 
     always @(posedge clk) begin

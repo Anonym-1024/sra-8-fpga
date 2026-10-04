@@ -114,34 +114,34 @@ INSTRUCTIONS = {
     "ldr": (28, F_RD_SRC16),
     "str": (30, F_RD_SRC16),
     # arithmetic and logic
-    "add": (32, F_ALU3), "adds": (34, F_ALU3),
-    "addc": (36, F_ALU3), "addcs": (38, F_ALU3),
-    "sub": (40, F_ALU3), "subs": (42, F_ALU3),
-    "subc": (44, F_ALU3), "subcs": (46, F_ALU3),
-    "and": (48, F_ALU3), "ands": (50, F_ALU3),
-    "or": (52, F_ALU3), "ors": (54, F_ALU3),
-    "eor": (56, F_ALU3), "eors": (58, F_ALU3),
+    "add": (42, F_ALU3), "adds": (44, F_ALU3),
+    "addc": (46, F_ALU3), "addcs": (48, F_ALU3),
+    "sub": (50, F_ALU3), "subs": (52, F_ALU3),
+    "subc": (54, F_ALU3), "subcs": (56, F_ALU3),
+    "and": (58, F_ALU3), "ands": (60, F_ALU3),
+    "or": (62, F_ALU3), "ors": (64, F_ALU3),
+    "eor": (66, F_ALU3), "eors": (68, F_ALU3),
     # shifts
-    "lsl": (60, F_RD_SRC8), "lsls": (62, F_RD_SRC8),
-    "lsr": (64, F_RD_SRC8), "lsrs": (66, F_RD_SRC8),
-    "asr": (68, F_RD_SRC8), "asrs": (70, F_RD_SRC8),
-    "csl": (72, F_RD_SRC8), "csls": (74, F_RD_SRC8),
-    "csr": (76, F_RD_SRC8), "csrs": (78, F_RD_SRC8),
+    "lsl": (70, F_RD_SRC8), "lsls": (72, F_RD_SRC8),
+    "lsr": (74, F_RD_SRC8), "lsrs": (76, F_RD_SRC8),
+    "asr": (78, F_RD_SRC8), "asrs": (80, F_RD_SRC8),
+    "csl": (82, F_RD_SRC8), "csls": (84, F_RD_SRC8),
+    "csr": (86, F_RD_SRC8), "csrs": (88, F_RD_SRC8),
     # flags only
-    "cmn": (80, F_RD_SRC8), "addcd": (82, F_RD_SRC8),
-    "cmp": (84, F_RD_SRC8), "subcd": (86, F_RD_SRC8),
-    "andd": (88, F_RD_SRC8), "ord": (90, F_RD_SRC8), "eord": (92, F_RD_SRC8),
+    "cmn": (90, F_RD_SRC8), "addcd": (92, F_RD_SRC8),
+    "cmp": (94, F_RD_SRC8), "subcd": (96, F_RD_SRC8),
+    "andd": (98, F_RD_SRC8), "ord": (100, F_RD_SRC8), "eord": (102, F_RD_SRC8),
     # shifts, flags only
-    "lsld": (94, F_SRC8), "lsrd": (96, F_SRC8), "asrd": (98, F_SRC8),
-    "csld": (100, F_SRC8), "csrd": (102, F_SRC8),
+    "lsld": (104, F_SRC8), "lsrd": (106, F_SRC8), "asrd": (108, F_SRC8),
+    "csld": (110, F_SRC8), "csrd": (112, F_SRC8),
     # branching
-    "br": (104, F_SRC16),
-    "brl": (106, F_RDA_SRC16),
+    "br": (114, F_SRC16),
+    "brl": (116, F_RDA_SRC16),
     # port I/O
-    "ptr": (108, F_RD),
-    "ptw": (110, F_RD),         # the operand is the source register
+    "ptr": (118, F_RD),
+    "ptw": (120, F_RD),         # the operand is the source register
     # other
-    "svc": (112, F_NONE),
+    "svc": (122, F_NONE),
 }
 
 # Data directives -> size of one value in bytes.  A word is 8 bits on this CPU.
