@@ -1,0 +1,15 @@
+
+!IFNDEF STRING_YH
+!DEFINE STRING_YH
+
+decl print: fn(str: [*]char);
+
+decl println: fn(str: [*]char);
+
+decl strlen: fn(str: [*]char) returns int8;
+
+decl strcmp: fn(str1: [*]char, str2: [*]char) returns int8;
+
+decl readstr: fn(str: [*]char);
+
+!ENDIF
