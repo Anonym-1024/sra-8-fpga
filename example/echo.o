@@ -1,0 +1,45 @@
+{
+  "format": "sra8-obj",
+  "version": 2,
+  "source": "example/echo.s",
+  "sections": [
+    {"section": "code:vector", "size": 16, "data": "01100000003E0000075C001C0730000C"},
+    {"section": "code", "size": 104, "data": "0000020001FC000001FD000101DC000001DD0001072C00000200040001FC000201FD00030010006101F0000401D0000401F00000075C0000075C000001D0000001F0000501D0000501F0000401D0000401F00000075C00000730003801DC000201DD0003072C0000"},
+    {"section": "bss", "size": 6}
+  ],
+  "exports": [
+    {"name": "_start", "section": "code:vector", "offset": 0},
+    {"name": "a", "section": "code", "offset": 4},
+    {"name": "main", "section": "code", "offset": 28},
+    {"name": "a.frame", "section": "bss", "offset": 0},
+    {"name": "main.frame", "section": "bss", "offset": 2}
+  ],
+  "relocations": [
+    {"section": "code:vector", "offset": 4, "type": "IMM16", "import": "__stack_top", "addend": 0},
+    {"section": "code:vector", "offset": 8, "type": "IMM16", "from": "code", "index": 28},
+    {"section": "code:vector", "offset": 12, "type": "IMM16", "from": "code:vector", "index": 12},
+    {"section": "code", "offset": 0, "type": "ABS16", "from": "bss", "index": 0},
+    {"section": "code", "offset": 4, "type": "IMM16", "from": "bss", "index": 0},
+    {"section": "code", "offset": 8, "type": "IMM16", "from": "bss", "index": 1},
+    {"section": "code", "offset": 12, "type": "IMM16", "from": "bss", "index": 0},
+    {"section": "code", "offset": 16, "type": "IMM16", "from": "bss", "index": 1},
+    {"section": "code", "offset": 24, "type": "ABS16", "from": "bss", "index": 2},
+    {"section": "code", "offset": 28, "type": "IMM16", "from": "bss", "index": 2},
+    {"section": "code", "offset": 32, "type": "IMM16", "from": "bss", "index": 3},
+    {"section": "code", "offset": 40, "type": "IMM16", "from": "bss", "index": 4},
+    {"section": "code", "offset": 44, "type": "IMM16", "from": "bss", "index": 4},
+    {"section": "code", "offset": 48, "type": "IMM16", "import": "uart_putc.frame", "addend": 0},
+    {"section": "code", "offset": 52, "type": "IMM16", "import": "uart_putc", "addend": 0},
+    {"section": "code", "offset": 56, "type": "IMM16", "import": "uart_getc", "addend": 0},
+    {"section": "code", "offset": 60, "type": "IMM16", "import": "uart_getc.frame", "addend": 0},
+    {"section": "code", "offset": 64, "type": "IMM16", "from": "bss", "index": 5},
+    {"section": "code", "offset": 68, "type": "IMM16", "from": "bss", "index": 5},
+    {"section": "code", "offset": 72, "type": "IMM16", "from": "bss", "index": 4},
+    {"section": "code", "offset": 76, "type": "IMM16", "from": "bss", "index": 4},
+    {"section": "code", "offset": 80, "type": "IMM16", "import": "uart_putc.frame", "addend": 0},
+    {"section": "code", "offset": 84, "type": "IMM16", "import": "uart_putc", "addend": 0},
+    {"section": "code", "offset": 88, "type": "IMM16", "from": "code", "index": 56},
+    {"section": "code", "offset": 92, "type": "IMM16", "from": "bss", "index": 2},
+    {"section": "code", "offset": 96, "type": "IMM16", "from": "bss", "index": 3}
+  ]
+}

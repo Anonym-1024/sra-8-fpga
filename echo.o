@@ -1,0 +1,18 @@
+{
+  "format": "sra8-obj",
+  "version": 2,
+  "source": "echo.s",
+  "sections": [
+    {"section": "code", "size": 72, "data": "00D0001001100020001100300690000C06C1000005510035469000305690003C001A003D06EA00000190000006900010001A003C06EA000006900028001A003E06EA000006900028"}
+  ],
+  "exports": [],
+  "relocations": [
+    {"section": "code", "offset": 0, "type": "IMM16", "from": "code", "index": 16},
+    {"section": "code", "offset": 12, "type": "IMM16", "from": "code", "index": 12},
+    {"section": "code", "offset": 24, "type": "IMM16", "from": "code", "index": 48},
+    {"section": "code", "offset": 28, "type": "IMM16", "from": "code", "index": 60},
+    {"section": "code", "offset": 44, "type": "IMM16", "from": "code", "index": 16},
+    {"section": "code", "offset": 56, "type": "IMM16", "from": "code", "index": 40},
+    {"section": "code", "offset": 68, "type": "IMM16", "from": "code", "index": 40}
+  ]
+}

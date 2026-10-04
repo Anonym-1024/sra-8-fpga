@@ -1,0 +1,23 @@
+{
+  "format": "sra8-obj",
+  "version": 2,
+  "source": "example/uart.s",
+  "sections": [
+    {"section": "bss", "size": 2},
+    {"section": "code", "size": 60, "data": "0000010001D00000078000000011000A0351100197300010072C00000100010001A100000631001017300020076000000190000001F00001072C0000"}
+  ],
+  "exports": [
+    {"name": "uart_putc.frame", "section": "bss", "offset": 0},
+    {"name": "uart_getc.frame", "section": "bss", "offset": 1},
+    {"name": "uart_putc", "section": "code", "offset": 4},
+    {"name": "uart_getc", "section": "code", "offset": 32}
+  ],
+  "relocations": [
+    {"section": "code", "offset": 0, "type": "ABS16", "from": "bss", "index": 0},
+    {"section": "code", "offset": 4, "type": "IMM16", "from": "bss", "index": 0},
+    {"section": "code", "offset": 20, "type": "IMM16", "from": "code", "index": 16},
+    {"section": "code", "offset": 28, "type": "ABS16", "from": "bss", "index": 1},
+    {"section": "code", "offset": 40, "type": "IMM16", "from": "code", "index": 32},
+    {"section": "code", "offset": 52, "type": "IMM16", "from": "bss", "index": 1}
+  ]
+}
