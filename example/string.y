@@ -21,7 +21,7 @@ impl strcmp: fn(str1: [*]char, str2: [*]char) returns int8 {
             return 0;
         }
         if (str1[i] ne str2[i]) {
-            return @cast(int8)str1[i] - @cast(int8)str2[i];
+            return @cast(int8 ,str1[i]) - @cast(int8, str2[i]);
         }
         i += 1;
     }

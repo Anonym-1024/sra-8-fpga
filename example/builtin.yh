@@ -1,0 +1,29 @@
+
+
+decl xpc_write: fn(addr);
+
+decl xpc_read: fn() returns addr;
+
+decl intpc_write: fn(addr);
+
+decl intpc_read: fn() returns addr;
+
+decl pc_write: fn(addr);
+
+decl pc_read: fn() returns addr;
+
+decl psr_write: fn(byte);
+
+decl psr_read: fn() returns byte;
+
+decl ptbr_write: fn(addr);
+
+decl ptbr_read: fn() returns addr;
+
+decl intr_write: fn(byte);
+
+decl intr_read: fn() returns byte;
+
+decl port_write: fn(byte);
+
+decl port_read: fn() returns byte;

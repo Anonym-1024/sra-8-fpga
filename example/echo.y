@@ -6,7 +6,9 @@
 
 
 
-var str: [64]char = {0, _};
+var str: [64]char = undefined;
+
+
 
 @internal
 impl echo: fn() {
@@ -16,6 +18,7 @@ impl echo: fn() {
             break;
         }
         println(@ptr(str));
+
     }
 }
 
@@ -29,7 +32,7 @@ impl strtou16: fn(strin: [*]char) returns uint16 {
         if (strin[i] eq 0) {
             break;
         }
-        num = num * 10 + @cast(uint16)(strin[i] - '0');
+        num = num * 10 + @cast(uint16, strin[i] - '0');
 
         i += 1;
     }
@@ -40,10 +43,11 @@ impl strtou16: fn(strin: [*]char) returns uint16 {
 impl u16tostr: fn(num: uint16, strout: [*]char) {
     var i: uint16 = 0;
     loop {
-        strout[i] = '0' + @cast(char)(num % 10);
+        strout[i] = '0' + @cast(char, num % 10);
         num /= 10;
         i += 1;
         if (num eq 0) {
+
             break;
         }
     }
